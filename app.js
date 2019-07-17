@@ -1,24 +1,25 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var exphbs  = require('express-handlebars');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const exphbs  = require('express-handlebars');
+const db = require('./helper/db')();
 
-var indexRouter       = require('./routes/index');
-var usersRouter       = require('./routes/users');
-var addQuestionRouter = require('./routes/addquestion');
-var addQuizRouter     = require('./routes/addquiz');
-var answersRouter     = require('./routes/answer');
-var discoverRouter    = require('./routes/discover');
-var loginRouter       = require('./routes/login');
-var mainRouter        = require('./routes/main');
-var playerpoolRouter  = require('./routes/playerpool');
-var profileRouter     = require('./routes/profile');
-var quizReviewRouter  = require('./routes/quizreview');
-var scoreboardRouter  = require('./routes/scoreboard');
+const indexRouter       = require('./routes/index');
+const usersRouter       = require('./routes/users');
+const addQuestionRouter = require('./routes/addquestion');
+const addQuizRouter     = require('./routes/addquiz');
+const answersRouter     = require('./routes/answer');
+const discoverRouter    = require('./routes/discover');
+const loginRouter       = require('./routes/login');
+const mainRouter        = require('./routes/main');
+const playerpoolRouter  = require('./routes/playerpool');
+const profileRouter     = require('./routes/profile');
+const quizReviewRouter  = require('./routes/quizreview');
+const scoreboardRouter  = require('./routes/scoreboard');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
