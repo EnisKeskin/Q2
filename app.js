@@ -5,8 +5,18 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var exphbs  = require('express-handlebars');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var indexRouter       = require('./routes/index');
+var usersRouter       = require('./routes/users');
+var addQuestionRouter = require('./routes/addquestion');
+var addQuizRouter     = require('./routes/addquiz');
+var answersRouter     = require('./routes/answer');
+var discoverRouter    = require('./routes/discover');
+var loginRouter       = require('./routes/login');
+var mainRouter        = require('./routes/main');
+var playerpoolRouter  = require('./routes/playerpool');
+var profileRouter     = require('./routes/profile');
+var quizReviewRouter  = require('./routes/quizreview');
+var scoreboardRouter  = require('./routes/scoreboard');
 
 var app = express();
 
@@ -22,7 +32,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/addQuestion', addQuestionRouter);
+app.use('/addQuiz', addQuizRouter);
+app.use('/answer', answersRouter);
+app.use('/discover', discoverRouter);
+app.use('/login', loginRouter);
+app.use('/main', mainRouter);
+app.use('/playerpool', playerpoolRouter);
+app.use('/profile', profileRouter);
+app.use('/quizreview', quizReviewRouter);
+app.use('/scoreboard', scoreboardRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
