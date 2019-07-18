@@ -2,63 +2,63 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const quizShema = new Schema({
-    title = {
+    title: {
         type: String,
         required: true,
         minlength: 1,
         maxlength: 100
     },
-    description = {
+    description: {
         type: String,
         maxlength: 256
     },
-    location = {
+    location: {
         type: String,
         maxlength: 35,
     },
-    language = {
+    language: {
         type: String,
         maxlength: 35
     },
-    pin = {
+    pin: {
         type: Number,
         required: true,
         unique: true,
         minlength: 6,
         maxlength: 7,
     },
-    img = {
+    img: {
         type: String
     },
 
-    question =[
-        question = {
+    question: {
+        question: {
             type: String,
             required: true,
             minlength: 2,
             maxlength: 100,
         },
-        answers = {
+        answers: {
             type: String,
             required: true,
             minlength: 1,
             maxlength: 100,
         },
-        answer = {
+        answer: {
             type: String,
             required: true,
             minlength: 1,
             maxlength: 100,
         },
-        time = {
+        time: {
             type: Number,
             default: 20,
             require: true,
         },
-        img = {
+        img: {
             type: String
         },
-    ],
+    },
 })
 
 module.exports = mongoose.model('quiz', quizShema);

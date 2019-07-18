@@ -8,11 +8,9 @@ const db = require('./helper/db')();
 
 const indexRouter       = require('./routes/index');
 const usersRouter       = require('./routes/users');
-const addQuestionRouter = require('./routes/addquestion');
 const addQuizRouter     = require('./routes/addquiz');
 const answersRouter     = require('./routes/answer');
 const discoverRouter    = require('./routes/discover');
-const loginRouter       = require('./routes/login');
 const mainRouter        = require('./routes/main');
 const playerpoolRouter  = require('./routes/playerpool');
 const profileRouter     = require('./routes/profile');
@@ -34,11 +32,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/addQuestion', addQuestionRouter);
-app.use('/addQuiz', addQuizRouter);
+app.use('/quiz', addQuizRouter);
 app.use('/answer', answersRouter);
 app.use('/discover', discoverRouter);
-app.use('/login', loginRouter);
 app.use('/main', mainRouter);
 app.use('/playerpool', playerpoolRouter);
 app.use('/profile', profileRouter);
