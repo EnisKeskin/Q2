@@ -88,3 +88,10 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+/**
+ * socketip
+ */
+const socketApi = require('../src/socketApi');
+const io = socketApi.io;
+io.attach(server);

@@ -15,23 +15,23 @@ router.post('/', (req, res) => {
   promise.then((data) => {
     res.json({ status: 1 })
   }).catch((err) => {
-    res.json({ err })
+    res.json({ err });
   })
 
 })
 //quiz_id
 router.post('/question', (req, res) => {
   const question = req.body;
-   const promise = Quiz.findById(question.quiz_id, (err, data) => {
-    data.question.push(question)
+  Quiz.findById(question.quiz_id, (err, data) => {
+    if (err)
+      throw err;
+
+    data.question.push(question);
     data.save();
-   });
+  });
 })
 
 module.exports = router;
-
-// personalbar.friends.push(friends)
-// personalbar.save(done)
 
 // {
 //   "title": "Ankara",
