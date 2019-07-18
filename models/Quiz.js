@@ -31,24 +31,22 @@ const quizShema = new Schema({
         type: String
     },
 
-    question: {
-        question: {
+    question: [{
+        questionTitle: {
             type: String,
             required: true,
             minlength: 2,
             maxlength: 100,
         },
         answers: {
-            type: String,
+            type: Array,
             required: true,
             minlength: 1,
             maxlength: 100,
         },
         answer: {
-            type: String,
+            type: Number,
             required: true,
-            minlength: 1,
-            maxlength: 100,
         },
         time: {
             type: Number,
@@ -58,7 +56,9 @@ const quizShema = new Schema({
         img: {
             type: String
         },
-    },
+    },]
 })
+
+
 
 module.exports = mongoose.model('quiz', quizShema);

@@ -23,9 +23,12 @@ router.post('/register', (req, res, next) => {
     }).catch((err) => {
       res.json(err);
     });
+
   })
 });
 
+// personalbar.friends.push(friends)
+// personalbar.save(done)
 
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
@@ -43,7 +46,6 @@ router.post('/login', (req, res) => {
     } else {
       bcrypt.compare(password, user.password).then((result) => {
         if (!result) {
-          //Event if password is correct
           res.render('user', {
             status: 0,
             message: "Login error",

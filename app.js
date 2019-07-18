@@ -3,19 +3,19 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const exphbs  = require('express-handlebars');
+const exphbs = require('express-handlebars');
 const db = require('./helper/db')();
 
-const indexRouter       = require('./routes/index');
-const usersRouter       = require('./routes/users');
-const addQuizRouter     = require('./routes/addquiz');
-const answersRouter     = require('./routes/answer');
-const discoverRouter    = require('./routes/discover');
-const mainRouter        = require('./routes/main');
-const playerpoolRouter  = require('./routes/playerpool');
-const profileRouter     = require('./routes/profile');
-const quizReviewRouter  = require('./routes/quizreview');
-const scoreboardRouter  = require('./routes/scoreboard');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const QuizRouter = require('./routes/quiz');
+const answersRouter = require('./routes/answer');
+const discoverRouter = require('./routes/discover');
+const mainRouter = require('./routes/main');
+const playerpoolRouter = require('./routes/playerpool');
+const profileRouter = require('./routes/profile');
+const quizReviewRouter = require('./routes/quizreview');
+const scoreboardRouter = require('./routes/scoreboard');
 
 const app = express();
 
@@ -32,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/quiz', addQuizRouter);
+app.use('/quiz', QuizRouter);
 app.use('/answer', answersRouter);
 app.use('/discover', discoverRouter);
 app.use('/main', mainRouter);
@@ -42,12 +42,12 @@ app.use('/quizreview', quizReviewRouter);
 app.use('/scoreboard', scoreboardRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
