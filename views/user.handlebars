@@ -29,7 +29,7 @@
             </div>
 
             <div class="login-textarea">
-              <input type="text" placeholder="User Name" class="txt-user">
+              <input id="signin_username" type="text" placeholder="User Name" class="txt-user">
             </div>
 
           </div>
@@ -42,14 +42,14 @@
             </div>
 
             <div class="login-textarea">
-              <input type="password" placeholder="Password" class="txt-password">
+              <input id="signin_password" type="password" placeholder="Password" class="txt-password">
             </div>
 
           </div>
 
           <div class="login-button">
 
-            <button type="button" class="btn-login">Enter</button>
+            <button type="button" class="btn-login" onclick="LoginPost()">Enter</button>
           </div>
 
         </div>
@@ -64,11 +64,11 @@
 
         <div class="signup-in">
 
-          <input id="username" type="text" class="txt-signup" placeholder="User Name">
+          <input id="signup_username" type="text" class="txt-signup" placeholder="User Name">
 
-          <input id="email" type="email" class="txt-signup" placeholder="E-Mail">
+          <input id="signup_email" type="email" class="txt-signup" placeholder="E-Mail">
 
-          <input id="password" type="password" class="txt-signup" placeholder="Password">
+          <input id="signup_password" type="password" class="txt-signup" placeholder="Password">
 
 
           <div class="sign-button">
@@ -84,24 +84,4 @@
 
   </div>
 </div>
-<script>
-
-  const RegisterPost = async () => {
-    const ema = document.getElementById('email').value;
-    const use = document.getElementById('username').value;
-    const pas = document.getElementById('password').value;
-    var http = new XMLHttpRequest();
-    var url = '/users/register';
-    var params = 'email='+ema+'&password='+pas+'&username='+use;
-    http.open('POST', url, true);
-
-    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-    http.onreadystatechange = function () {//Call a function when the state changes.
-      if (http.readyState == 4 && http.status == 200) {
-        alert(http.responseText);
-      }
-    }
-    http.send(params);
-  };
-</script>
+<script src="javascripts/userjs.js"></script>
