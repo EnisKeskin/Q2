@@ -3,7 +3,6 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-//Models
 const User = require('../models/User');
 
 router.post('/register', (req, res, next) => {
@@ -43,7 +42,6 @@ router.post('/login', (req, res) => {
     } else {
       bcrypt.compare(password, user.password).then((result) => {
         if (!result) {
-          //Event if password is correct
           res.render('user', {
             status: 0,
             message: "Login error",
