@@ -29,7 +29,7 @@ router.post('/register', (req, res, next) => {
 
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
-  
+
   User.findOne({
     email
   }, (err, user) => {
@@ -43,8 +43,8 @@ router.post('/login', (req, res) => {
     } else {
       bcrypt.compare(password, user.password).then((result) => {
         if (!result) {
-          //şifrenin eşleşmeme durumu
-          res.render('index', {
+          //Event if password is correct
+          res.render('user', {
             status: 0,
             message: "Login error",
           });
