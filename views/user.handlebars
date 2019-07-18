@@ -1,85 +1,107 @@
- <div class="figure">
+<link rel="stylesheet" href="../public/stylesheets/user.css">
+<div class="figure">
 
-    </div>
-    <div class="figure-2">
+</div>
+<div class="figure-2">
 
-    </div>
-        <div class="container user">
-            <div class="logo">
-                <img src="images/logo/logo.png" class="img-logo" alt="Quiz">
-            </div>
+</div>
+<div class="container user">
+  <div class="logo">
+    <img src="../public/images/logo/logo.png" class="img-logo" alt="Quiz">
+  </div>
 
-            <div class="container user-in">
-              <div class="row">
+  <div class="container user-in">
+    <div class="row">
 
-                <div class="col-lg-6 login">
-                  
-                  <div class="login-text">
-                    Log In
-                  </div>
+      <div class="col-lg-6 login">
 
-                  <div class="login-in">
-
-                      <!-- textarea -->
-                    <div class="login-input">
-
-                      <div class="login-img">
-                        <img src="images/user-icon/user.png" class="img-user" alt="">
-                      </div>
-
-                      <div class="login-textarea">
-                        <input type="text" placeholder="User Name" class="txt-user">
-                      </div>
-
-                    </div>
-                     <!-- textarea -->
-
-                       <div class="login-password-input">
-
-                      <div class="login-img">
-                        <img src="images/user-icon/password.png" class="img-password" alt="">
-                      </div>
-
-                      <div class="login-textarea">
-                        <input type="text" placeholder="Password" class="txt-password">
-                      </div>
-
-                    </div>
-
-                    <div class="login-button">
-
-                        <button type="button" class="btn-login">Enter</button>
-                    </div>
-
-                  </div>
-
-                </div>
-
-                <div class="col-lg-6 signup">
-                  <div class="signup-text">
-                    Sign Up
-                  </div>
-
-
-                  <div class="signup-in">
-
-                    <input type="text" class="txt-signup" placeholder="User Name" >
-
-                    <input type="text" class="txt-signup" placeholder="E-Mail" >
-
-                    <input type="text" class="txt-signup" placeholder="Password" >
-
-
-                    <div class="sign-button">
-
-                        <button type="button" class="btn-sign">Sign Up</button>
-                    </div>
-
-                  </div>
-
-                  </div>
-
-              </div>
-
-            </div>
+        <div class="login-text">
+          Log In
         </div>
+
+        <div class="login-in">
+
+          <!-- textarea -->
+          <div class="login-input">
+
+            <div class="login-img">
+              <img src="../public/images/user-icon/user.png" class="img-user" alt="">
+            </div>
+
+            <div class="login-textarea">
+              <input type="text" placeholder="User Name" class="txt-user">
+            </div>
+
+          </div>
+          <!-- textarea -->
+
+          <div class="login-password-input">
+
+            <div class="login-img">
+              <img src="../public/images/user-icon/password.png" class="img-password" alt="">
+            </div>
+
+            <div class="login-textarea">
+              <input type="text" placeholder="Password" class="txt-password">
+            </div>
+
+          </div>
+
+          <div class="login-button">
+
+            <button type="button" class="btn-login">Enter</button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-lg-6 signup">
+        <div class="signup-text">
+          Sign Up
+        </div>
+
+
+        <div class="signup-in">
+
+          <input id="username" type="text" class="txt-signup" placeholder="User Name">
+
+          <input id="email" type="text" class="txt-signup" placeholder="E-Mail">
+
+          <input id="password" type="text" class="txt-signup" placeholder="Password">
+
+
+          <div class="sign-button">
+
+            <button id="btn_signup" type="button" class="btn-sign" onclick="RegisterPost()">Sign Up</button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<script>
+
+  const RegisterPost = async () => {
+    const ema = document.getElementById('email').value;
+    const use = document.getElementById('username').value;
+    const pas = document.getElementById('password').value;
+    var http = new XMLHttpRequest();
+    var url = '/users/register';
+    var params = 'email='+ema+'&password='+pas+'&username='+use;
+    http.open('POST', url, true);
+
+    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+    http.onreadystatechange = function () {//Call a function when the state changes.
+      if (http.readyState == 4 && http.status == 200) {
+        alert(http.responseText);
+      }
+    }
+    http.send(params);
+  };
+</script>

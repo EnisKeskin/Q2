@@ -56,8 +56,8 @@ router.post('/login', (req, res) => {
   });
 });
 
-router.get('/', (req, res, next) => {
-  res.send('respond with a resource');
+router.get('/', function (req, res, next) {
+  res.render('user');
 });
 
 module.exports = router;
