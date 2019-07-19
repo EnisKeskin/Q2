@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const Quiz = require('../models/Quiz');
 
 router.get('/', (req, res, next) => {
-  res.send('Add a quiz!');
+  res.render('quiz');
 });
 
 router.post('/', (req, res) => {
@@ -20,6 +20,10 @@ router.post('/', (req, res) => {
 
 })
 
+<<<<<<< HEAD
+=======
+//quiz_id
+>>>>>>> e8fe02d51e351a41e23d87dad11f627f09b5dce6
 router.post('/question', (req, res) => {
   const question = req.body;
   Quiz.findById(question.quiz_id, (err, data) => {

@@ -14,7 +14,12 @@ const answersRouter = require('./routes/answer');
 const discoverRouter = require('./routes/discover');
 const mainRouter = require('./routes/main');
 const playerpoolRouter = require('./routes/playerpool');
+<<<<<<< HEAD
 const profileRouter = require('./routes/profile');
+=======
+const homeRouter = require('./routes/home');
+const quizReviewRouter = require('./routes/quizreview');
+>>>>>>> e8fe02d51e351a41e23d87dad11f627f09b5dce6
 const scoreboardRouter = require('./routes/scoreboard');
 
 const app = express();
@@ -37,8 +42,13 @@ app.use('/answer', answersRouter);
 app.use('/discover', discoverRouter);
 app.use('/main', mainRouter);
 app.use('/playerpool', playerpoolRouter);
+<<<<<<< HEAD
 app.use('/profile', profileRouter);
 app.use('/play', playRouter);
+=======
+app.use('/home', homeRouter);
+app.use('/quizreview', quizReviewRouter);
+>>>>>>> e8fe02d51e351a41e23d87dad11f627f09b5dce6
 app.use('/scoreboard', scoreboardRouter);
 
 // catch 404 and forward to error handler
