@@ -1,8 +1,8 @@
-const addQuiz = async () => {
+const AddQuiz = async () => {
     const e_loca = document.getElementById('quiz_location');
     const loca = e_loca.options[e_loca.selectedIndex].value;
-    const e_visi = document.getElementById('quiz_visibility');
-    const visi = e_visi.options[e_visi.selectedIndex].value;
+    //const e_visi = document.getElementById('quiz_visibility');
+    //const visi = e_visi.options[e_visi.selectedIndex].value;
     const e_lang = document.getElementById('quiz_language');
     const lang = e_lang.options[e_lang.selectedIndex].value;
 
