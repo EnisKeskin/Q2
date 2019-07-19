@@ -5,9 +5,7 @@ const socketApi = { };
 socketApi.io = io;
 
 io.on('connection', (socket) => {
-  socket.on('Enis', (data) => {
-      console.log(data);
-  })
+  console.log('Bağlandı');
 })
 
 module.exports = socketApi; 

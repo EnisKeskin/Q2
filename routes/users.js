@@ -26,9 +26,6 @@ router.post('/register', (req, res, next) => {
   })
 });
 
-// personalbar.friends.push(friends)
-// personalbar.save(done)
-
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
 

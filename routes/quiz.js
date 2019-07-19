@@ -19,17 +19,18 @@ router.post('/', (req, res) => {
   })
 
 })
-//quiz_id
+
 router.post('/question', (req, res) => {
   const question = req.body;
   Quiz.findById(question.quiz_id, (err, data) => {
     if (err)
       throw err;
-
+    
     data.question.push(question);
     data.save();
   });
 })
+
 
 module.exports = router;
 
@@ -41,10 +42,11 @@ module.exports = router;
 //   "pin": 765221,
 //   "img": "img1.jpg",
 //   "question": []
+//   "active":true  -> oyun şu anda oynanma aşamasında
 // }
 
 
-// {
+// question{
 //   "questionTitle": "Ankaranın ilkleri",
 //   "answers": [
 //     "ali",   //answer-1

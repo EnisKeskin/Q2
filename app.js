@@ -9,12 +9,12 @@ const db = require('./helper/db')();
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const QuizRouter = require('./routes/quiz');
+const playRouter = require('./routes/play');
 const answersRouter = require('./routes/answer');
 const discoverRouter = require('./routes/discover');
 const mainRouter = require('./routes/main');
 const playerpoolRouter = require('./routes/playerpool');
 const profileRouter = require('./routes/profile');
-const quizReviewRouter = require('./routes/quizreview');
 const scoreboardRouter = require('./routes/scoreboard');
 
 const app = express();
@@ -38,7 +38,7 @@ app.use('/discover', discoverRouter);
 app.use('/main', mainRouter);
 app.use('/playerpool', playerpoolRouter);
 app.use('/profile', profileRouter);
-app.use('/quizreview', quizReviewRouter);
+app.use('/play', playRouter);
 app.use('/scoreboard', scoreboardRouter);
 
 // catch 404 and forward to error handler
