@@ -2,8 +2,8 @@ const EnterGame = async () => {
     const pin = document.getElementById('index_pin').value;
 
     var http = new XMLHttpRequest();
-    var url = '/users/login';
-    var params = 'password=' + pas + '&username=' + use;
+    var url = '/';
+    var params = 'pin=' + pin;
     http.open('POST', url, true);
 
     http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
