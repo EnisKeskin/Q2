@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const Quiz = require('../models/Quiz');
 
 router.get('/', (req, res, next) => {
-  res.send('Add a quiz!');
+  res.render('quiz');
 });
 
 router.post('/', (req, res) => {

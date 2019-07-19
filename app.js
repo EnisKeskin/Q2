@@ -13,7 +13,7 @@ const answersRouter = require('./routes/answer');
 const discoverRouter = require('./routes/discover');
 const mainRouter = require('./routes/main');
 const playerpoolRouter = require('./routes/playerpool');
-const profileRouter = require('./routes/profile');
+const homeRouter = require('./routes/home');
 const quizReviewRouter = require('./routes/quizreview');
 const scoreboardRouter = require('./routes/scoreboard');
 
@@ -37,7 +37,7 @@ app.use('/answer', answersRouter);
 app.use('/discover', discoverRouter);
 app.use('/main', mainRouter);
 app.use('/playerpool', playerpoolRouter);
-app.use('/profile', profileRouter);
+app.use('/home', homeRouter);
 app.use('/quizreview', quizReviewRouter);
 app.use('/scoreboard', scoreboardRouter);
 
