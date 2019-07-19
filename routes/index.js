@@ -4,12 +4,7 @@ const mongoose = require('mongoose');
 
 const quiz = require('../models/Quiz');
 
-<<<<<<< HEAD
 router.get('/', (req, res, next) => {
-=======
-/* GET home page. */
-router.get('/', function(req, res, next) {
->>>>>>> 2258647b2a62a25e91ea79125016a6abb11459c6
   res.render('index');
 });
 
