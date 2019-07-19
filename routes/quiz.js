@@ -20,7 +20,6 @@ router.post('/', (req, res) => {
 
 })
 
-//quiz_id
 router.post('/question', (req, res) => {
   const question = req.body;
   Quiz.findById(question.quiz_id, (err, data) => {
