@@ -55,7 +55,7 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/', function (req, res, next) {
-  res.render('user');
+  res.render('users');
 });
 
 module.exports = router;
