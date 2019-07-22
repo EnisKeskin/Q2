@@ -35,19 +35,11 @@ router.post('/login', (req, res) => {
     if (err)
       throw err
     if (!user) {
-      res.json({
-        status: false,
-        message: 'Authenticaton failed, user not found.'
-      });
+      
     } else {
       bcrypt.compare(password, user.password).then((result) => {
         if (!result) {
-          res.render('user', {
-            status: 0,
-            message: "Login error",
-          });
         } else {
-          res.redirect('/users');
         }
       });
     };
