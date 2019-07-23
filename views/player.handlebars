@@ -1,46 +1,27 @@
-
-  <div class="container players-content">
+<div class="container players-content">
 
     <div class="players-top">
 
-      123456
+        123456
 
 
     </div>
 
     <div class="players-bottom">
-
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-      <div>sytopcu</div>
-
-
-
+        {{#each items}}
+        <div>{{this.name}}</div>
+        {{/each}}
     </div>
 
 
-  </div>
+</div>
 
-  <div class="container-fluid players-start">
+<div class="container-fluid players-start">
     <div class="players-number">
-      20 <br> Players
+        20 <br> Players
     </div>
     <div class="button-start">
-      <button class="btn-start" type="button">Start</button>
+        <button class="btn-start" type="button">Start</button>
 
     </div>
-  </div>
+</div>

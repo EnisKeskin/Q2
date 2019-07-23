@@ -11,7 +11,7 @@
         <img src="images/logo/logo-w.png" class=img-pin-logo alt="">
     </div>
 
-    <form action="." method="POST">
+    <form action="." method="POST" autocomplete="off">
         <div class="pin-text">
             <input id="index_pin" name="pin" type="text" class="txt-pin" placeholder="Game Pin">
         </div>
@@ -26,6 +26,14 @@
     </div>
 
 </div>
-
-<script src="/javascripts/indexController.js"></script>
-<script src="/javascripts/indexjs.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+    $(function () {
+        var socket = io();
+        socket.emit('getname');
+        socket.on('recieve-name', (name) => {
+            socket.nickname = name;
+        });
+    });
+</script>
