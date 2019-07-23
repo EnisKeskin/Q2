@@ -7,15 +7,6 @@ const exphbs = require('express-handlebars');
 const db = require('./helper/db')();
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const QuizRouter = require('./routes/quiz');
-const playRouter = require('./routes/play');
-const answersRouter = require('./routes/answer');
-const discoverRouter = require('./routes/discover');
-const mainRouter = require('./routes/main');
-const playerpoolRouter = require('./routes/playerpool');
-const homeRouter = require('./routes/home');
-const scoreboardRouter = require('./routes/scoreboard');
 
 const app = express();
 
@@ -30,16 +21,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/quiz', QuizRouter);
-app.use('/answer', answersRouter);
-app.use('/discover', discoverRouter);
-app.use('/main', mainRouter);
-app.use('/playerpool', playerpoolRouter);
-app.use('/home', homeRouter);
-app.use('/play', playRouter);
-app.use('/scoreboard', scoreboardRouter);
+app.use('/',indexRouter)
+app.use('/api', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

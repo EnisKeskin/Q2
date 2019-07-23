@@ -1,15 +1,10 @@
 const socketio = require('socket.io');
 const io = socketio();
 const socketApi = {};
+const superagent = require('superagent');
 const mongoose = require('mongoose');
-var hbs = require('express-handlebars').create({
-  partialsDir: [
-    'views/partials/'
-  ]
-});
 
 const quiz = require('../models/Quiz');
-
 socketApi.io = io;
 
 // var Quizez = {
@@ -20,25 +15,36 @@ socketApi.io = io;
 //   }
 // }
 
+let players = [];
+
+const pinControl = (data, callback) => {
+  const promise = quiz.find({ pin: data, active: true });
+  
+  promise.then((data) => {
+    callback(data);
+  }).catch((err) => {
+    callback(err);
+  });
+
+}
+
 io.on('connection', (socket) => {
   console.log('Bağlandı');
   socket.emit('connected');
 
-  socket.on('pinSend', (data) => {
-    quiz.findOne({ pin: data.pin, active: true }).then((entry) => {
-      if(entry) {
-        // Quizez[data.pin].players.push(["socket"])
-        hbs.render('views/partials/home.handlebars', {entry: entry}).then((data) => {
-          socket.emit("quiz_start", data);
-        })
-      }
-    }).catch((err) => {
-     console.log(err);
+  socket.on('sendPin', (data) => {
+    pinControl(data, (body) => {  
+      socket.emit('sendQuiz', body);
     });
   });
 
+  socket.on('sendUsername', (data) => {
+      players.push(data);
+      socket.emit('newUser', players);
+      socket.broadcast.emit('newUser', players);
 
-
+  });
+  
 });
 
 module.exports = socketApi; 

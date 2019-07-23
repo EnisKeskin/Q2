@@ -1,7 +1,7 @@
 const socket = io.connect('http://localhost:3000/');
 
 
-const pinEntry = document.querySelector('#pin-entry');
+const pinEntry = document.querySelector('#btn-pin');
 const bodyTemp = document.querySelector('body');
 socket.on('connected', (data) => {
     pinEntry.addEventListener('click', () => {
