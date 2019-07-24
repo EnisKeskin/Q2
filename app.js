@@ -12,11 +12,16 @@ const app = express();
 const io = socket_io();
 app.io = io;
 
+global.Rooms = {
+  "1234":[],
+  "4321":[]
+};
+
 const indexRouter = require('./routes/index')(io);
+const gameRouter = require('./routes/game')(io);
 const usersRouter = require('./routes/users');
 const quizRouter = require('./routes/quiz');
 const answerRouter = require('./routes/answer');
-const playerRouter = require('./routes/player')(io);
 const homeRouter = require('./routes/home');
 const questionRouter = require('./routes/question');
 
@@ -45,9 +50,9 @@ app.use(session({
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/game', gameRouter);
 app.use('/quiz', quizRouter);
 app.use('/answer', answerRouter);
-app.use('/player', playerRouter);
 app.use('/home', homeRouter);
 app.use('/question', questionRouter);
 
@@ -70,5 +75,4 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
 module.exports = app;
