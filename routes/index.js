@@ -11,19 +11,30 @@ module.exports = (io) => {
 
   // aktif oyun varsa ona yönlendirecek
   router.post('/', (req, res, next) => {
-    const promise = quiz.find({ pin: req.body.pin, active: true });
+    const p = req.body.pin;
+    if (Rooms[p]) {
+      res.redirect('gane?pin=' + p);
+    }
+    else {
+      const promise = quiz.find({ pin: p });
 
-    promise.then((data) => {
-      if (data.length != 0) {
-        res.redirect(200, 'game?pin=' + req.body.pin);
-      } else {
-        res.redirect(200, 'game?pin=' + req.body.pin);
-        //res.render('index', { status: 0, message: "There is no active game with provided code" });
-      }
-    }).catch((err) => {
-      console.log('error: ' + err);
-      res.json(err);
-    });
+      promise.then((data) => {
+        if (data.length != 0) {
+          Rooms[p] = {
+            clients:{},
+            started:false,
+            questionIndex=0,
+            answers:{}
+          };
+          res.redirect('game?pin=' + p);
+        } else {
+          alert("There is no game with given pin");
+        }
+      }).catch((err) => {
+        console.log('error: ' + err);
+        res.json(err);
+      });
+    }
 
   });
 

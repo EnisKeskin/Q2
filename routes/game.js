@@ -13,9 +13,9 @@ module.exports = (io) => {
     socket.nickname = name;
     socket.on('enter-lobby', (pin) => {
       socket.nickname = socket.nickname + "|" + pin;
-      Rooms[pin][socket.id] = socket;
+      Rooms[pin].clients[socket.id] = socket;
 
-      var arr1 = Rooms[pin];
+      var arr1 = Rooms[pin].clients;
       var ol = Object.keys(arr1);
       var arr = [];
       for (let i = 0; i < ol.length; i++) {
@@ -32,7 +32,7 @@ module.exports = (io) => {
       }
     });
     socket.on('start-the-game', (data) => {
-      var arr1 = Rooms[data.p];
+      var arr1 = Rooms[data.p].clients;
       var ol = Object.keys(arr1);
       for (let i = 0; i < ol.length; i++) {
         gameNamespace.to(arr1[ol[i]].id).emit('render-content',

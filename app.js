@@ -13,8 +13,18 @@ const io = socket_io();
 app.io = io;
 
 global.Rooms = {
-  "1234":[],
-  "4321":[]
+  "1234":{
+    clients:{},
+    started:false,
+    questionIndex=0,
+    answers:{}
+  },
+  "4321":{
+    clients:{},
+    started:false,
+    questionIndex=0,
+    answers:{}
+  }
 };
 
 const indexRouter = require('./routes/index')(io);
