@@ -1273,9 +1273,13 @@ select::-ms-expand {
 .progressbar {
     width: 100%;
     height: 20px;
+    color: whitesmoke;
+    font-weight: 700;
     background: #F60E4C;
     margin-top: 10px;
+    text-align: end;
     border-radius: 18px;
+    padding-right: 10px;
 }
 
 .answer-bottom {

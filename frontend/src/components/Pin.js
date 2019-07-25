@@ -1,61 +1,71 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import io from '../connection';
 import { Redirect } from 'react-router'
 
-const Pin = () => {
-  const [code, setCode] = useState(null);
-  const [quiz, setQuiz] = useState(null);
+class Pin extends Component {
 
-  useEffect(() => {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      value: "",
+      isVisible: false
+    }
+  }
+
+  componentDidMount() {
     io.on('connected', (data) => {
       console.log('bağlandun');
     })
 
-    io.on('sendQuiz', (quiz) => {
-      if (isNaN(quiz)) {
-        console.log(quiz[0]);
-        setQuiz(quiz[0]);
+    io.on('join', (req) => {
+      if (req.status) {
+        this.setState({ isVisible: true });
       } else {
-        console.log("at");
+        console.log("Böyle bir quiz yok");
       }
-    })
+    });
+  };
 
-  }, [])
+  onClickEvent = (e) => {
+    io.emit("sendPin", this.state.value);
+  };
 
-  function send() {
-    io.emit("sendPin", code);
+  onChangeEvent = (e) => {
+    this.setState({ value: e.target.value });
+  };
 
-  }
-
-  return (
-    <div>
-      {quiz ?
-        <Redirect to="/username"/>
-        :
-        <div>
-          <div className="figure"></div>
-          <div className="figure-2"></div>
-          <div className="capsule">
-            <div className="container pin">
-              <div className="pin-logo">
-                <img src="../images/logo/logo-w.png" className="img-pin-logo" alt="" />
-              </div>
-              <div className="pin-text">
-                <input type="text" className="txt-pin" placeholder="Game Pin" onChange={e => setCode(e.target.value)} />
-              </div>
-
-              <div className="pin-button">
-                <button onClick={send} type="submit" className="btn-pin">Enter</button>
-              </div>
-              <div className="a">
-                {/* <a href="">Login or Register</a> */}
+  render() {
+    return (
+      <div>
+        {this.state.isVisible ?
+          <Redirect to='/username' />
+          :
+          <div>
+            <div className="figure"></div>
+            <div className="figure-2"></div>
+            <div className="capsule">
+              <div className="container pin">
+                <div className="pin-logo">
+                  <img src="../images/logo/logo-w.png" className="img-pin-logo" alt="" />
+                </div>
+                <div className="pin-text">
+                  <input type="text" className="txt-pin" placeholder="Game Pin" onChange={this.onChangeEvent} />
+                </div>
+                <div className="pin-button">
+                  <button onClick={this.onClickEvent} type="submit" className="btn-pin">Enter</button>
+                </div>
+                <div className="a">
+                  {/* <a href="">Login or Register</a> */}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      }
-    </div>
-  );
-}
+        }
+      </div>
+    );
+  }
+};
+
 
 export default Pin;

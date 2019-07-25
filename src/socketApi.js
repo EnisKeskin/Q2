@@ -7,44 +7,94 @@ const mongoose = require('mongoose');
 const quiz = require('../models/Quiz');
 socketApi.io = io;
 
-// var Quizez = {
-//   "11911": {
-//     "players": [{socketId:"id", "name": "ali", answers: [{questionId: "", answer: "a/b/c/d", time:"10"}]}],
-//     currentQuestion: "x objesi",
-//     currentQuestionStartTime: new Date()
-//   }
-// }
+class userControl {
+  constructor() {
+    this.connect_id
+    this.room_name
+    this.username
+    this.users = [];
+  }
 
-let players = [];
+  roomUserAdd(connect_id, room_name, username) {
+    this.users.push({
+      connect_id: connect_id,
+      room_name: room_name,
+      username: username
+    })
+  }
 
+  roomShowUser() {
+    console.log(this.users);
+  }
+
+  roomUserDelete(connect_id) {
+    this.users.forEach((data, key, object) => {
+      if (data.connect_id == connect_id) {
+        object.splice(key, 1);
+      }
+    });
+  }
+}
+
+const a = new userControl();
 const pinControl = (data, callback) => {
   const promise = quiz.find({ pin: data, active: true });
-  
+
   promise.then((data) => {
     callback(data);
   }).catch((err) => {
     callback(err);
   });
-
 }
-
 io.on('connection', (socket) => {
   console.log('Bağlandı');
   socket.emit('connected');
 
-  socket.on('sendPin', (data) => {
-    pinControl(data, (body) => {  
-      socket.emit('sendQuiz', body);
+  socket.on('sendPin', (pin) => {
+    pinControl(pin, (quiz) => {
+      socket.join(pin, () => {
+        io.to(pin).emit('join', { status: true});
+        socket.on('sendUsername', (user) => {
+          const room_name = Object.keys(socket.rooms)[0];
+          const connect_id = Object.keys(socket.rooms)[1];
+
+          a.roomUserAdd(connect_id, room_name, user);
+
+          const users = [];
+
+          a.users.forEach((data) => {
+            if (data.room_name == room_name) {
+              users.push(data.username);
+            }
+          });
+
+          io.to(pin).emit('newUser', users);
+          io.to(pin).emit('userCount', users.length);
+          io.on
+          socket.on('disconnect', () => {
+            a.roomUserDelete(socket.id);
+            const users = [];
+            a.users.forEach((roomData) => {
+              if (roomData.room_name == pin) {
+                users.push(roomData.username);
+              }
+            });
+            io.to(pin).emit('newUser', users);
+            io.to(pin).emit('userCount', users.length);
+          });
+        });
+        socket.on('startGame', () => {
+          io.to(pin).emit('gameStarted');
+        })
+        socket.on('getQuiz', () => {
+          io.to(pin).emit('sendQuiz', quiz);
+        });
+      });
     });
-  });
-
-  socket.on('sendUsername', (data) => {
-      players.push(data);
-      socket.emit('newUser', players);
-      socket.broadcast.emit('newUser', players);
 
   });
-  
+
 });
 
-module.exports = socketApi; 
+
+module.exports = socketApi;
