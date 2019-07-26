@@ -46,7 +46,10 @@ class Players extends Component {
         return (
             <div>
                 {this.state.isVisible ?
-                    <Redirect to='/Answer' />
+                    <Redirect to={{
+                        pathname: '/Answer',
+                        state: { id: 0 }
+                    }} />
                     :
                     <div>
                         <div className="container players-content">
