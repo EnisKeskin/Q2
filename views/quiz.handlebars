@@ -1,65 +1,55 @@
 <header class="quiz-header">
     <div class="quiz-logo">
         <img src="images/logo/logo-w.png" class="img-quiz-logo" alt="">
-
     </div>
-
 </header>
-
-
-<div class="quiz-content">
-
-
-
-    <div class="quiz-image">
-        <img src="images/thumb-1920-943148.jpg" alt="">
-    </div>
-
-
-    <div class="quiz-right">
-        <div class="dropdown">
-
-            <div class="select-box select-box-1 ">
-                <select name="" id="">
-                    <option value="1">Visible to </option>
-                    <option value="1">option 2</option>
-                    <option value="1">option 3</option>
-                    <option value="1">option 4</option>
-                </select>
-            </div>
-
-
-            <div class="select-box select-box-2">
-                <select name="" id="">
-                    <option value="1">Location </option>
-                    <option value="1">option 2</option>
-                    <option value="1">option 3</option>
-                    <option value="1">option 4</option>
-                </select>
-            </div>
-
-
-            <div class="select-box select-box-3">
-                <select name="" id="">
-                    <option value="1">Language </option>
-                    <option value="1">option 2</option>
-                    <option value="1">option 3</option>
-                    <option value="1">option 4</option>
-                </select>
-            </div>
+<form action="." method="POST" autocomplete="off">
+    <div class="quiz-content">
+        <div class="quiz-image">
+            <img src="images/thumb-1920-943148.jpg" alt="">
         </div>
-
-
-        <input type="text" placeholder="Title" class="txt-title">
-
-        <textarea placeholder="Description" class="txt-description"></textarea>
-
-
+        <div class="quiz-right">
+            <div class="dropdown">
+                <div class="select-box select-box-1 ">
+                    <select name="" id="">
+                        {{#each visibility}}
+                        <option value="{{@index}}">{{option}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="select-box select-box-2">
+                    <select name="" id="">
+                        {{#each location}}
+                        <option value="{{@index}}">{{option}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="select-box select-box-3">
+                    <select name="" id="">
+                        {{#each language}}
+                        <option value="{{@index}}">{{option}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <input type="text" name="title" placeholder="Title" class="txt-title">
+            <textarea placeholder="Description" name="description" class="txt-description"></textarea>
+        </div>
     </div>
-</div>
-
-<div class="quiz-enter-button">
-    <button type="button" class="btn-quiz-enter">Enter</button>
-
-</div>
-<script src="javascripts/quizjs.js"></script>
+    <div class="quiz-questions">
+        <h2>Questions</h2>
+        <div class="questions-image">
+            {{#each questions}}
+            <div class="questions-image-in">
+                <div class="q-image">
+                    <img src="{{imageurl}}" alt="">
+                </div>
+                <div class="spn-questions">Question {{@index}}</div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+    <div class="quiz-enter-button">
+        <button type="button" class="btn-quiz-enter">Enter</button>
+    </div>
+</form>

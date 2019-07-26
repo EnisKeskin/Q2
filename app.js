@@ -22,7 +22,6 @@ const usersRouter = require('./routes/users');
 const quizRouter = require('./routes/quiz');
 const answerRouter = require('./routes/answer');
 const homeRouter = require('./routes/home');
-const questionRouter = require('./routes/question');
 
 const scoreboardRouter = require('./routes/scoreboard');
 const playRouter = require('./routes/play');
@@ -53,7 +52,6 @@ app.use('/game', gameRouter);
 app.use('/quiz', quizRouter);
 app.use('/answer', answerRouter);
 app.use('/home', homeRouter);
-app.use('/question', questionRouter);
 
 app.use('/scoreboard', scoreboardRouter);
 app.use('/play', playRouter);
