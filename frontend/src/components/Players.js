@@ -25,17 +25,12 @@ class Players extends Component {
             }
         });
 
-        io.on('gameStarted', () => {
+        io.on('gameStart', () => {
             this.setState({
                 isVisible: true
             })
-        })
-
-        io.on('userCount', (count) => {
-            this.setState({
-                userCount: count
-            });
         });
+
     };
 
     onClickEvent = (e) => {
@@ -46,26 +41,28 @@ class Players extends Component {
         return (
             <div>
                 {this.state.isVisible ?
-                    <Redirect to={{
-                        pathname: '/Answer',
-                        state: { id: 0 }
-                    }} />
+                    <Redirect to={
+                        {
+                            pathname: '/Answer',
+                            state: { id: 0 }
+                        }
+                    } />
                     :
                     <div>
-                        <div className="container players-content">
-                            <div className="players-top">
-                                {this.state.userCount}
-                            </div>
-                            <div className="players-bottom">
-                                {this.state.players.map((player, i) => {
-                                    return (<div key={i}>{player}</div>)
-                                })}
-                            </div>
+                        <div className="container players-content" >
+                            <div className="players-top" > {this.state.userCount} </div>
+                            <div className="players-bottom" > {
+                                this.state.players.map((player, i) => {
+                                    return (< div key={i} > {player} </div>)
+                                })
+                            } </div>
                         </div>
-                        <div className="container-fluid players-start">
-                            <div className="players-number">20 Players</div>
-                            <div className="button-start">
-                                <button onClick={this.onClickEvent} className="btn-start" type="button" >Start</button>
+                        <div className="container-fluid players-start" >
+                            <div className="players-number" > 20 Players </div>
+                            <div className="button-start" >
+                                <button onClick={this.onClickEvent}
+                                    className="btn-start"
+                                    type="button" > Start </button>
                             </div>
                         </div>
                     </div>
@@ -76,4 +73,3 @@ class Players extends Component {
 };
 
 export default Players;
-

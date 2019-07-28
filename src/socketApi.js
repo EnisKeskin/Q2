@@ -8,45 +8,97 @@ var pathToRegexp = require('path-to-regexp')
 const quiz = require('../models/Quiz');
 socketApi.io = io;
 
-class userControl {
+let ROOMS = {};
+
+class RoomControl {
     constructor() {
-        this.connect_id
-        this.room_name
-        this.username
-        this.users = [];
+        this.rooms = {};
     }
 
-    roomUserAdd(connect_id, room_name, username) {
-        this.users.push({
-            connect_id: connect_id,
-            room_name: room_name,
-            username: username
-        })
+    addUser(userId, roomName, username) {
+        let room = this.getRoom(roomName);
+
+        room.users[userId] = {
+            username: username,
+            totalPoint: 0,
+            answers: [],
+        };
     }
 
-    roomShowUser() {
-        console.log(this.users);
+    getRoom(roomName) {
+        let room = this.rooms[roomName] ? this.rooms[roomName] : {
+            quiz: null,
+            startTime: null,
+            currentQuestion: 0,
+            users: {},
+        }
+        this.rooms[roomName] = room;
+        return room;
     }
 
-    roomUserDelete(connect_id) {
-        this.users.forEach((data, key, object) => {
-            if (data.connect_id == connect_id) {
-                object.splice(key, 1);
-            }
+    setQuiz(roomName, quiz) {
+        this.rooms[roomName].quiz = quiz
+    }
+
+    addAnswer(roomName, userId, answer, score, ansToQues) {
+        this.rooms[roomName].users[userId].answers.push({ answer, score, ansToQues })
+        this.calcTotalPoint(roomName, userId, score);
+    }
+
+    calcTotalPoint(roomName, userId, score) {
+        let user = this.getRoom(roomName).users[userId];
+        user.totalPoint = 0;
+        user.answers.forEach((answer) => {
+            user.totalPoint += answer.score;
         });
     }
+
+    roomShowUser(roomName) {
+        console.log(JSON.stringify(this.getRoom(roomName).users));
+    }
+
+    roomUserDelete(roomName, userId) {
+        delete this.getRoom(roomName).users[userId];
+    }
+
+    getUserNames(roomName) {
+        let usernames = [];
+        Object.keys(this.getRoom(roomName).users).forEach((userId) => {
+            usernames.push(this.getRoom(roomName).users[userId].username)
+        });
+        if (usernames.length > 0)
+            return usernames;
+        else null
+    }
+
+    nextQuestion(roomName, nextQuestion) {
+        this.rooms[roomName].currentQuestion = this.rooms[roomName].quiz[0].question[nextQuestion];
+        //oyun başladığında sayaçta başlatılıyor.
+        this.rooms[roomName].startTime = Date.now();
+        return this.rooms[roomName].quiz[0].question[nextQuestion];
+    }
+
+    showStatistics() {
+
+    }
+
 }
 
-const a = new userControl();
+const roomControl = new RoomControl();
 const pinControl = (data, callback) => {
-    const promise = quiz.find({ pin: data, active: true });
-
-    promise.then((data) => {
-        callback(data);
-    }).catch((err) => {
-        callback(err);
-    });
+    quiz.find({ pin: data, active: true })
+        .then((data) => {
+            callback(data);
+        }).catch((err) => {
+            callback(err);
+        });
 }
+
+// soru istatistiği tutulacak ve puan gösterilecek
+// istatistik ekranı göründükten sonra bittiğinde server nextQuesion emit edilecek sonra ordan yeni soru brotcaste edilecek.
+// kullanıcı bilgileri burda tutulacak
+// socket_id
+// io.to(pin).emit('userCount', usernames.length); // frontend kısmında yazılacak
 io.on('connection', (socket) => {
     console.log('Bağlandı');
     socket.emit('connected');
@@ -56,57 +108,79 @@ io.on('connection', (socket) => {
         pinControl(pin, (quiz) => {
 
             socket.join(pin, () => {
-                // soru istatistiği tutulacak ve puan gösterilecek 
-                // istatistik ekranı göründükten sonra bittiğinde server nextQuesion emit edilecek sonra ordan yeni soru brotcaste edilecek.
-                let startTime;
-                let currentQuestion = questions[0];
-
+                //roomName alınıyor
+                const roomName = Object.keys(socket.rooms)[0];
+                //UserId alınıyor
+                const userId = Object.keys(socket.rooms)[1];
+                //Odayı kontrol edebilmek için roomControl sınıfına atanıyor
+                roomControl.getRoom(roomName);
+                //odanın içinq quiz atanıyor
+                roomControl.setQuiz(roomName, quiz);
+                //odaya girdiğine dair bilgi
                 io.to(pin).emit('join', { status: true });
-
-                socket.on('sendUsername', (user) => {
-                    const room_name = Object.keys(socket.rooms)[0];
-                    const connect_id = Object.keys(socket.rooms)[1];
-                    console.log(socket.id)
-                    a.roomUserAdd(connect_id, room_name, user);
-
-                    const users = [];
-                    // kullanıcı bilgileri burda tutulacak
-                    // socket_id
-                    a.users.forEach((data) => {
-                        if (data.room_name == room_name) {
-                            users.push(data.username);
+                //username girdiğininde bu kontroller çalışacak otomatik.
+                socket.on('sendUsername', (username) => {
+                    // gelen kullanıcıyı id ve hangi roomName sahip olduğunu ve kullanıcı adı ile kaydediyor.
+                    roomControl.addUser(userId, roomName, username);
+                    //player ekranında tüm kullanıcılar görünüyor
+                    io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
+                    //client kısmında başla komutu geldiğinde işleyecek.
+                    socket.on('startGame', () => {
+                        //ilk soru ekleniyor.
+                        io.to(pin).emit('gameStart');
+                        //soruyu gönderiyor
+                        nextQuestion(showStaticstics);
+                    });
+                    let question = 0;
+                    const nextQuestion = (callback) => {
+                        io.to(roomName).emit('newQuestion', roomControl.nextQuestion(roomName, question));
+                        setTimeout(() => {
+                            callback();
+                        }, roomControl.rooms[roomName].currentQuestion.time * 1000);
+                        question++;
+                    }
+                    const showStaticstics = () => {
+                            let answernumber = 0;
+                            let answStatic = []
+                            Object.keys(roomControl.getRoom(roomName).users).forEach((userId) => {
+                                answStatic.push(roomControl.getRoom(roomName).users[userId].answers[answernumber]);
+                            });
+                            console.log(answernumber);
+                            answernumber++;
+                            io.to(roomName).emit('staticstics', answStatic);
+                            setTimeout(() => {
+                                if (roomControl.rooms[roomName].quiz[0].question.length !== question) {
+                                    nextQuestion(showStaticstics);
+                                } else {
+                                    console.log("Son soru bitti beybisi");
+                                }
+                            }, 5000);
                         }
+                        // setTimeout(() => {
+                        //     console.log(Date.now());
+                        //     io.to(roomName).emit('newQuestion', roomControl.nextQuestion(roomName, answernumber));
+                        // }, 5000)
+
+                    //soruya cevap verildiğinde ekleniyor
+                    socket.on('sendAnswer', (user) => {
+                        //soru geri gönderilirken currentQuestion.time işe yarayacak.
+                        let questionScore = 0
+                        if (user.answer === roomControl.rooms[roomName].currentQuestion.answer) {
+                            questionScore = (1000 - ((Date.now() - roomControl.rooms[roomName].startTime) / 10));
+                            questionScore = Math.max(100, questionScore);
+                        }
+                        console.log(`RoomName ${roomName} \n ${userId} \n ${user.answer} \n ${questionScore} \n ${roomControl.rooms[roomName].currentQuestion.answer}`);
+
+                        roomControl.addAnswer(roomName, userId, user.answer, questionScore, roomControl.rooms[roomName].currentQuestion.answer);
+
                     });
 
-                    io.to(pin).emit('newUser', users);
-                    io.to(pin).emit('userCount', users.length);
-                    io.on
                     socket.on('disconnect', () => {
-                        a.roomUserDelete(socket.id);
-                        const users = [];
-                        a.users.forEach((roomData) => {
-                            if (roomData.room_name == pin) {
-                                users.push(roomData.username);
-                            }
-                        });
-                        io.to(pin).emit('newUser', users);
-                        io.to(pin).emit('userCount', users.length);
+                        roomControl.roomUserDelete(roomName, userId);
+                        io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
                     });
                 });
                 // soruları tek tke gönder ve herkese socket.io şeklinde gönder.
-                socket.on('startGame', () => {
-                    io.to(pin).emit('gameStarted', currentQuestion);
-                    setTimeout(() => {
-
-                    }, currentQuestion.time * 1000);
-                    startTime = new Date();
-                    console.log(socket.id);
-                })
-
-                socket.on('getQuiz', () => {
-                    socket.emit('sendQuiz', quiz);
-                });
-
             });
 
         });
