@@ -603,7 +603,7 @@ ul {
 
 .capsule {
     background: #9B3ADB;
-    min-height: 100%;
+    min-height: 100vh;
 }
 
 .user {
@@ -1044,7 +1044,6 @@ ul {
     right: 10px;
     width: 23px;
     height: 12px;
-    background: url(../images/quiz/arrow-point-to-right.png) no-repeat center center;
 }
 
 .select-box::before {
@@ -1055,7 +1054,6 @@ ul {
     left: 3px;
     width: 30px;
     height: 19px;
-    background: url(../images/quiz/view.png) no-repeat center center;
 }
 
 .select-box select {
@@ -1086,7 +1084,6 @@ select::-ms-expand {
     right: 10px;
     width: 23px;
     height: 12px;
-    background: url(../images/quiz/arrow-point-to-right.png) no-repeat center center;
 }
 
 .select-box-2::before {
@@ -1097,7 +1094,6 @@ select::-ms-expand {
     left: 3px;
     width: 30px;
     height: 19px;
-    background: url(../images/quiz/location.png) no-repeat center center;
 }
 
 .select-box-3:after {
@@ -1108,7 +1104,6 @@ select::-ms-expand {
     right: 10px;
     width: 23px;
     height: 12px;
-    background: url(../images/quiz/arrow-point-to-right.png) no-repeat center center;
 }
 
 .select-box-3::before {
@@ -1119,7 +1114,6 @@ select::-ms-expand {
     left: 7px;
     width: 22px;
     height: 22px;
-    background: url(../images/quiz/planet-earth.png) no-repeat center center;
 }
 
 .quiz-enter-button {
@@ -1561,14 +1555,14 @@ select::-ms-expand {
 
 .answer-top-in {
     display: flex;
+    justify-content: center;
     margin-bottom: 30px;
 }
 
 .answer-image {
-    min-width: 600px;
+    min-width: 80%;
     height: 300px;
-    width: 100%;
-    background-color: #d5d5d5;
+    background-color: rgb(226, 226, 226);
     border-radius: 15px;
     z-index: 1;
 }
@@ -1581,14 +1575,13 @@ select::-ms-expand {
 }
 
 .answer-question {
-    min-width: 550px;
+    min-width: 80%;
     height: 300px;
     background: #9B3ADB;
     position: relative;
     left: 0;
     top: 0;
     border-radius: 15px;
-    width: 100%;
     margin: 40px 0 0 -60px;
     font-style: normal;
     font-size: 17.5px;
@@ -1605,7 +1598,7 @@ select::-ms-expand {
     max-width: 500px;
     width: 100%;
     margin: 0 auto 20px;
-    min-height: 290px;
+    min-height: 350px;
     display: flex;
     justify-content: space-between;
 }
@@ -1666,6 +1659,11 @@ select::-ms-expand {
     height: 20px;
     background: #F60E4C;
     margin-top: 10px;
+    transition: 1s;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 15px;
+    color: white;
     border-radius: 18px;
 }
 
@@ -1758,21 +1756,39 @@ select::-ms-expand {
     transition: 0.2s;
 }
 
-@media only screen and (max-width: 995px) {
+@media only screen and (max-width: 1200px) {
+    .answer-image {
+        min-width: 70%;
+    }
+    .answer-question {
+        min-width: 70%;
+    }
+}
+
+@media only screen and (max-width: 991.5px) {
+    .answer-image {
+        min-width: 50%;
+    }
+    .answer-question {
+        min-width: 50%;
+    }
+}
+
+@media only screen and (max-width: 767.5px) {
     .answer-top-in {
         display: block;
-        height: auto;
+        max-width: 100%;
+    }
+    .answer-top {
+        min-height: 700px;
+        max-width: 100%;
     }
     .answer-question {
         margin: auto;
-        margin-top: 0;
-        min-width: 100%;
+        margin-top: -20px;
     }
     .answer-image {
         min-width: 100%;
-    }
-    .answer-top {
-        min-height: 620px;
     }
 }
 
@@ -2146,8 +2162,8 @@ select::-ms-expand {
 
 @media only screen and (max-width: 1000px) {
     .discover-menu {
-        padding-right: 30px;
-        padding-left: 30px;
+        padding-right: 10px;
+        padding-left: 10px;
     }
 }
 
@@ -2158,6 +2174,12 @@ select::-ms-expand {
     }
     .discover-owner {
         top: 3px;
+    }
+    .discover-menu ul li a {
+        font-size: 15px;
+    }
+    .discover-trend-in {
+        width: 80%;
     }
 }
 

@@ -5,11 +5,13 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const exphbs = require('express-handlebars');
 const db = require('./helper/db')();
+const cors = require('cors');
 
 const indexRouter = require('./routes/index');
 
 const app = express();
 
+app.use(cors({origin: '*'}));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs());

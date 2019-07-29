@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-
 const User = require('../models/User');
 const quiz = require('../models/Quiz');
 
@@ -48,12 +47,10 @@ router.post('/question', (req, res) => {
 
 //kayıt için
 router.post('/register', (req, res, next) => {
-    const { email, password, firstname, lastname, username } = req.body;
+    const { email, password, username } = req.body;
     bcrypt.hash(password, 10).then((hash) => {
         const user = new User({
             email,
-            firstname,
-            lastname,
             username,
             password: hash
         });
@@ -70,7 +67,7 @@ router.post('/register', (req, res, next) => {
 //giriş için
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
-
+    console.log(password);
     User.findOne({
         email
     }, (err, user) => {
@@ -79,9 +76,15 @@ router.post('/login', (req, res) => {
         if (!user) {
             res.json({ status: 0 })
         } else {
+            console.log(email);
+            console.log(user.password);
             bcrypt.compare(password, user.password).then((result) => {
                 if (!result) {
+                    //yanlış giriş
+                    res.json({ status: 0 })
                 } else {
+                    //doğru giriş
+                    res.json({ status: 1 })
                 }
             });
         };

@@ -1,75 +1,144 @@
 import React, { Component } from 'react'
+import superagent from 'superagent'
+
 
 class User extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      lemail: "",
+      lpassword: "",
+      rusername: "",
+      rpassword: "",
+      remail: "",
+    }
+
+    this.onChangePassEvent = this.onChangePassEvent.bind(this);
+    this.onChangeEmailEvent = this.onChangeEmailEvent.bind(this);
+    this.onClickLoginEvent = this.onClickLoginEvent.bind(this);
+
+    this.onChangeRMailEvent = this.onChangeRMailEvent.bind(this);
+    this.onChangeRPasswordEvent = this.onChangeRPasswordEvent.bind(this);
+    this.onChangeRUserEvent = this.onChangeRUserEvent.bind(this);
+    this.onClickRegisterEvent = this.onClickRegisterEvent.bind(this);
+  }
+
+  onChangeEmailEvent(e) {
+    this.setState({
+      lemail: e.target.value
+    });
+  }
+
+  onChangePassEvent(e) {
+    this.setState({
+      lpassword: e.target.value
+    });
+  }
+
+  onClickLoginEvent() {
+    superagent
+      .post('http://127.0.0.1:3000/api/login')
+      .send({ email: this.state.lemail, password: this.state.lpassword })
+      .set('Access-Control-Allow-Origin', '*')
+      .end((err, res) => {
+        console.log(res);
+      });
+  }
+
+  onChangeRUserEvent(e) {
+    this.setState({
+      rusername: e.target.value
+    });
+  }
+
+  onChangeRMailEvent(e) {
+    this.setState({
+      remail: e.target.value
+    });
+  }
+  onChangeRPasswordEvent(e) {
+    this.setState({
+      rpassword: e.target.value
+    });
+  }
+
+  onClickRegisterEvent() {
+    superagent
+    .post('http://127.0.0.1:3000/api/register')
+    .send({ email: this.state.remail, password: this.state.rpassword, username: this.state.rusername })
+    .end((err, res) => {
+      console.log(res.body);
+    });
+  }
+
   render() {
     return (
       <div>
-        <div class="figure"></div>
-        <div class="figure-2"></div>
+        <div className="figure"></div>
+        <div className="figure-2"></div>
 
         <div className="capsule">
-          <div class="container user">
-            <div class="user-logo">
-              <img src="../images/logo/logo-w.png" class="img-user-logo" alt="Quiz" />
+          <div className="container user">
+            <div className="user-logo">
+              <img src={require('../images/logo/logo-w.png')} className="img-user-logo" alt="Quiz" />
             </div>
 
-            <div class="row">
+            <div className="row">
 
-              <div class="col-lg-6 login">
+              <div className="col-lg-6 login">
 
-                <div class="login-text">
-                  Log In
-              </div>
+                <div className="login-text"> Log In </div>
 
-                <div class="login-in">
+                <div className="login-in">
 
-                  <div class="login-input">
+                  <div className="login-input">
 
-                    <div class="login-img">
-                      <img src="images/user-icon/user.png" class="img-user" alt="" />
+                    <div className="login-img">
+                      <img src={require('../images/user-icon/user.png')} className="img-user" alt="" />
                     </div>
 
-                    <div class="login-textarea">
-                      <input type="text" placeholder="User Name" class="txt-user" />
-                    </div>
-
-                  </div>
-
-                  <div class="login-password-input">
-
-                    <div class="login-img">
-                      <img src="images/user-icon/password.png" class="img-password" alt="" />
-                    </div>
-
-                    <div class="login-textarea">
-                      <input type="password" placeholder="Password" class="txt-password" />
+                    <div className="login-textarea">
+                      <input type="text" placeholder="Email" className="txt-user" onChange={this.onChangeEmailEvent} />
                     </div>
 
                   </div>
 
-                  <div class="login-button">
-                    <button type="button" class="btn-login">Enter</button>
+                  <div className="login-password-input">
+
+                    <div className="login-img">
+                      <img src={require('../images/user-icon/password.png')} className="img-password" alt="" />
+                    </div>
+
+                    <div className="login-textarea">
+                      <input type="password" placeholder="Password" className="txt-password" onChange={this.onChangePassEvent} />
+                    </div>
+
+                  </div>
+                  {/* ajax verilerini gönderecek */}
+                  <div className="login-button">
+                    <button type="button" className="btn-login" onClick={this.onClickLoginEvent}>Enter</button>
                   </div>
 
                 </div>
 
               </div>
 
-              <div class="col-lg-6 signup">
-                <div class="signup-text">
+              <div className="col-lg-6 signup">
+                <div className="signup-text">
                   Sign Up
               </div>
 
-                <div class="signup-in">
+                <div className="signup-in">
 
-                  <input type="text" class="txt-signup" placeholder="User Name" />
+                  <input type="text" className="txt-signup" placeholder="User Name" onChange={this.onChangeRUserEvent} />
 
-                  <input type="text" class="txt-signup" placeholder="E-Mail" />
+                  <input type="text" className="txt-signup" placeholder="E-Mail" onChange={this.onChangeRMailEvent} />
 
-                  <input type="password" class="txt-signup" placeholder="Password" />
+                  <input type="password" className="txt-signup" placeholder="Password" onChange={this.onChangeRPasswordEvent} />
 
-                  <div class="sign-button">
-                    <button type="button" class="btn-sign">Sign Up</button>
+                  <div className="sign-button">
+                    <button type="button" className="btn-sign" onClick={this.onClickRegisterEvent}>Sign Up</button>
                   </div>
 
                 </div>

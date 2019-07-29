@@ -38,7 +38,7 @@ class Username extends Component {
             <div className="capsule">
               <div className="container pin">
                 <div className="pin-logo">
-                  <img src="../images/logo/logo-w.png" className="img-pin-logo" alt="" />
+                  <img src={require('../images/logo/logo-w.png')} className="img-pin-logo" alt="" />
                 </div>
                 <div className="pin-text">
                   <input type="text" className="txt-pin" placeholder="Username" onChange={this.onChangeEvent} />

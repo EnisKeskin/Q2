@@ -183,7 +183,7 @@ io.on('connection', (socket) => {
                                 }
                             }, 5000);
 
-                        }, room.currentQuestion.time * 1000);
+                        }, room.currentQuestion.time * 100000);
                     }
                     //result
                     //soruya cevap verildiğinde ekleniyor

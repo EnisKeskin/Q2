@@ -48,7 +48,7 @@ class Pin extends Component {
             <div className="capsule">
               <div className="container pin">
                 <div className="pin-logo">
-                  <img src="../images/logo/logo-w.png" className="img-pin-logo" alt="" />
+                  <img src={require('../images/logo/logo-w.png')} className="img-pin-logo" alt="" />
                 </div>
                 <div className="pin-text">
                   <input type="text" className="txt-pin" placeholder="Game Pin" onChange={this.onChangeEvent} />
@@ -58,7 +58,7 @@ class Pin extends Component {
                 </div>
               </div>
                 <div className="a-pin">
-                  <Link to="/answers">Login or Register</Link>
+                  <Link to="/user">Login or Register</Link>
                 </div>
             </div>
           </div>
