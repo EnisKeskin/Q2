@@ -43,6 +43,9 @@ router.get('/question', (req, res, next) => {
 });
 
 router.post('/', (req, res) => {
+  console.log(req.body);
+  res.redirect('/quiz/question');
+  return;
   const quiz = new Quiz(req.body);
   const promise = quiz.save();
 
@@ -53,7 +56,7 @@ router.post('/', (req, res) => {
   })
 
 })
-
+/*
 router.post('/question', (req, res) => {
   const question = req.body;
   Quiz.findById(question.quiz_id, (err, data) => {
@@ -63,7 +66,7 @@ router.post('/question', (req, res) => {
     data.question.push(question);
     data.save();
   });
-})
+})*/
 
 
 module.exports = router;
