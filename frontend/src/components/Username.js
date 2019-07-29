@@ -47,9 +47,6 @@ class Username extends Component {
                 <div className="pin-button">
                   <button onClick={this.onClickEvent} type="submit" className="btn-pin">Enter</button>
                 </div>
-                <div className="a">
-                  {/* <a href="">Login or Register</a> */}
-                </div>
               </div>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import io from '../connection';
 import { Redirect } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class Pin extends Component {
 
@@ -55,10 +56,10 @@ class Pin extends Component {
                 <div className="pin-button">
                   <button onClick={this.onClickEvent} type="submit" className="btn-pin">Enter</button>
                 </div>
-                <div className="a">
-                  {/* <a href="">Login or Register</a> */}
-                </div>
               </div>
+                <div className="a-pin">
+                  <Link to="/answers">Login or Register</Link>
+                </div>
             </div>
           </div>
         }

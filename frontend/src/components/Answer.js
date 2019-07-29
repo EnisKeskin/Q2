@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
 import io from '../connection';
+import { Redirect } from 'react-router'
 
 class Answer extends Component {
     constructor(props) {
         super(props);
         this.interval = 0;
         this.time = 0;
-        this.number = 0;
-        this.numofques = 0;
 
         this.state = {
             questionTitle: "",
@@ -15,7 +14,7 @@ class Answer extends Component {
             answers: "",
             answer: 0,
             progress: 100,
-            isVisible: false,
+            isVisible: true,
             statistics: false,
             a: 0,
             b: 0,
@@ -35,6 +34,7 @@ class Answer extends Component {
                     answer: question.answer,
                     progress: 100,
                     isVisible: true,
+                    statistics: false,
                     a: 0,
                     b: 0,
                     c: 0,
@@ -42,8 +42,6 @@ class Answer extends Component {
                 });
                 this.interval = 0;
                 this.time = 0;
-                this.number = 0;
-                this.numofques = 0;
                 // console.log(this.props.location.state.id);
 
                 this.time = question.time;
@@ -89,22 +87,30 @@ class Answer extends Component {
                         default:
                             break;
                     }
-                    this.setState({
-                        isVisible: false,
-                        statistics: true,
-                    });
-                    if (this.state.statistics === true) {
-                        const choiceLen = document.querySelectorAll('.col-md-6').length;
-                        for (let i = 0; i < choiceLen; i++) {
-                            if (i !== this.state.answer) {
-                                document.querySelectorAll('.col-md-6').item(i).children[0].style.background = "grey";
-                            }
-                            document.querySelectorAll('.col-md-6').item(i).children[0].style.pointerEvents = "none";
-                        }
-                    }
                 })
             }
+            this.setState({
+                isVisible: false,
+                statistics: true,
+            });
+
+            if (this.state.statistics === true) {
+                const choiceLen = document.querySelectorAll('.col-md-6').length;
+                for (let i = 0; i < choiceLen; i++) {
+                    if (i !== this.state.answer) {
+                        document.querySelectorAll('.col-md-6').item(i).children[0].style.background = "grey";
+                    }
+                    document.querySelectorAll('.col-md-6').item(i).children[0].style.pointerEvents = "none";
+                }
+            }
         });
+
+        io.on('showScoreboard', () => {
+            this.setState({
+                isVisible: false,
+                statistics: false,
+            });
+        })
     };
     //serdada 10 sn başlıcak zaman oldu statictis ekranana yollucak
     //router üzerinden gidilicek
@@ -112,7 +118,6 @@ class Answer extends Component {
         if (this.state.time === 0) {
             clearInterval(this.interval);
         };
-
     }
 
     onCLickEvent(answer, e) {
@@ -125,135 +130,125 @@ class Answer extends Component {
             block.style.pointerEvents = "none";
 
         });
-
+        console.log(answer);
         io.emit('sendAnswer', { answer });
 
     }
+
     render() {
+        const question =
+        <div>
+            <div className="container answer-contet">
+
+                <div className="answer-top">
+                    <div className="answer-top-in">
+                        <div className="answer-image">
+                            <img src={require('../images/quiz/quiz.png')} alt="" srcSet="" />
+                        </div>
+                        <div className="answer-question">
+                            {this.state.questionTitle}
+                            <div className="triangle"></div>
+                        </div>
+                    </div>
+                </div>
+                <div className="progressbar" style={{ 'width': `${this.state.progress}%` }}>
+                    {this.state.time}
+                </div>
+
+            </div>
+
+            <div className="answer-bottom">
+
+                <div className="container answer-bottom-in">
+                    <div className="row">
+
+                        <div className="col-md-6">
+                            <div className="answer-1" onClick={this.onCLickEvent.bind(this, 0)}>
+                                {this.state.answers[0]}
+                            </div>
+                        </div>
+
+                        <div className="col-md-6">
+                            <div className="answer-2" onClick={this.onCLickEvent.bind(this, 1)}>
+                                {this.state.answers[1]}
+                            </div>
+                        </div>
+
+                        <div className="col-md-6">
+                            <div className="answer-3" onClick={this.onCLickEvent.bind(this, 2)}>
+                                {this.state.answers[2]}
+                            </div>
+                        </div>
+
+                        <div className="col-md-6">
+                            <div className="answer-4" onClick={this.onCLickEvent.bind(this, 3)}>
+                                {this.state.answers[3]}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>;
+
         return (
             <div>
                 {this.state.isVisible ?
-                    <div>
-                        <div className="container answer-contet">
-
-                            <div className="answer-top">
-                                <div className="answer-image"></div>
-                                <div className="answer-question">
-                                    {this.state.questionTitle}
-                                    <div className="triangle"></div>
-                                </div>
-                            </div>
-                            <div className="progressbar" style={{ 'width': `${this.state.progress}%` }}>
-                                {this.state.time}
-                            </div>
-
-                        </div>
-
-                        <div className="answer-bottom">
-
-                            <div className="container answer-bottom-in">
-                                <div className="row">
-
-                                    <div className="col-md-6">
-                                        <div className="answer-1" onClick={this.onCLickEvent.bind(this, 0)}>
-                                            {this.state.answers[0]}
-                                        </div>
-                                    </div>
-
-                                    <div className="col-md-6">
-                                        <div className="answer-2" onClick={this.onCLickEvent.bind(this, 1)}>
-                                            {this.state.answers[1]}
-                                        </div>
-                                    </div>
-
-                                    <div className="col-md-6">
-                                        <div className="answer-3" onClick={this.onCLickEvent.bind(this, 2)}>
-                                            {this.state.answers[2]}
-                                        </div>
-                                    </div>
-
-                                    <div className="col-md-6">
-                                        <div className="answer-4" onClick={this.onCLickEvent.bind(this, 3)}>
-                                            {this.state.answers[3]}
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+                    question
                     :
-                    // bu kod ayrı yazılacak sonra buraya extend edilecek.
                     <div>
                         {this.state.statistics ?
                             <div>
+                                <div className="container answer-contet">
 
-                                <div class="container answer-contet">
+                                    <div className="answer-top">
 
-                                    <div class="answer-top">
-
-                                        <div class="answer-top-in">
-
-                                            <div class="answer-image">
-                                                <img src="images/thumb-1920-943148.jpg" alt="" />
+                                        <div className="statistics">
+                                            <div className="statistics-item">
+                                                <span className="statistics-item-label">{this.state.a}</span>
+                                                <div className="statistics-item-fill statistics-item-fill-1" style={{ 'height': `${Math.max(5, Math.min(((this.state.a) * 20), 120))}px` }} ></div>
                                             </div>
 
-                                            <div class="answer-question">
-
-                                                Lorem ipsum dolor sit amet, consectetur
-                                                adipiscing elit. Quisque nec finibus?
-                                            <div class="triangle"></div>
-
-                                            </div>
-                                        </div>
-
-                                        <div class="statistics">
-                                            <div class="statistics-item">
-                                                <span class="statistics-item-label">{this.state.a}</span>
-                                                <div class="statistics-item-fill statistics-item-fill-1" style={{ 'height': `${Math.max(5, Math.min(((this.state.a) * 20), 120))}px` }} ></div>
+                                            <div className="statistics-item">
+                                                <span className="statistics-item-label">{this.state.b}</span>
+                                                <div className="statistics-item-fill statistics-item-fill-2" style={{ 'height': `${Math.max(5, Math.min(((this.state.b) * 20), 120))}px` }} ></div>
                                             </div>
 
-                                            <div class="statistics-item">
-                                                <span class="statistics-item-label">{this.state.b}</span>
-                                                <div class="statistics-item-fill statistics-item-fill-2" style={{ 'height': `${Math.max(5, Math.min(((this.state.b) * 20), 120))}px` }} ></div>
+                                            <div className="statistics-item">
+                                                <span className="statistics-item-label">{this.state.c}</span>
+                                                <div className="statistics-item-fill statistics-item-fill-3" style={{ 'height': `${Math.max(5, Math.min(((this.state.c) * 20), 120))}px` }} ></div>
                                             </div>
 
-                                            <div class="statistics-item">
-                                                <span class="statistics-item-label">{this.state.c}</span>
-                                                <div class="statistics-item-fill statistics-item-fill-3" style={{ 'height': `${Math.max(5, Math.min(((this.state.c) * 20), 120))}px` }} ></div>
-                                            </div>
-
-                                            <div class="statistics-item">
-                                                <span class="statistics-item-label">{this.state.d}</span>
-                                                <div class="statistics-item-fill statistics-item-fill-4" style={{ 'height': `${Math.max(5, Math.min(((this.state.d) * 20), 120))}px` }} ></div>
+                                            <div className="statistics-item">
+                                                <span className="statistics-item-label">{this.state.d}</span>
+                                                <div className="statistics-item-fill statistics-item-fill-4" style={{ 'height': `${Math.max(5, Math.min(((this.state.d) * 20), 120))}px` }} ></div>
                                             </div>
 
                                         </div>
 
-                                        <div class="progressbar"></div>
+                                        <div className="progressbar"></div>
                                     </div>
 
-                                    <div class="answer-bottom">
+                                    <div className="answer-bottom">
 
-                                        <div class="container answer-bottom-in">
+                                        <div className="container answer-bottom-in">
 
-                                            <div class="row">
+                                            <div className="row">
 
-                                                <div class="col-md-6">
-                                                    <div class="answer-1">{this.state.answers[0]}</div>
+                                                <div className="col-md-6">
+                                                    <div className="answer-1">{this.state.answers[0]}</div>
                                                 </div>
 
-                                                <div class="col-md-6">
-                                                    <div class="answer-2">{this.state.answers[1]}</div>
+                                                <div className="col-md-6">
+                                                    <div className="answer-2">{this.state.answers[1]}</div>
                                                 </div>
 
-                                                <div class="col-md-6">
-                                                    <div class="answer-3">{this.state.answers[2]}</div>
+                                                <div className="col-md-6">
+                                                    <div className="answer-3">{this.state.answers[2]}</div>
                                                 </div>
 
-                                                <div class="col-md-6">
-                                                    <div class="answer-4">{this.state.answers[3]}</div>
+                                                <div className="col-md-6">
+                                                    <div className="answer-4">{this.state.answers[3]}</div>
                                                 </div>
 
                                             </div>
@@ -264,7 +259,7 @@ class Answer extends Component {
 
                                 </div>
                             </div>
-                            : null
+                            :  <Redirect to='/Scoreboard' />
                         }
                     </div>
                 }

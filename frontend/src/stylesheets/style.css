@@ -69,6 +69,12 @@ ul {
     padding: 2px;
     text-decoration: none;
     font-size: 17px;
+    transition: 0.1s;
+}
+
+.menu ul li a:hover {
+    color: gray;
+    opacity: 0.8;
 }
 
 .content {
@@ -126,12 +132,18 @@ ul {
     padding-right: 15px;
 }
 
-.profil-information-left {
-    background: #8A2BC9;
+.profil-information-left:hover {
+    background: #9b3adb;
+    cursor: pointer;
+    transition: .2s;
+    transform: scale(1.02);
 }
 
-.profil-information-right {
-    background: #8A2BC9;
+.profil-information-right:hover {
+    background: #9b3adb;
+    cursor: pointer;
+    transition: .2s;
+    transform: scale(1.02);
 }
 
 .profil-bottom {
@@ -177,6 +189,14 @@ ul {
     justify-content: space-between;
     padding-left: 15px;
     padding-right: 15px;
+    transition: .2s;
+}
+
+.profil-capsule:hover {
+    background: #9b3adb;
+    cursor: pointer;
+    transition: .2s;
+    transform: scale(1.02);
 }
 
 .content-right {
@@ -229,6 +249,8 @@ ul {
 .my-quiz:hover {
     cursor: pointer;
     transition: 0.2s;
+    background-color: #f5f5f5;
+    transform: scale(1.02);
 }
 
 .my-quiz-img {
@@ -321,6 +343,11 @@ ul {
     border: none;
 }
 
+.btn-play:hover {
+    background: #27CB31;
+    transition: 0.2s;
+}
+
 .btn-secondary {
     width: 180px;
     height: 40px;
@@ -330,6 +357,11 @@ ul {
     color: white;
     border: none;
     float: right;
+}
+
+.btn-secondary:hover {
+    background-color: #fe3c70;
+    transition: 0.2s;
 }
 
 .mobil-profil {
@@ -450,7 +482,7 @@ ul {
 .pin {
     position: relative;
     z-index: 1;
-    min-height: 100vh;
+    min-height: calc(100vh - 25px);
     display: flex;
     align-items: center;
     align-content: center;
@@ -491,6 +523,7 @@ ul {
 
 .pin-button {
     text-align: center;
+    margin-bottom: 20px;
 }
 
 .btn-pin {
@@ -502,14 +535,23 @@ ul {
     font-size: 20px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.36);
     border-radius: 8px;
+    transition: 0.2s;
+}
+
+.btn-pin:hover {
+    background-color: #fe3c70;
+    transition: 0.2s;
+}
+
+.btn-pin:focus {
+    background-color: #00d38e;
 }
 
 .a-pin {
     text-align: center;
     width: 100%;
-    position: absolute;
+    position: relative;
     left: 0;
-    bottom: 0;
     z-index: 1;
 }
 
@@ -521,7 +563,7 @@ ul {
 
 @media only screen and (max-width: 600px) {
     .txt-pin {
-        width: 100%;
+        width: 90%;
     }
 }
 
@@ -688,6 +730,7 @@ ul {
 
 .btn-login:hover {
     transition: 0.2s;
+    background-color: #fe3c70;
 }
 
 .signup {
@@ -733,14 +776,24 @@ ul {
     border-radius: 8px;
     font-size: 20px;
     color: white;
+    transition: 0.2s;
+}
+
+.btn-sign:hover {
+    background-color: #fe3c70;
+    transition: 0.2s;
 }
 
 @media only screen and (max-width: 990px) {
+    .user {
+        padding-top: 50px;
+    }
     .signup {
         border: 0px solid;
         border-top: 1px solid white;
         margin-top: 50px;
         margin-bottom: 50px;
+        padding-top: 30px;
     }
 }
 
@@ -846,6 +899,13 @@ ul {
     outline: none;
     padding-left: 15px;
     margin-top: 40px;
+    transition: all .2s ease-in;
+}
+
+.txt-title:hover {
+    transition: all .2s ease-in;
+    transform: scale(1.02);
+    position: relative;
 }
 
 .txt-description {
@@ -860,6 +920,13 @@ ul {
     box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.21);
     color: gray;
     outline: none;
+    transition: all .2s ease-in;
+}
+
+.txt-description:hover {
+    transition: all .2s ease-in;
+    transform: scale(1.02);
+    position: relative;
 }
 
 .dropdown {
@@ -884,6 +951,7 @@ ul {
     padding-left: 30px;
     display: flex;
     justify-content: flex-start;
+    border-radius: 10px;
 }
 
 .questions-image-in {
@@ -894,16 +962,27 @@ ul {
     margin-left: 10px;
     margin-right: 10px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    transition: all .2s ease-in;
+}
+
+.questions-image-in:hover {
+    cursor: pointer;
+    transition: all .2s ease-in;
+    transform: scale(1.05);
+    position: relative;
 }
 
 .q-image {
     height: 120px;
+    border-radius: 10px;
 }
 
 .questions-image img {
     width: 100%;
     height: 120px;
     object-fit: cover;
+    border-radius: 10px;
 }
 
 .spn-questions {
@@ -923,7 +1002,7 @@ ul {
     border: none;
     outline-style: none;
     font-size: 0px;
-    width: 100px;
+    width: 300px;
 }
 
 .slick-arrow.slick-prev {
@@ -934,7 +1013,7 @@ ul {
     border: none;
     outline-style: none;
     font-size: 0px;
-    width: 100px;
+    width: 300px;
 }
 
 .questions-image button {}
@@ -951,6 +1030,10 @@ ul {
     background: #FFFFFF;
     box-shadow: 0px 2px 4px #DEDEDE;
     border-radius: 12px;
+}
+
+.select-box select:hover {
+    cursor: pointer;
 }
 
 .select-box:after {
@@ -1053,6 +1136,12 @@ select::-ms-expand {
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.359976);
     border-radius: 10px;
     margin-bottom: 50px;
+    transition: 0.2s;
+}
+
+.btn-quiz-enter:hover {
+    background: #27CB31;
+    transition: 0.2s;
 }
 
 @media only screen and (max-width: 1300px) {
@@ -1420,6 +1509,13 @@ select::-ms-expand {
     color: white;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.36);
     border-radius: 8px;
+    transition: 0.3s;
+}
+
+.btn-start:hover {
+    background: #27CB31;
+    transition: 0.3s;
+    transform: scale(1.05);
 }
 
 @media only screen and (max-width: 520px) {
@@ -1460,16 +1556,16 @@ select::-ms-expand {
     position: relative;
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .answer-top-in {
     display: flex;
     margin-bottom: 30px;
-    display: none;
 }
 
 .answer-image {
-    max-width: 600px;
+    min-width: 600px;
     height: 300px;
     width: 100%;
     background-color: #d5d5d5;
@@ -1485,7 +1581,7 @@ select::-ms-expand {
 }
 
 .answer-question {
-    max-width: 600px;
+    min-width: 550px;
     height: 300px;
     background: #9B3ADB;
     position: relative;
@@ -1590,6 +1686,7 @@ select::-ms-expand {
 
 .answer-1 {
     background: #FF3D71;
+    width: 100%;
     height: 165px;
     border-radius: 20px;
     color: white;
@@ -1597,37 +1694,44 @@ select::-ms-expand {
     text-align: center;
     margin-bottom: 20px;
     transition: 0.2s;
+    border: none;
 }
 
 .answer-2 {
     background: #FFAA00;
     height: 165px;
+    width: 100%;
     border-radius: 20px;
     color: white;
     line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
+    border: none;
 }
 
 .answer-3 {
     background: #0EC6F1;
     height: 165px;
+    width: 100%;
     border-radius: 20px;
     color: white;
     line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
+    border: none;
 }
 
 .answer-4 {
     background: #00D68F;
     height: 165px;
+    width: 100%;
     border-radius: 20px;
     color: white;
     text-align: center;
     line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
+    border: none;
 }
 
 .answer-1:hover {
@@ -1652,6 +1756,24 @@ select::-ms-expand {
     cursor: pointer;
     background: rgb(7, 184, 125);
     transition: 0.2s;
+}
+
+@media only screen and (max-width: 995px) {
+    .answer-top-in {
+        display: block;
+        height: auto;
+    }
+    .answer-question {
+        margin: auto;
+        margin-top: 0;
+        min-width: 100%;
+    }
+    .answer-image {
+        min-width: 100%;
+    }
+    .answer-top {
+        min-height: 620px;
+    }
 }
 
 
@@ -1714,6 +1836,13 @@ select::-ms-expand {
     margin: auto;
     left: 50%;
     margin-left: -47%;
+    transition: 0.2s;
+}
+
+.score-block:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+    transition: 0.2s;
 }
 
 .score-block {
@@ -1732,6 +1861,7 @@ select::-ms-expand {
     color: #494444;
     font-size: 28px;
     align-items: center;
+    transition: 0.2s;
 }
 
 
@@ -1766,6 +1896,12 @@ select::-ms-expand {
     font-size: 20px;
     text-decoration: none;
     font-weight: 300;
+    transition: .1s;
+}
+
+.discover-menu ul li a:hover {
+    color: #57188E;
+    transition: .1s;
 }
 
 .discover-menu ul li a.active {
@@ -1803,6 +1939,11 @@ select::-ms-expand {
     font-size: 25px;
 }
 
+.discover-title span a {
+    color: white;
+    text-decoration: none;
+}
+
 .discover-trend-bottom {
     padding-left: 10px;
     display: flex;
@@ -1813,7 +1954,7 @@ select::-ms-expand {
 
 .discover-trend-block {
     width: 230px;
-    height: 230px;
+    min-height: 230px;
     background-color: white;
     margin-left: 15px;
     margin-right: 15px;
@@ -1821,6 +1962,20 @@ select::-ms-expand {
     box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.21);
     border-radius: 10px;
     margin-bottom: 5px;
+    transition: all .2s ease-in;
+}
+
+.discover-trend-block:hover {
+    cursor: pointer;
+    transition: all .2s ease-in;
+    transform: scale(1.05);
+    position: relative;
+}
+
+.slick-track {
+    min-height: 260px;
+    display: flex;
+    align-items: center;
 }
 
 .discover-trend-block img {
@@ -1833,7 +1988,7 @@ select::-ms-expand {
 
 .discover-block-text {
     width: 100%;
-    height: 100px;
+    min-height: 100px;
     background-color: white;
     position: absolute;
     bottom: 0;
@@ -1842,6 +1997,8 @@ select::-ms-expand {
     justify-content: center;
     flex-direction: column;
     border-radius: 10px;
+    padding-right: 20px;
+    padding-top: 10px;
 }
 
 .spn-discover {
@@ -1879,7 +2036,7 @@ select::-ms-expand {
     border: none;
     outline-style: none;
     font-size: 0px;
-    width: 100px;
+    width: 500px;
     background-color: #9b3adb;
 }
 
@@ -1891,7 +2048,7 @@ select::-ms-expand {
     border: none;
     outline-style: none;
     font-size: 0px;
-    width: 100px;
+    width: 500px;
     background-color: #9b3adb;
 }
 
@@ -1926,6 +2083,15 @@ select::-ms-expand {
     margin-left: 10px;
     margin-right: 10px;
     margin-bottom: 5px;
+    transition: all .2s ease-in;
+}
+
+.discover-quizs-block:hover {
+    cursor: pointer;
+    transition: all .2s ease-in;
+    transform: scale(1.03);
+    position: relative;
+    border-radius: 200px;
 }
 
 .discover-quizs-block img {
@@ -1976,6 +2142,23 @@ select::-ms-expand {
 
 .spn-discover-2-quizs {
     font-size: 13px;
+}
+
+@media only screen and (max-width: 1000px) {
+    .discover-menu {
+        padding-right: 30px;
+        padding-left: 30px;
+    }
+}
+
+@media only screen and (max-width: 550px) {
+    .discover-title {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .discover-owner {
+        top: 3px;
+    }
 }
 
 

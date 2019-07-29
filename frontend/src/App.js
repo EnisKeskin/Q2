@@ -8,26 +8,25 @@ import Question from './components/Question';
 import Profil from './components/Profile';
 import Answer from './components/Answer';
 import Username from './components/Username';
-
+import Scoreboard from './components/Scoreboard'
 
 
 class App extends Component {
     render() {
         return (
             <Router>
-                <div>
-                    <Route exact path='/' component={Pin} />
-                    <Route exact path='/user' component={User} />
-                    <Route exact path='/Quiz' component={Quiz} />
-                    <Route exact path='/Question' component={Question} />
-                    <Route exact path='/Profil' component={Profil} />
-                    <Route exact path='/Answer' component={Answer} />
-                    <Route exact path='/Players' component={Players} />
-                    <Route exact path='/Username' component={Username} />
+                <Route exact path='/' component={Pin} />
+                <Route exact path='/Username' component={Username} />
+                <Route exact path='/Players' component={Players} />
+                <Route exact path='/Answer' component={Answer} />
+                <Route exact path='/Scoreboard' component={Scoreboard} />
 
+                <Route exact path='/User' component={User} />
+                <Route exact path='/Quiz' component={Quiz} />
+                <Route exact path='/Question' component={Question} />
+                <Route exact path='/Profil' component={Profil} />
 
-                    {/* <Route component = {}/> farklı linklere gidildiğinde */}
-                </div>
+                {/* <Route component = {}/> farklı linklere gidildiğinde */}
             </Router>
         )
     };
