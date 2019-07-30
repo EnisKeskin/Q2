@@ -113,7 +113,6 @@ module.exports = (io) => {
       var arr1 = Rooms[p].players;
       var result = [];
       var ol = Object.keys(arr1);
-      const index = Rooms[p].questionIndex;
       for (let i = 0; i < ol.length; i++) {
         result.push(
           {
@@ -123,6 +122,7 @@ module.exports = (io) => {
       }
       result.sort();
       Rooms[p].questionIndex++;
+      const index = Rooms[p].questionIndex;
       if (Rooms[p].questionIndex >= Rooms.questionCount) {
         for (let i = 0; i < ol.length; i++) {
           gameNamespace.to(arr1[ol[i]].socket.id).emit('end-the-game',
@@ -131,6 +131,7 @@ module.exports = (io) => {
               results: result
             });
         }
+        delete Rooms[p];
       }
       else {
         quiz.find({ pin: p }).then((result) => {
@@ -163,33 +164,41 @@ module.exports = (io) => {
             var q = result[0].question[index];
             const answer = new Answer(Rooms[p].time, Date.now(), data.answer, data.answer == q.answer);
             arr1[socket.id].answers.push(answer);
+            Rooms[p].answers[data.answer]++;
+            Rooms[p].playersAnswered++;
+            if (Object.keys(Rooms[p].players).length <= Rooms[p].playersAnswered) {
+              const sum = Rooms[p].answers[0] + Rooms[p].answers[1] + Rooms[p].answers[2] + Rooms[p].answers[3];
+              var perc = [Rooms[p].answers[0] * 100 / sum, Rooms[p].answers[1] * 100 / sum, Rooms[p].answers[2] * 100 / sum, Rooms[p].answers[3] * 100 / sum];
+              var c = ["lightgray", "lightgray", "lightgray", "lightgray"];
+              c[result[0].question[index].answer] = "green";
+              Rooms[p].playersAnswered = 0;
+              for (let i = 0; i < ol.length; i++) {
+                gameNamespace.to(arr1[ol[i]].socket.id).emit('render-content',
+                  {
+                    count: Rooms[p].answers,
+                    percent: perc,
+                    color: c,
+                    answer: q.answers,
+                    command: "SH"
+                  });
+              }
+              Rooms[p].answers = [0, 0, 0, 0];
+              setTimeout(() => {
+                for (let i = 0; i < ol.length; i++) {
+                  gameNamespace.to(arr1[ol[i]].socket.id).emit('next-question', { pin: p });
+                }
+              }, 3000);
+            }
+            else {
+              gameNamespace.to(socket.id).emit('render-content',
+                {
+                  color: ["white", "red", "white", "white"],
+                  command: "AH"
+                });
+            }
           }
         });
-        Rooms[p].playersAnswered++;
-        if (Object.keys(Rooms[p].players).length <= Rooms[p].playersAnswered) {
-          for (let i = 0; i < ol.length; i++) {
-            gameNamespace.to(arr1[ol[i]].socket.id).emit('render-content',
-              {
-                count: [5, 15, 10, 10],
-                percent: [12.5, 37.5, 25, 25],
-                color: ["lightgray", "green", "lightgray", "lightgray"],
-                answer: ["1", "2", "3", "4"],
-                command: "SH"
-              });
-          }
-          setTimeout(() => {
-            for (let i = 0; i < ol.length; i++) {
-              gameNamespace.to(arr1[ol[i]].socket.id).emit('next-question', { pin: p });
-            }
-          }, 3000);
-        }
-        else {
-          gameNamespace.to(socket.id).emit('render-content',
-            {
-              color: ["white", "red", "white", "white"],
-              command: "AH"
-            });
-        }
+
       }
 
     });
