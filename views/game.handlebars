@@ -13,11 +13,22 @@
     function emit() {
         socket.emit("start-the-game", { p: pin });
     }
+    function answer(index) {
+        socket.emit('give-answer',
+            {
+                pin: pin,
+                answer: index
+            });
+    }
     $(function () {
         socket.emit('enter-lobby', pin);
     });
     socket.on('render-content', (data) => {
+        console.log(data.command);
         commands[data.command](data);
+    });
+    socket.on('next-question', (data) => {
+        socket.emit('next-question', data);
     })
 </script>
 <script src="javascripts/Do.js"></script>

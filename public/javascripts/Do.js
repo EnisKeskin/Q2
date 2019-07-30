@@ -4,6 +4,9 @@ var commands = {
     },
     QH: function (param) {
         QuestionHandlebars(param);
+    },
+    SH: function (param) {
+        StaticsHandlebars(param);
     }
 }
 function GameHandlebars(data) {
@@ -31,49 +34,97 @@ function GameHandlebars(data) {
     var html = template(data);
     document.getElementById("Content").innerHTML = html;
 }
-
 function QuestionHandlebars(data) {
+    var source = ""
+        + "<div class=\"container answer-contet\">"
+        + "    <div class=\"answer-top\">"
+        + "        <div class=\"answer-top-in\">"
+        + "            <div class=\"answer-image\">"
+        + "            </div>"
+        + "            <div class=\"answer-question\">"
+        + "                {{question}}"
+        + "                <div class=\"triangle\">"
+        + "                </div>"
+        + "            </div>"
+        + "        </div>"
+        + "        <div class=\"progressbar\">"
+        + "        </div>"
+        + "    </div>"
+        + "    <div class=\"answer-bottom\">"
+        + "       <div class=\"container answer-bottom-in\">"
+        + "            <div class=\"row\">"
+        + "                <div class=\"col-md-6\" class=\"col-md-6\">"
+        + "                    <button type=\"submit\" class=\"answer-1\" onclick=\"answer(0)\">{{answer1}}</button>"
+        + "                </div>"
+        + "                <div class=\"col-md-6\" class=\"col-md-6\">"
+        + "                    <button type=\"submit\" class=\"answer-2\" onclick=\"answer(1)\">{{answer2}}</button>"
+        + "                </div>"
+        + "                <div class=\"col-md-6\">"
+        + "                    <button type=\"submit\" class=\"answer-3\" onclick=\"answer(2)\">{{answer3}}</button>"
+        + "                </div>"
+        + "                <div class=\"col-md-6\">"
+        + "                    <button type=\"submit\" class=\"answer-4\" onclick=\"answer(3)\">{{answer4}}</button>"
+        + "                </div>"
+        + "            </div>"
+        + "        </div>"
+        + "    </div>"
+        + "</div>";
+    var template = Handlebars.compile(source);
+    var html = template(data);
+    document.getElementById("Content").innerHTML = html;
+}
+
+function StaticsHandlebars(data) {
     var source =
-        "<div class=\"container answer-contet\">" +
-        "<div class=\"answer-top\">" +
-        "  <div class=\"answer-image\">" +
-        "    <img src=\"images/thumb-1920-943148.jpg\" alt=\"\">" +
-        "  </div>" +
-        "  <div class=\"answer-question\">" +
-        "    {{question}}" +
-        "    <div class=\"triangle\">" +
-        "    </div>" +
-        "  </div>" +
-        "</div>" +
-        "<div class=\"progressbar\">" +
-        "</div>" +
-        "</div>" +
-        "<div class=\"answer-bottom\">" +
-        "<div class=\"container answer-bottom-in\">" +
-        "  <div class=\"row\">" +
-        "    <div class=\"col-md-6\">" +
-        "      <div class=\"answer-1\">" +
-        "        {{answer1}}" +
-        "      </div>" +
-        "    </div>" +
-        "    <div class=\"col-md-6\">" +
-        "      <div class=\"answer-2\">" +
-        "        {{answer2}}" +
-        "      </div>" +
-        "    </div>" +
-        "    <div class=\"col-md-6\">" +
-        "      <div class=\"answer-3\">" +
-        "        {{answer3}}" +
-        "      </div>" +
-        "    </div>" +
-        "    <div class=\"col-md-6\">" +
-        "      <div class=\"answer-4\">" +
-        "        {{answer4}}" +
-        "      </div>" +
-        "    </div>" +
-        "  </div>" +
-        "</div>" +
-        "</div>";
+        `<div class="container answer-contet">
+    <div class="answer-top">
+        <div class="statistics" style="display:flex;">
+            <div style="display:flex;" class="statistics-item">
+                <span class="statistics-item-label">{{count.[0]}}</span>
+                <div class="statistics-item-fill statistics-item-fill-1" style="height: {{percent.[0]}}%"></div>
+            </div>
+            <div class="statistics-item">
+                <span class="statistics-item-label">{{count.[1]}}</span>
+                <div class="statistics-item-fill statistics-item-fill-2" style="height: {{percent.[1]}}%;"></div>
+            </div>
+            <div class="statistics-item">
+                <span class="statistics-item-label">{{count.[2]}}</span>
+                <div class="statistics-item-fill statistics-item-fill-3" style="height: {{percent.[2]}}%"></div>
+            </div>
+            <div class="statistics-item">
+                <span class="statistics-item-label">{{count.[3]}}</span>
+                <div class="statistics-item-fill statistics-item-fill-4" style="height: {{percent.[3]}}%;"></div>
+            </div>
+        </div>
+        <div class="progressbar">
+        </div>
+    </div>
+    <div class="answer-bottom">
+        <div class="container answer-bottom-in">
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="button" style="background:{{color.[0]}}" class="answer-1"> {{answer.[0]}}</button>
+                </div>
+                <div class="col-md-6">
+                    <button type="button" style="background:{{color.[1]}}" class="answer-2">{{answer.[1]}}</button>
+                </div>
+                <div class="col-md-6">
+                    <button type="button" style="background:{{color.[2]}}" class="answer-3">{{answer.[2]}}</button>
+                </div>
+                <div class="col-md-6">
+                    <button type="button" style="background:{{color.[3]}}" class="answer-4">{{answer.[3]}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>`;
+    var template = Handlebars.compile(source);
+    var html = template(data);
+    document.getElementById("Content").innerHTML = html;
+}
+
+function AnswerHandlebars(data) {
+    var source = ``;
     var template = Handlebars.compile(source);
     var html = template(data);
     document.getElementById("Content").innerHTML = html;

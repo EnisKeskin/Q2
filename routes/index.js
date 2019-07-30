@@ -22,8 +22,12 @@ module.exports = (io) => {
           Rooms[p] = {
             players: {},
             started: false,
-            questionIndex: 0
+            questionIndex: 0,
+            questionCount:data[0].question.length,
+            playersAnswered:0,
+            time:0
           };
+          console.log(Rooms[p]);
           res.redirect('game?pin=' + p);
         } else {
           alert("There is no game with given pin");
