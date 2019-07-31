@@ -3,7 +3,6 @@ const io = socketio();
 const socketApi = {};
 const superagent = require('superagent');
 const mongoose = require('mongoose');
-var pathToRegexp = require('path-to-regexp')
 
 const quiz = require('../models/Quiz');
 socketApi.io = io;
@@ -108,7 +107,38 @@ class RoomControl {
 
 }
 
-const roomControl = new RoomControl();
+class UserControl {
+    constructor() {
+
+    }
+
+    userTokenControl(secret_key, token) {
+
+    }
+
+}
+
+// (req, res, next) => {
+//     const token = req.headers['x-access-token'] || req.body.token || req.query.token
+//     if(token){
+//         jwt.verify(token, req.app.get('api_top_secret_ket'), (err, decoded) => {
+//             if(err){
+//                 res.json({
+//                     status: false,
+//                     message: 'Failed to authenticate token',
+//                 });
+//             }else {
+//                 req.decode = decoded
+//             }
+//         })
+//     }else {
+//         res.json({
+//             status: false,
+//             message: "No token provided"
+//         });
+//     }
+// }
+
 const pinControl = (data, callback) => {
     quiz.find({ pin: data, active: true })
         .then((data) => {
@@ -124,7 +154,7 @@ io.on('connection', (socket) => {
     socket.emit('connected');
 
     socket.on('sendPin', (pin) => {
-
+        const roomControl = new RoomControl();
         pinControl(pin, (quiz) => {
 
             socket.join(pin, () => {
@@ -183,7 +213,7 @@ io.on('connection', (socket) => {
                                 }
                             }, 5000);
 
-                        }, room.currentQuestion.time * 100000);
+                        }, room.currentQuestion.time * 1000);
                     }
                     //result
                     //soruya cevap verildiğinde ekleniyor
@@ -210,6 +240,33 @@ io.on('connection', (socket) => {
         });
 
     });
+
+    socket.on('userLogin', (email, password) => {
+        superagent
+            .post('http://127.0.0.1:3000/api/login')
+            .send({ email, password })
+            .end((err, res) => {
+                console.log(res.body);
+                if (res.body.status === 1) {
+                    socket.emit('succLogin');
+                    socket.emit('sendToken', res.body.token);
+                    socket.on('sendProfil', () => {
+                        socket.emit('profilInfo', { username: res.body.user.username, id: res.body.user._id });
+                    })
+                } else {
+                    socket.emit('UnsuccLogin');
+                }
+            });
+    })
+
+    socket.on('userRegister', (email, password, username) => {
+        superagent
+            .post('http://127.0.0.1:3000/api/register')
+            .send({ email, password, username })
+            .end((err, res) => {
+                console.log(res.body);
+            });
+    })
 
 });
 

@@ -125,8 +125,9 @@ class Answer extends Component {
 
             if (!(block.children[0] === e.target)) {
                 block.children[0].style.background = "grey";
+                block.children[0].style.boxShadow = "rgb(111, 103, 103) 2px 2px 2px 2px";
             }
-
+            block.children[0].style.boxShadow = "rgb(111, 103, 103) 2px 2px 2px 2px";
             block.style.pointerEvents = "none";
 
         });

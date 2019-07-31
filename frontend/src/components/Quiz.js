@@ -1,6 +1,20 @@
 import React, { Component } from 'react'
+// import io from '../connection';
+// import { Redirect } from 'react-router'
+import userControl from '../middleware/userControl'
 
 class Quiz extends Component {
+
+    // constructor(props) {
+    //     super(props);
+
+    // }
+
+    componentDidMount() {
+        console.log(userControl);
+    }
+    
+
     render() {
         return (
             <div>

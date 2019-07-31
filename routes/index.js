@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const quiz = require('../models/Quiz');
-
+const jwt = require('jsonwebtoken');
+const LocalStorage = require('node-localstorage').LocalStorage;
+localStorage = new LocalStorage('./scratch');
 
 router.get('/', (req, res, next) => {
     res.json({ status: 1 });
@@ -67,7 +69,6 @@ router.post('/register', (req, res, next) => {
 //giriş için
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
-    console.log(password);
     User.findOne({
         email
     }, (err, user) => {
@@ -76,15 +77,18 @@ router.post('/login', (req, res) => {
         if (!user) {
             res.json({ status: 0 })
         } else {
-            console.log(email);
-            console.log(user.password);
             bcrypt.compare(password, user.password).then((result) => {
                 if (!result) {
                     //yanlış giriş
                     res.json({ status: 0 })
                 } else {
-                    //doğru giriş
-                    res.json({ status: 1 })
+                    const payload = {
+                        userId: user._id,
+                    }
+                    const token = jwt.sign(payload, req.app.get('api_top_secret_key'), {
+                        expiresIn: '4320s'
+                    });
+                    res.json({ user , status: 1, token });
                 }
             });
         };

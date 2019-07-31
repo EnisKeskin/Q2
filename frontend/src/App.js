@@ -22,9 +22,9 @@ class App extends Component {
                 <Route exact path='/Scoreboard' component={Scoreboard} />
 
                 <Route exact path='/User' component={User} />
+                <Route exact path='/Profil' component={Profil} />
                 <Route exact path='/Quiz' component={Quiz} />
                 <Route exact path='/Question' component={Question} />
-                <Route exact path='/Profil' component={Profil} />
 
                 {/* <Route component = {}/> farklı linklere gidildiğinde */}
             </Router>

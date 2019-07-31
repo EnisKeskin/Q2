@@ -30,7 +30,10 @@ const quizShema = new Schema({
     img: {
         type: String
     },
-
+    userId: {
+        type: Number,
+        require: true,
+    },
     question: [{
         questionTitle: {
             type: String,
