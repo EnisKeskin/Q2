@@ -8,37 +8,44 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/slick.css" />
     <link rel="stylesheet" href="css/style.css">
 
 
   </head>
   <body>
+<div class="capsule-2">
 
     <header class="quiz-header">
       <div class="quiz-logo">
         <img src="images/logo/logo-w.png" class="img-quiz-logo" alt="">
 
       </div>
-        
+
+      <div class="close">
+        <img src="images/quiz/cancel.png" alt="">
+      </div>
+
     </header>
 
 
     <div class="quiz-content">
 
-    
-   
           <div class="quiz-image">
-            <img src="images/thumb-1920-943148.jpg" alt="">
+          <label class="lbl-file" for="file">    Tap to add cover images   </label>  
+
+          <input class="fileupload" type="file" name="fileToUpload" id="file">
+
           </div>
-      
 
         <div class="quiz-right">
+            <form action="." method="POST">  
+
           <div class="dropdown">
 
-       
         <div class="select-box select-box-1 ">
-            <select name="" id="">
-              <option value="1">Visible to  </option>
+            <select name="" id="" required>
+              <option value="">Visible to  </option> 
               <option value="1">option 2</option>
               <option value="1">option 3</option>
               <option value="1">option 4</option>
@@ -47,8 +54,8 @@
 
 
           <div class="select-box select-box-2">
-              <select name="" id="">
-                <option value="1">Location  </option>
+              <select required name="" id="">
+                <option value="">Location  </option>
                 <option value="1">option 2</option>
                 <option value="1">option 3</option>
                 <option value="1">option 4</option>
@@ -57,8 +64,8 @@
 
 
             <div class="select-box select-box-3">
-                <select name="" id="">
-                  <option value="1">Language  </option>
+                <select required name="" id="">
+                  <option value="">Language  </option>
                   <option value="1">option 2</option>
                   <option value="1">option 3</option>
                   <option value="1">option 4</option>
@@ -67,25 +74,28 @@
             </div>
 
 
-              <input type="text" placeholder="Title" class="txt-title">
+              <input type="text" placeholder="Title" class="txt-title" required>
 
-              <textarea placeholder="Description" class="txt-description"></textarea>
+              <textarea placeholder="Description" class="txt-description" required></textarea>
 
-            
 </div>
     </div>
 
     <div class="quiz-enter-button">
-      <button type="button" class="btn-quiz-enter">Enter</button>
+      <button type="submit" class="btn-quiz-enter">Enter</button>
 
     </div>
+  </form>
+  </div>
 
-   
-      
+
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="js/slick.min.js" type="text/javascript"></script>
+    <script src="js/main.js" type="text/javascript"></script>
   </body>
 </html>
