@@ -9,11 +9,12 @@ module.exports = (io) => {
   const STATISTICS_TIMEOUT = 5000;
 
   router.get('/', (req, res, next) => {
-    const p = req.query.pin;
-    if (Rooms[p] != null || Rooms[p] != undefined)
+    const pin = req.query.pin;
+    var Room = Rooms[pin];
+    if (Room != null || Room != undefined)
       res.render('game');
     else {
-      quiz.find({ pin: p }).then((data) => {
+      quiz.find({ pin: pin }).then((data) => {
         if (data.length != 0) {
           res.render('game');
         } else {
@@ -28,159 +29,167 @@ module.exports = (io) => {
 
 
   gameNamespace.on("connect", function (socket) {
+
     socket.on('enter-lobby', (pin) => {
       var player = new Player('player_' + Math.floor(Math.random() * 10000), socket);
-      Rooms[pin].players[socket.id] = player;
-      if (Rooms[pin].started) {
+      var Room = Rooms[pin];
+      Room.players[socket.id] = player;
+      if (Room.started) {
         quiz.find({ pin: pin }).then((data) => {
           if (data.length != 0) {
-            var arr1 = Rooms[pin].players;
-            var ol = Object.keys(arr1);
-            const index = Rooms[pin].questionIndex;
-            for (let i = 0; i < ol.length; i++) {
-              var q = data[0].question[index];
-              gameNamespace.to(socket.id).emit('render-content',
-                {
-                  question: q.questionTitle,
-                  answer1: q.answers[0],
-                  answer2: q.answers[1],
-                  answer3: q.answers[2],
-                  answer4: q.answers[3],
-                  command: "QH"
-                });
-            }
+            const index = Room.questionIndex;
+            var question = data[0].question[index];
+
+            gameNamespace.to(socket.id).emit('render-content',
+              {
+                question: question.questionTitle,
+                answer1: question.answers[0],
+                answer2: question.answers[1],
+                answer3: question.answers[2],
+                answer4: question.answers[3],
+                command: "QH"
+              });
           }
         });
       }
       else {
-        var arr1 = Rooms[pin].players;
-        var ol = Object.keys(arr1);
-        var arr = [];
-        for (let i = 0; i < ol.length; i++) {
-          arr.push({ name: arr1[ol[i]].username.split("|")[0] });
-        }
-        for (let i = 0; i < ol.length; i++) {
-          gameNamespace.to(arr1[ol[i]].socket.id).emit('render-content',
+        var playersInLobby = [];
+        const playerkeys = Object.keys(Room.players);
+
+        playerkeys.forEach((p) => {
+          playersInLobby.push({ name: p.username.split("|")[0] });
+        });
+        playerkeys.forEach((p) => {
+          gameNamespace.to(p.socket.id).emit('render-content',
             {
               pin: pin,
-              players: arr,
-              num: arr.length,
+              players: playersInLobby,
+              num: playersInLobby.length,
               command: "GH"
             });
-        }
+        });
       }
     });
 
     socket.on('start-the-game', (data) => {
-      var p = data.p;
-      Rooms[p].time = Date.now();
-      var arr1 = Rooms[p].players;
-      Rooms[p].started = true;
-      const index = Rooms[p].questionIndex;
-      var ol = Object.keys(arr1);
+      var pin = data.p;
+      var Room = Rooms[pin];
+      Room.time = Date.now();
+      Room.started = true;
+      const index = Room.questionIndex;
 
-      quiz.find({ pin: p }).then((result) => {
+      quiz.find({ pin: pin }).then((result) => {
         if (result.length != 0) {
-          for (let i = 0; i < ol.length; i++) {
-            var q = result[0].question[index];
-            gameNamespace.to(arr1[ol[i]].socket.id).emit('render-content',
+          var question = result[0].question[index];
+          Object.keys(Room.players).forEach((player) => {
+            gameNamespace.to(player.socket.id).emit('render-content',
               {
-                question: q.questionTitle,
-                answer1: q.answers[0],
-                answer2: q.answers[1],
-                answer3: q.answers[2],
-                answer4: q.answers[3],
+                question: question.questionTitle,
+                answer1: question.answers[0],
+                answer2: question.answers[1],
+                answer3: question.answers[2],
+                answer4: question.answers[3],
                 command: "QH"
               });
-          }
+          });
         }
       });
     });
 
-    function nextQ(data) {
-      var p = data.pin;
-      Rooms[p].questionIndex++;
-      Rooms[p].time = Date.now();
+    function nextQ(pin) {
+      var Room = Rooms[pin];
+      var playerKeys = Object.keys(Room.players);
+      var index = Room.questionIndex;
+      var results = [];
 
-      var arr1 = Rooms[p].players;
-      var result = [];
-      var ol = Object.keys(arr1);
-      for (let i = 0; i < ol.length; i++) {
-        result.push(
-          {
-            name: arr1[ol[i]].username,
-            point: arr1[ol[i]].calculateTotalPoints()
-          });
-      }
-      result.sort();
-      var f = result.splice(0, 1);
-      const index = Rooms[p].questionIndex;
-      if (index >= Rooms[p].questionCount) {
-        for (let i = 0; i < ol.length; i++) {
-          gameNamespace.to(arr1[ol[i]].socket.id).emit('render-content',
+      Room.questionIndex++;
+      Room.time = Date.now();
+
+      playerKeys.forEach((player) => {
+        results.push({ name: player.username, point: player.calculateTotalPoints() });
+      });
+      results.sort((a, b) => { return b.point - a.point; });
+      var firstPlace = results.splice(0, 1)[0];
+
+      if (index >= Room.questionCount) {
+        playerKeys.forEach((player) => {
+          gameNamespace.to(player.socket.id).emit('render-content',
             {
-              first: f[0],
-              results: result,
+              first: firstPlace,
+              results: results,
               command: "SBH"
             });
-        }
-        delete Rooms[p];
+        });
+        delete Rooms[pin];
       }
       else {
-        quiz.find({ pin: p }).then((result) => {
+        quiz.find({ pin: pin }).then((result) => {
           if (result.length != 0) {
-            for (let i = 0; i < ol.length; i++) {
-              var q = result[0].question[index];
-              gameNamespace.to(arr1[ol[i]].socket.id).emit('render-content',
+            var question = result[0].question[index];
+            playerKeys.forEach((player) => {
+              gameNamespace.to(player.socket.id).emit('render-content',
                 {
-                  question: q.questionTitle,
-                  answer1: q.answers[0],
-                  answer2: q.answers[1],
-                  answer3: q.answers[2],
-                  answer4: q.answers[3],
+                  question: question.questionTitle,
+                  answer1: question.answers[0],
+                  answer2: question.answers[1],
+                  answer3: question.answers[2],
+                  answer4: question.answers[3],
                   command: "QH"
                 });
-            }
+            });
           }
         });
       }
     }
 
     socket.on('give-answer', (data) => {
-      var p = data.pin;
-      var arr1 = Rooms[p].players;
-      var ol = Object.keys(arr1);
-      const index = Rooms[p].questionIndex;
-      if (arr1[socket.id].answers.length <= index) {
-        quiz.find({ pin: p }).then((result) => {
+      var pin = data.pin;
+      var Room = Rooms[pin];
+      var index = Room.questionIndex;
+      var thePlayer = Room[socket.id];
+      let playerKeys = Object.keys(Room.players);
+
+      if (thePlayer.answers.length <= index) {
+        quiz.find({ pin: pin }).then((result) => {
           if (result.length != 0) {
-            var q = result[0].question[index];
-            const answer = new Answer(Rooms[p].time, Date.now(), data.answer, data.answer == q.answer);
-            arr1[socket.id].answers.push(answer);
-            Rooms[p].answers[data.answer]++;
-            Rooms[p].playersAnswered++;
-            let arrr = Object.keys(Rooms[p].players);
-            if (arrr.length <= Rooms[p].playersAnswered) {
-              for (let i = 0; i < arrr.length; i++) {
-                Rooms[p].players[arrr[i]].answers[index].setTime(Rooms[p].time - Date.now());
-              }
-              const sum = Rooms[p].answers[0] + Rooms[p].answers[1] + Rooms[p].answers[2] + Rooms[p].answers[3];
-              var perc = [Rooms[p].answers[0] * 100 / sum, Rooms[p].answers[1] * 100 / sum, Rooms[p].answers[2] * 100 / sum, Rooms[p].answers[3] * 100 / sum];
-              var c = ["lightgray", "lightgray", "lightgray", "lightgray"];
-              c[result[0].question[index].answer] = "green";
-              Rooms[p].playersAnswered = 0;
-              for (let i = 0; i < ol.length; i++) {
-                gameNamespace.to(arr1[ol[i]].socket.id).emit('render-content',
+            var quiz = result[0];
+            var question = quiz.question[index];
+            const answer = new Answer(Room.time, Date.now(), data.answer, data.answer == q.answer);
+            thePlayer.answers.push(answer);
+            Room.answers[data.answer]++;
+            Room.playersAnswered++;
+
+            if (playerKeys.length <= Room.playersAnswered) {
+              playerKeys.forEach((player) => {
+                player.answers[index].setTime(Room.time - Date.now());
+              });
+              var count = Room.playersAnswered;
+              var percentages = [
+                Rooms[p].answers[0] * 100 / count,
+                Rooms[p].answers[1] * 100 / count,
+                Rooms[p].answers[2] * 100 / count,
+                Rooms[p].answers[3] * 100 / count
+              ];
+              var colors = [
+                "lightgray",
+                "lightgray",
+                "lightgray",
+                "lightgray"
+              ];
+              colors[quiz.question[index].answer] = "green";
+              Room.playersAnswered = 0;
+              playerKeys.forEach((player) => {
+                gameNamespace.to(player.socket.id).emit('render-content',
                   {
-                    count: Rooms[p].answers,
-                    percent: perc,
-                    color: c,
-                    answer: q.answers,
+                    count: Room.answers,
+                    percent: percentages,
+                    color: colors,
+                    answer: question.answers,
                     command: "SH"
                   });
-              }
-              Rooms[p].answers = [0, 0, 0, 0];
-              setTimeout(() => { nextQ({ pin: p }); }, STATISTICS_TIMEOUT);
+              });
+              Room.answers = [0, 0, 0, 0];
+              setTimeout(() => { nextQ(p); }, STATISTICS_TIMEOUT);
             }
             else {
               gameNamespace.to(socket.id).emit('render-content',
@@ -191,14 +200,16 @@ module.exports = (io) => {
             }
           }
         });
-
       }
-
     });
+
     socket.on('disconnect', () => {
-      if (socket.nickname)
-        if (Rooms[socket.nickname.split("|")[1]])
-          delete Rooms[socket.nickname.split("|")[1]][socket.id];
+      var name = socket.name;
+      if (name) {
+        var pin = name.split("|")[1];
+        if (Rooms[pin])
+          delete Rooms[pin][socket.id];
+      }
     });
   });
   return router;

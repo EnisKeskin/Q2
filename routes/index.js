@@ -10,14 +10,15 @@ module.exports = (io) => {
   });
 
   router.post('/', (req, res, next) => {
-    const p = req.body.pin;
-    if (Rooms[p] != null || Rooms[p] != undefined) {
+    const pin = req.body.pin;
+    var Room = Rooms[pin];
+    if (Room != null || Room != undefined) {
       res.redirect('game?pin=' + p);
     }
     else {
-      quiz.find({ pin: p }).then((data) => {
+      quiz.find({ pin: pin }).then((data) => {
         if (data.length != 0) {
-          Rooms[p] = {
+          Room = {
             players: {},
             started: false,
             questionIndex: 0,

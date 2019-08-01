@@ -6,7 +6,7 @@ var commands = {
         QuestionHandlebars(param);
     },
     SH: function (param) {
-        StaticsHandlebars(param);
+        StatisticsHandlebars(param);
     },
     SBH: function (param) {
         ScoreBoardHandlebars(param);
@@ -77,7 +77,7 @@ function QuestionHandlebars(data) {
     document.getElementById("Content").innerHTML = html;
 }
 
-function StaticsHandlebars(data) {
+function StatisticsHandlebars(data) {
     var source =
         `<div class="container answer-contet">
     <div class="answer-top">
