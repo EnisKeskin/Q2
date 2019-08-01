@@ -7,6 +7,9 @@ var commands = {
     },
     SH: function (param) {
         StaticsHandlebars(param);
+    },
+    SBH: function (param) {
+        ScoreBoardHandlebars(param);
     }
 }
 function GameHandlebars(data) {
@@ -125,6 +128,31 @@ function StaticsHandlebars(data) {
 
 function AnswerHandlebars(data) {
     var source = ``;
+    var template = Handlebars.compile(source);
+    var html = template(data);
+    document.getElementById("Content").innerHTML = html;
+}
+
+function ScoreBoardHandlebars(data) {
+    var source =
+        `<div class="capsule">
+    <div class="score-title">
+        <h1 class="h1 h1-score">Scoreboard</h1>
+    </div>
+    <div class="container score-content">
+        <div class="score-block-1st">
+            <span> {{first.name}} </span> <span> {{first.point}} </span>
+            <img src="images/user-icon/medal.png" class="img-medal" alt="">
+            <div class="block-1st">
+            </div>
+        </div>
+        {{#each results}}
+        <div class="score-block">
+            <span> {{this.name}} </span> <span> {{this.point}} </span>
+        </div>
+        {{/each}}
+    </div>
+</div>`;
     var template = Handlebars.compile(source);
     var html = template(data);
     document.getElementById("Content").innerHTML = html;

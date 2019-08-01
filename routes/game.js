@@ -6,15 +6,10 @@ module.exports = (io) => {
   const quiz = require('../models/Quiz');
   const Player = require('../models/Player');
   const Answer = require('../models/Answer');
-
-  router.post('/', (req, res, next) => {
-    //find which button click then emit 'give-answer'
-    console.log(req.body);
-  });
+  const STATISTICS_TIMEOUT = 5000;
 
   router.get('/', (req, res, next) => {
     const p = req.query.pin;
-    console.log(Rooms[p]);
     if (Rooms[p] != null || Rooms[p] != undefined)
       res.render('game');
     else {
@@ -22,7 +17,6 @@ module.exports = (io) => {
         if (data.length != 0) {
           res.render('game');
         } else {
-          console.log(data, + "\n????")
           res.redirect("http://localhost:3000/");
         }
       }).catch((err) => {
@@ -34,9 +28,7 @@ module.exports = (io) => {
 
 
   gameNamespace.on("connect", function (socket) {
-    console.log(socket.id + " - connected");
     socket.on('enter-lobby', (pin) => {
-      console.log(socket.id + " - entered to the lobby");
       var player = new Player('player_' + Math.floor(Math.random() * 10000), socket);
       Rooms[pin].players[socket.id] = player;
       if (Rooms[pin].started) {
@@ -91,7 +83,6 @@ module.exports = (io) => {
         if (result.length != 0) {
           for (let i = 0; i < ol.length; i++) {
             var q = result[0].question[index];
-            console.log(q);
             gameNamespace.to(arr1[ol[i]].socket.id).emit('render-content',
               {
                 question: q.questionTitle,
@@ -106,8 +97,9 @@ module.exports = (io) => {
       });
     });
 
-    socket.on('next-question', (data) => {
+    function nextQ(data) {
       var p = data.pin;
+      Rooms[p].questionIndex++;
       Rooms[p].time = Date.now();
 
       var arr1 = Rooms[p].players;
@@ -121,14 +113,15 @@ module.exports = (io) => {
           });
       }
       result.sort();
-      Rooms[p].questionIndex++;
+      var f = result.splice(0, 1);
       const index = Rooms[p].questionIndex;
-      if (Rooms[p].questionIndex >= Rooms.questionCount) {
+      if (index >= Rooms[p].questionCount) {
         for (let i = 0; i < ol.length; i++) {
-          gameNamespace.to(arr1[ol[i]].socket.id).emit('end-the-game',
+          gameNamespace.to(arr1[ol[i]].socket.id).emit('render-content',
             {
-              first: result.splice(0, 1)[0],
-              results: result
+              first: f[0],
+              results: result,
+              command: "SBH"
             });
         }
         delete Rooms[p];
@@ -151,7 +144,7 @@ module.exports = (io) => {
           }
         });
       }
-    });
+    }
 
     socket.on('give-answer', (data) => {
       var p = data.pin;
@@ -166,7 +159,11 @@ module.exports = (io) => {
             arr1[socket.id].answers.push(answer);
             Rooms[p].answers[data.answer]++;
             Rooms[p].playersAnswered++;
-            if (Object.keys(Rooms[p].players).length <= Rooms[p].playersAnswered) {
+            let arrr = Object.keys(Rooms[p].players);
+            if (arrr.length <= Rooms[p].playersAnswered) {
+              for (let i = 0; i < arrr.length; i++) {
+                Rooms[p].players[arrr[i]].answers[index].setTime(Rooms[p].time - Date.now());
+              }
               const sum = Rooms[p].answers[0] + Rooms[p].answers[1] + Rooms[p].answers[2] + Rooms[p].answers[3];
               var perc = [Rooms[p].answers[0] * 100 / sum, Rooms[p].answers[1] * 100 / sum, Rooms[p].answers[2] * 100 / sum, Rooms[p].answers[3] * 100 / sum];
               var c = ["lightgray", "lightgray", "lightgray", "lightgray"];
@@ -183,11 +180,7 @@ module.exports = (io) => {
                   });
               }
               Rooms[p].answers = [0, 0, 0, 0];
-              setTimeout(() => {
-                for (let i = 0; i < ol.length; i++) {
-                  gameNamespace.to(arr1[ol[i]].socket.id).emit('next-question', { pin: p });
-                }
-              }, 3000);
+              setTimeout(() => { nextQ({ pin: p }); }, STATISTICS_TIMEOUT);
             }
             else {
               gameNamespace.to(socket.id).emit('render-content',
@@ -203,8 +196,9 @@ module.exports = (io) => {
 
     });
     socket.on('disconnect', () => {
-      if (Rooms[socket.nickname.split("|")[1]])
-        delete Rooms[socket.nickname.split("|")[1]][socket.id];
+      if (socket.nickname)
+        if (Rooms[socket.nickname.split("|")[1]])
+          delete Rooms[socket.nickname.split("|")[1]][socket.id];
     });
   });
   return router;

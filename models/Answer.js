@@ -5,11 +5,11 @@ module.exports = class Answer {
         this.isCorrect = isCorrect;
     }
 
-    setTime(totaltime){
-        time /= totaltime;
+    setTime(totaltime) {
+        this.time /= totaltime;
     }
 
     getPoint() {
-        return this.isCorrect ? this.time * point : 0;
+        return this.isCorrect ? point * (2 - this.time) : 0;
     }
 }

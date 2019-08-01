@@ -12,7 +12,7 @@ const app = express();
 const io = socket_io();
 app.io = io;
 
-global.point = 1000;
+global.point = 100;
 global.Rooms = {
 };
 

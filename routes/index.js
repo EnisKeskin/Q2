@@ -15,18 +15,16 @@ module.exports = (io) => {
       res.redirect('game?pin=' + p);
     }
     else {
-      const promise = quiz.find({ pin: p });
-
-      promise.then((data) => {
+      quiz.find({ pin: p }).then((data) => {
         if (data.length != 0) {
           Rooms[p] = {
             players: {},
             started: false,
             questionIndex: 0,
             questionCount:data[0].question.length,
-            playersAnswered:0,
-            answers:[0,0,0,0],
-            time:0
+            playersAnswered: 0,
+            answers: [0,0,0,0],
+            time: 0
           };
           res.redirect('game?pin=' + p);
         } else {
