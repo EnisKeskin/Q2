@@ -1,11 +1,12 @@
 const socketio = require('socket.io');
-const io = socketio();
 const socketApi = {};
 const superagent = require('superagent');
 const mongoose = require('mongoose');
-
+const jwt = require('jsonwebtoken');
 const quiz = require('../models/Quiz');
-socketApi.io = io;
+const key = require('../config').api_top_secret_key;
+const Io = socketio();
+socketApi.io = Io;
 
 let ROOMS = {};
 // yeni class yapılacak question room için
@@ -109,35 +110,9 @@ class RoomControl {
 
 class UserControl {
     constructor() {
-
+       this.user = {};
     }
-
-    userTokenControl(secret_key, token) {
-
-    }
-
 }
-
-// (req, res, next) => {
-//     const token = req.headers['x-access-token'] || req.body.token || req.query.token
-//     if(token){
-//         jwt.verify(token, req.app.get('api_top_secret_ket'), (err, decoded) => {
-//             if(err){
-//                 res.json({
-//                     status: false,
-//                     message: 'Failed to authenticate token',
-//                 });
-//             }else {
-//                 req.decode = decoded
-//             }
-//         })
-//     }else {
-//         res.json({
-//             status: false,
-//             message: "No token provided"
-//         });
-//     }
-// }
 
 const pinControl = (data, callback) => {
     quiz.find({ pin: data, active: true })
@@ -147,12 +122,10 @@ const pinControl = (data, callback) => {
             callback(err);
         });
 }
-
-
-io.on('connection', (socket) => {
+Io.of('/game').on('connection', (socket) => {
     console.log('Bağlandı');
     socket.emit('connected');
-
+    const io = Io.of('/game');
     socket.on('sendPin', (pin) => {
         const roomControl = new RoomControl();
         pinControl(pin, (quiz) => {
@@ -201,7 +174,7 @@ io.on('connection', (socket) => {
 
                         setTimeout(() => {
                             let answStatic = []
-                            Object.keys(room.users).forEach((userId) => {
+                            Object.keys(room.ustokenControlers).forEach((userId) => {
                                 answStatic.push(room.users[userId].answers[answernumber]);
                             });
                             answernumber++;
@@ -241,6 +214,55 @@ io.on('connection', (socket) => {
 
     });
 
+});
+
+Io.of('/profil').use((socket, next) => {
+    const token = socket.handshake.query.token
+    jwt.verify(token, key, (err, decoded) => {
+        if (err) {
+            console.log(err);
+            next(new Error('Authentication error'));
+        } else {
+            socket.decoded = decoded
+            return next();
+        }
+    });
+    next();
+
+}).on('connection', (socket) => {
+    socket.on('quizCreate', (quiz) => {
+        quiz.userId = socket.decoded.userId;
+        superagent
+            .post('http://127.0.0.1:3000/api/quiz')
+            .send(quiz)
+            .end((err, res) => {
+                if(err)
+                    throw err
+                if(res.body.status === 1){
+                    socket.emit('quizId', res.body.id)
+                }else {
+                    socket.emit('quizError', message = "Ne yaptın Emmi");
+                }
+            });
+    });
+    socket.on('GetProfilInfo', () => {
+        superagent
+        .post('http://127.0.0.1:3000/api/user')
+        .send({id:socket.decoded.userId})
+        .end((err, res) => {
+            if(err)
+                throw err
+            if(res.body.status === 1){
+                socket.emit('SetProfilInfo', { username : res.body.user.username});
+            }else {
+                
+            }
+        });
+    })
+});
+
+Io.of('/user').on('connection', (socket) => {
+    const UserControl = new UserControl();
     socket.on('userLogin', (email, password) => {
         superagent
             .post('http://127.0.0.1:3000/api/login')
@@ -248,16 +270,12 @@ io.on('connection', (socket) => {
             .end((err, res) => {
                 console.log(res.body);
                 if (res.body.status === 1) {
-                    socket.emit('succLogin');
-                    socket.emit('sendToken', res.body.token);
-                    socket.on('sendProfil', () => {
-                        socket.emit('profilInfo', { username: res.body.user.username, id: res.body.user._id });
-                    })
+                    socket.emit('succLogin', res.body.token);
                 } else {
                     socket.emit('UnsuccLogin');
                 }
             });
-    })
+    });
 
     socket.on('userRegister', (email, password, username) => {
         superagent
@@ -266,9 +284,19 @@ io.on('connection', (socket) => {
             .end((err, res) => {
                 console.log(res.body);
             });
-    })
+    });
 
-});
+})
+
+// {
+//   "title": "Ankara",
+//   "description": "Sorularla Ankarayı tanıyalım",
+//   "location": "Turkey",
+//   "language": "Turkish",
+//   "pin": 765221,
+//   "img": "img1.jpg",
+//   "question": []
+// }
 
 
 module.exports = socketApi;

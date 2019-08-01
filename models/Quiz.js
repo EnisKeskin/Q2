@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const quizShema = new Schema({
     title: {
         type: String,
-        required: true,
+        // required: true,
         minlength: 1,
         maxlength: 100
     },
@@ -23,7 +23,7 @@ const quizShema = new Schema({
     pin: {
         type: Number,
         required: true,
-        unique: true,
+        // unique: true, gecici kapanmıştır unutma
         minlength: 6,
         maxlength: 7,
     },
@@ -31,30 +31,30 @@ const quizShema = new Schema({
         type: String
     },
     userId: {
-        type: Number,
-        require: true,
+        type: Schema.Types.ObjectId,
+        // require: true,
     },
     question: [{
         questionTitle: {
             type: String,
-            required: true,
+            // required: true,
             minlength: 2,
             maxlength: 100,
         },
         answers: {
             type: Array,
-            required: true,
+            // required: true,
             minlength: 1,
             maxlength: 100,
         },
         answer: {
             type: Number,
-            required: true,
+            // required: true,
         },
         time: {
             type: Number,
             default: 20,
-            require: true,
+            // require: true,
         },
         img: {
             type: String

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import io from '../connection';
+import Io from '../connection';
 import { Redirect } from 'react-router'
+
+let io = null;
 
 class Username extends Component {
   constructor(props) {
@@ -13,7 +15,7 @@ class Username extends Component {
   }
 
   componentDidMount() {
-
+    io = Io('game');
   }
 
   onClickEvent = () => {

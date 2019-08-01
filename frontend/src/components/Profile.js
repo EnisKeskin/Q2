@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import io from '../connection';
 import { Redirect } from 'react-router'
-import userControl from '../middleware/userControl'
+import Io from '../connection';
+
+let io = null;
 
 class Profile extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             profilImg: "",
             username: "",
@@ -18,20 +18,16 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        if (userControl) {
-            io.emit('sendProfil');
-            io.on('profilInfo', (user) => {
-                this.setState({
-                    username: user.username
-                })
-            })
-        }else {
+        io = Io('profil', localStorage.getItem('token'));
+        io.emit('GetProfilInfo');
+        io.on('SetProfilInfo', (user) => {
             this.setState({
-                loginVisible: true,
-            })
-        }
-
+                username: user.username
+            });
+        });
     }
+
+
     render() {
         return (
 

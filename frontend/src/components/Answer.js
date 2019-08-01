@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import io from '../connection';
+import Io from '../connection';
 import { Redirect } from 'react-router'
+
+let io = null;
 
 class Answer extends Component {
     constructor(props) {
@@ -24,6 +26,7 @@ class Answer extends Component {
     }
 
     componentDidMount() {
+        io = Io('game');
         io.on('newQuestion', (question) => {
             if (isNaN(question)) {
 
@@ -42,7 +45,6 @@ class Answer extends Component {
                 });
                 this.interval = 0;
                 this.time = 0;
-                // console.log(this.props.location.state.id);
 
                 this.time = question.time;
 

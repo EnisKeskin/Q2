@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import io from '../connection';
+import Io from '../connection';
 import { Redirect } from 'react-router'
 import { Link } from 'react-router-dom'
+
+let io = null;
 
 class Pin extends Component {
 
@@ -15,6 +17,7 @@ class Pin extends Component {
   }
 
   componentDidMount() {
+    io = Io('game');
     io.on('connected', (data) => {
       console.log('bağlandun');
     })

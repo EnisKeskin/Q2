@@ -3,18 +3,16 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
-const quiz = require('../models/Quiz');
+const Quiz = require('../models/Quiz');
 const jwt = require('jsonwebtoken');
-const LocalStorage = require('node-localstorage').LocalStorage;
-localStorage = new LocalStorage('./scratch');
 
 router.get('/', (req, res, next) => {
     res.json({ status: 1 });
 });
 
 //soruyu bulmak için
-router.post('/quiz', (req, res) => {
-    const promise = quiz.find({ pin: req.body.pin });
+router.post('/', (req, res) => {
+    const promise = Quiz.find({ pin: req.body.pin });
 
     promise.then((data) => {
         res.json(data);
@@ -24,12 +22,10 @@ router.post('/quiz', (req, res) => {
 
 });
 //quiz eklemek için
-router.post('/', (req, res) => {
-    const quiz = new Quiz(req.body);
-    const promise = quiz.save();
-
+router.post('/quiz', (req, res) => {
+    const promise = new Quiz(req.body).save();
     promise.then((data) => {
-        res.json({ status: 1 })
+        res.json({ status: 1, id: data._id })
     }).catch((err) => {
         res.json({ err });
     })
@@ -38,17 +34,16 @@ router.post('/', (req, res) => {
 //soruyu eklemek için
 router.post('/question', (req, res) => {
     const question = req.body;
-    Quiz.findById(question.quiz_id, (err, data) => {
+    Quiz.findById(question.quiz_id, (err, res) => {
         if (err)
             throw err;
-
-        data.question.push(question);
-        data.save();
+        res.question.push(question);
+        res.save();
     });
 })
 
 //kayıt için
-router.post('/register', (req, res, next) => {
+router.post('/register', (req, res) => {
     const { email, password, username } = req.body;
     bcrypt.hash(password, 10).then((hash) => {
         const user = new User({
@@ -66,6 +61,7 @@ router.post('/register', (req, res, next) => {
 
     })
 });
+//ilk girişte 
 //giriş için
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
@@ -88,12 +84,20 @@ router.post('/login', (req, res) => {
                     const token = jwt.sign(payload, req.app.get('api_top_secret_key'), {
                         expiresIn: '4320s'
                     });
-                    res.json({ user , status: 1, token });
+                    res.json({ user, status: 1, token });
                 }
             });
         };
     });
 });
+
+router.post('/user', (req, res) => {
+    User.findById(req.body.id, (err, user) => {
+        if (err)
+            throw err
+        res.json({status: 1, user});
+    })
+})
 
 module.exports = router;
 

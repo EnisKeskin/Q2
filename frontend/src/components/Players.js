@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import io from '../connection';
+import Io from '../connection';
 import { Redirect } from 'react-router'
+
+let io = null;
 
 class Players extends Component {
     constructor(props) {
@@ -15,6 +17,7 @@ class Players extends Component {
     }
 
     componentDidMount() {
+        io = Io('game');
         io.on('newUser', (players) => {
             if (isNaN(players)) {
                 this.setState({
