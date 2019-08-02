@@ -36,9 +36,9 @@ class User extends Component {
         localStorage.removeItem('token');
         localStorage.setItem('token', token);
       }
-        this.setState({
-          profilVisible: true
-        });
+      this.setState({
+        profilVisible: true
+      });
     });
 
     io.on('unsuccLogin', () => {
@@ -60,7 +60,8 @@ class User extends Component {
     });
   }
 
-  onClickLoginEvent() {
+  onClickLoginEvent(e) {
+    e.preventDefault();
     const state = this.state;
     io.emit('userLogin', state.lemail, state.lpassword);
   }
@@ -83,7 +84,8 @@ class User extends Component {
     });
   }
 
-  onClickRegisterEvent() {
+  onClickRegisterEvent(e) {
+    e.preventDefault();
     const state = this.state;
     io.emit('userRegister', state.remail, state.rpassword, state.rusername);
   }
@@ -95,81 +97,97 @@ class User extends Component {
           <Redirect to='/Profil' />
           :
           <div>
-            <div className="figure"></div>
-            <div className="figure-2"></div>
 
-            <div className="capsule">
-              <div className="container user">
-                <div className="user-logo">
-                  <img src={require('../images/logo/logo-w.png')} className="img-user-logo" alt="Quiz" />
-                </div>
+            <div class="figure">
 
-                <div className="row">
+            </div>
+            <div class="figure-2">
 
-                  <div className="col-lg-6 login">
-
-                    <div className="login-text"> Log In </div>
-
-                    <div className="login-in">
-
-                      <div className="login-input">
-
-                        <div className="login-img">
-                          <img src={require('../images/user-icon/user.png')} className="img-user" alt="" />
-                        </div>
-
-                        <div className="login-textarea">
-                          <input type="text" placeholder="Email" className="txt-user" onChange={this.onChangeEmailEvent} />
-                        </div>
-
-                      </div>
-
-                      <div className="login-password-input">
-
-                        <div className="login-img">
-                          <img src={require('../images/user-icon/password.png')} className="img-password" alt="" />
-                        </div>
-
-                        <div className="login-textarea">
-                          <input type="password" placeholder="Password" className="txt-password" onChange={this.onChangePassEvent} />
-                        </div>
-
-                      </div>
-                      {/* ajax verilerini gönderecek */}
-                      <div className="login-button">
-                        <button type="button" className="btn-login" onClick={this.onClickLoginEvent}>Enter</button>
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                  <div className="col-lg-6 signup">
-                    <div className="signup-text">
-                      Sign Up
-              </div>
-
-                    <div className="signup-in">
-
-                      <input type="text" className="txt-signup" placeholder="User Name" onChange={this.onChangeRUserEvent} />
-
-                      <input type="text" className="txt-signup" placeholder="E-Mail" onChange={this.onChangeRMailEvent} />
-
-                      <input type="password" className="txt-signup" placeholder="Password" onChange={this.onChangeRPasswordEvent} />
-
-                      <div className="sign-button">
-                        <button type="button" className="btn-sign" onClick={this.onClickRegisterEvent}>Sign Up</button>
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </div>
             </div>
 
+            <div class="capsule">
+
+
+
+              <div class="container user">
+                <div class="user-logo">
+                  <img src={require('../images/logo/logo-w.png')} class="img-user-logo" alt="Quiz" />
+                </div>
+
+
+                <div class="row">
+
+                  <div class="col-lg-6 login">
+
+                    <div class="login-text">Log In</div>
+
+                    <div class="login-in">
+
+                      <form action="." method="POST">
+                        <div class="login-input">
+
+                          <div class="login-img">
+                            <img src={require('../images/user-icon/user.png')} class="img-user" alt="" />
+                          </div>
+
+                          <div class="login-textarea">
+                            <input type="text" placeholder="User Name" class="txt-user" required onChange={this.onChangeEmailEvent} />
+                          </div>
+
+                        </div>
+
+                        <div class="login-password-input">
+
+                          <div class="login-img">
+                            <img src={require('../images/user-icon/password.png')} class="img-password" alt="" />
+                          </div>
+
+                          <div class="login-textarea">
+                            <input type="password" placeholder="Password" class="txt-password" required onChange={this.onChangePassEvent} />
+                          </div>
+
+                        </div>
+
+                        <div class="login-button">
+
+                          <button type="submit" class="btn-login" onClick={this.onClickLoginEvent} >Enter</button>
+                        </div>
+                      </form>
+
+                    </div>
+
+                  </div>
+
+                  <div class="col-lg-6 signup">
+                    <div class="signup-text">
+                      Sign Up
+              </div>
+                    <div class="signup-in">
+
+                      <form action="." method="POST">
+                        <div class="user-name">
+                          <input type="text" class="txt-username" placeholder="First Name" required />
+
+                          <input type="text" class="txt-username" placeholder="Last Name" required  />
+                        </div>
+                        <input type="text" class="txt-signup" placeholder="User Name" required onChange={this.onChangeRUserEvent} />
+
+                        <input type="email" class="txt-signup" placeholder="E-Mail" required onChange={this.onChangeRMailEvent} />
+
+                        <input type="password" class="txt-signup" placeholder="Password" required onChange={this.onChangeRPasswordEvent} />
+
+                        <div class="sign-button">
+                          <button type="submit" class="btn-sign" onClick={this.onClickRegisterEvent} >Sign Up</button>
+                        </div>
+                      </form>
+
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
 
           </div>
         }
@@ -181,11 +199,11 @@ class User extends Component {
 export default User
 
 
-// let email = this.state.lemail;
-// let password = this.state.lpassword;
-// superagent
-//   .post('http://127.0.0.1:3000/api/login')
-//   .send({ email, password })
+                        // let email = this.state.lemail;
+                        // let password = this.state.lpassword;
+                        // superagent
+                        //   .post('http://127.0.0.1:3000/api/login')
+//   .send({email, password })
 //   .end((err, res) => {
 //     if (err) {
 

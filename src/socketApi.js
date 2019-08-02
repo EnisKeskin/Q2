@@ -2,8 +2,10 @@ const socketio = require('socket.io');
 const socketApi = {};
 const superagent = require('superagent');
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const User = require('../models/User');
+const Quiz = require('../models/Quiz');
 const jwt = require('jsonwebtoken');
-const quiz = require('../models/Quiz');
 const key = require('../config').api_top_secret_key;
 const Io = socketio();
 socketApi.io = Io;
@@ -110,12 +112,12 @@ class RoomControl {
 
 class UserControl {
     constructor() {
-       this.user = {};
+        this.user = {};
     }
 }
 
 const pinControl = (data, callback) => {
-    quiz.find({ pin: data, active: true })
+    Quiz.find({ pin: data, active: true })
         .then((data) => {
             callback(data);
         }).catch((err) => {
@@ -174,7 +176,7 @@ Io.of('/game').on('connection', (socket) => {
 
                         setTimeout(() => {
                             let answStatic = []
-                            Object.keys(room.ustokenControlers).forEach((userId) => {
+                            Object.keys(room.users).forEach((userId) => {
                                 answStatic.push(room.users[userId].answers[answernumber]);
                             });
                             answernumber++;
@@ -227,64 +229,98 @@ Io.of('/profil').use((socket, next) => {
             return next();
         }
     });
-    next();
-
 }).on('connection', (socket) => {
+
     socket.on('quizCreate', (quiz) => {
         quiz.userId = socket.decoded.userId;
-        superagent
-            .post('http://127.0.0.1:3000/api/quiz')
-            .send(quiz)
-            .end((err, res) => {
-                if(err)
-                    throw err
-                if(res.body.status === 1){
-                    socket.emit('quizId', res.body.id)
-                }else {
-                    socket.emit('quizError', message = "Ne yaptın Emmi");
-                }
+        const promise = new Quiz(quiz)
+        promise.save()
+            .then((data) => {
+                socket.emit('quizId', data._id);
+            }).catch((err) => {
+                socket.emit('quizError', message = "Ne yaptın Emmi");
             });
     });
-    socket.on('GetProfilInfo', () => {
-        superagent
-        .post('http://127.0.0.1:3000/api/user')
-        .send({id:socket.decoded.userId})
-        .end((err, res) => {
-            if(err)
+
+    socket.on('getProfilInfo', () => {
+        User.findById(socket.decoded.userId, (err, user) => {
+            if (err)
                 throw err
-            if(res.body.status === 1){
-                socket.emit('SetProfilInfo', { username : res.body.user.username});
-            }else {
-                
-            }
+            socket.emit('setProfilInfo',  {username: user.username , userId: user._id, firstname: user.firstname , lastname: user.lastname} );
+            Quiz.find({userId:user._id},(err, res) => {
+                const quizs= [];
+                res.forEach((quiz) => {
+                  quizs.push({
+                     title: quiz.title,
+                     description: quiz.description,
+                     img: quiz.img,
+                     userId: quiz.userId,
+                  });
+                });
+                socket.emit('profilQuiz', quizs);
+            })
         });
-    })
+    });
+
+    socket.on('addingQuestions', (question) => {
+    Quiz.findById(question.quizId, (err, res) => {
+        if (err)
+            throw err;
+        delete question.quizId
+        res.question.push(question);
+        res.save();
+        socket.emit('newQuestionCreate');
+    });
+    });
+
+
+
 });
 
 Io.of('/user').on('connection', (socket) => {
-    const UserControl = new UserControl();
+
     socket.on('userLogin', (email, password) => {
-        superagent
-            .post('http://127.0.0.1:3000/api/login')
-            .send({ email, password })
-            .end((err, res) => {
-                console.log(res.body);
-                if (res.body.status === 1) {
-                    socket.emit('succLogin', res.body.token);
-                } else {
-                    socket.emit('UnsuccLogin');
-                }
-            });
+        User.findOne({
+            email
+        }, (err, user) => {
+            if (err)
+                throw err
+            if (!user) {
+                socket.emit('UnsuccLogin');
+            } else {
+                bcrypt.compare(password, user.password).then((result) => {
+                    if (!result) {
+                        //yanlış giriş
+                        socket.emit('UnsuccLogin');
+                    } else {
+                        const payload = {
+                            userId: user._id,
+                        }
+                        const token = jwt.sign(payload, key);
+                        socket.emit('succLogin', token);
+                    }
+                });
+            };
+        });
+
     });
 
+
     socket.on('userRegister', (email, password, username) => {
-        superagent
-            .post('http://127.0.0.1:3000/api/register')
-            .send({ email, password, username })
-            .end((err, res) => {
-                console.log(res.body);
+        bcrypt.hash(password, 10).then((hash) => {
+            const user = new User({
+                email,
+                username,
+                password: hash
             });
+            user.save().then((data) => {
+                console.log(data);
+            }).catch((err) => {
+                console.log(err);
+            });
+        })
     });
+
 
 })
 

@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import io from '../connection';
+import Io from '../connection';
+
+let io = null;
 
 class scoreboard extends Component {
     constructor(props) {
@@ -11,6 +13,7 @@ class scoreboard extends Component {
     }
 
     componentDidMount() {
+        io = Io('game');
         io.on('Scoreboard', (users) => {
             this.setState({
                 users: users,

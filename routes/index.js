@@ -33,12 +33,15 @@ router.post('/quiz', (req, res) => {
 })
 //soruyu eklemek için
 router.post('/question', (req, res) => {
-    const question = req.body;
-    Quiz.findById(question.quiz_id, (err, res) => {
+    const question = req.body.question;
+
+    Quiz.findById(question.quizId, (err, resp) => {
         if (err)
             throw err;
-        res.question.push(question);
-        res.save();
+        delete question.quizId
+        resp.question.push(question);
+        resp.save();
+        res.json({ status: 1 })
     });
 })
 
@@ -58,7 +61,6 @@ router.post('/register', (req, res) => {
         }).catch((err) => {
             res.json(err);
         });
-
     })
 });
 //ilk girişte 
@@ -95,7 +97,7 @@ router.post('/user', (req, res) => {
     User.findById(req.body.id, (err, user) => {
         if (err)
             throw err
-        res.json({status: 1, user});
+        res.json({ status: 1, user });
     })
 })
 

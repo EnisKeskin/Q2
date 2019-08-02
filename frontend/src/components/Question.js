@@ -1,37 +1,123 @@
 import React, { Component } from 'react'
+import Io from '../connection'
+import { Link } from 'react-router-dom'
+
+let io = null
 
 class Question extends Component {
 
     constructor(props) {
         super(props);
-        this.state
+        this.answers = [4];
+        this.question = {
+            quizId: "",
+            questionTitle: "",
+            answers: [],
+            answer: 0,
+            time: 0,
+            img: "",
+        }
 
+
+        this.onChangeQuestionEvent = this.onChangeQuestionEvent.bind(this);
+        this.onChangeAnswer1Event = this.onChangeAnswer1Event.bind(this);
+        this.onChangeAnswer2Event = this.onChangeAnswer2Event.bind(this);
+        this.onChangeAnswer3Event = this.onChangeAnswer3Event.bind(this);
+        this.onChangeAnswer4Event = this.onChangeAnswer4Event.bind(this);
+        this.onChangeTrueAnswerEvent = this.onChangeTrueAnswerEvent.bind(this);
+        this.onChangeTimeEvent = this.onChangeTimeEvent.bind(this);
+    }
+
+    componentDidMount() {
+        this.resetVariable();
+        io = Io('profil', localStorage.getItem('token'));
+        if (this.props.location.state.quizId) {
+            this.question.quizId = this.props.location.state.quizId
+        }
+
+        io.on('newQuestionCreate', () => {
+            
+        })
+    }
+
+    onChangeQuestionEvent = (e) => {
+        this.question.questionTitle = e.target.value
+    }
+
+    onChangeAnswer1Event = (e) => {
+        this.answers[0] = e.target.value
+    }
+
+    onChangeAnswer2Event = (e) => {
+        this.answers[1] = e.target.value
+    }
+
+    onChangeAnswer3Event = (e) => {
+        this.answers[2] = e.target.value
+    }
+
+    onChangeAnswer4Event = (e) => {
+        this.answers[3] = e.target.value
+    }
+
+    onChangeTrueAnswerEvent = (e) => {
+        this.question.answer = e.target.value
+
+    }
+
+    onChangeTimeEvent = (e) => {
+        this.question.time = e.target.value
+    }
+
+    onClickEvent = (e) => {
+        e.preventDefault();
+        this.resetForm()
+        this.question.answers = this.answers;
+        io.emit('addingQuestions', this.question );
+    }
+
+    resetVariable = () => {
+        this.answers = [4];
+        this.question = {
+            quizId: "",
+            questionTitle: "",
+            answers: [],
+            answer: 0,
+            time: 0,
+            img: "",
+        }
+    }
+
+    resetForm = () => {
+        this.myFormRef.reset();
     }
 
     render() {
         return (
-            <div class="capsule-2">
+            <div className="capsule-2">
 
-                <header class="quiz-header">
-                    <div class="quiz-logo">
-                        <img src={require('../images/logo/logo-w.png')} class="img-quiz-logo" alt="" />
+                <header className="quiz-header">
+                    <div className="quiz-logo">
+                        <img src={require('../images/logo/logo-w.png')} className="img-quiz-logo" alt="" />
 
                     </div>
 
-                    {/* <div class="close">
-                        <img src={require('../images/quiz/cancel.png')} alt="" />
-                    </div> */}
+                    <div className="close">
+                    <Link to='/profil'><img src={require('../images/quiz/cancel.png')} alt="" /></Link>
+                        
+                    </div>
 
                 </header>
 
-                <div class="container question-content">
+                <div className="container question-content">
+                <form action="." method="POST" ref={(el) => this.myFormRef = el}>
+                    <div className="question-image">
+                    <label class="lbl-file" for="file">   Tap to add cover images    </label>
+                    <input class="fileupload" type="file" name="fileToUpload" id="file"/>
 
-                    <div class="question-image">
-
-                        <img src={require('../images/thumb-1920-943148.jpg')} alt="" />
-
-                        <div class="select-box-question">
-                            <select name="" id="">
+                        <div className="select-box-question" onChange={this.onChangeTimeEvent} >
+                            <select name="" id="" required>
+                                <option value="0">Select Time</option>
                                 <option value="10">10 sec </option>
                                 <option value="20">20 sec </option>
                                 <option value="30">30 sec </option>
@@ -43,51 +129,51 @@ class Question extends Component {
                         </div>
 
                     </div>
-                    <div class="question-text">
+                    <div className="question-text">
 
-                        <input type="text" class="txt-question" placeholder="Tap to add question" onChange={this.onChangeQuestionEvent} />
+                        <input type="text" className="txt-question" placeholder="Tap to add question" onChange={this.onChangeQuestionEvent} required />
 
                     </div>
 
-                    <div class="question-answer">
+                    <div className="question-answer">
 
-                        <div class="row">
+                        <div className="row">
 
-                            <div class="col-md-6 ">
-                                <div class="a1">
-                                    <input type="text" class="txt-answer1" placeholder="Answer 1" onChange={this.onChangeAnswer1Event} />
-                                    <div class="checkbox">
-                                        <input type="radio" name="option" value="1" />
+                            <div className="col-md-6 ">
+                                <div className="a1">
+                                    <input type="text" className="txt-answer1" placeholder="Answer 1" onChange={this.onChangeAnswer1Event} required />
+                                    <div className="checkbox">
+                                        <input type="radio" name="option" value="1" onChange={this.onChangeTrueAnswerEvent} required />
                                         <label>Option 1</label>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="a2">
-                                    <input type="text" class="txt-answer2" placeholder="Answer 2" onChange={this.onChangeAnswer2Event}/>
-                                    <div class="checkbox">
-                                        <input type="radio" name="option" value="2" />
+                            <div className="col-md-6">
+                                <div className="a2">
+                                    <input type="text" className="txt-answer2" placeholder="Answer 2" onChange={this.onChangeAnswer2Event} required />
+                                    <div className="checkbox">
+                                        <input type="radio" name="option" value="2" onChange={this.onChangeTrueAnswerEvent} required />
                                         <label>Option 1</label>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-6 ">
-                                <div class="a3">
-                                    <input type="text" class="txt-answer3" placeholder="Answer 3" onChange={this.onChangeAnswer3Event}/>
-                                    <div class="checkbox">
-                                        <input type="radio" name="option" value="3" />
+                            <div className="col-md-6 ">
+                                <div className="a3">
+                                    <input type="text" className="txt-answer3" placeholder="Answer 3" onChange={this.onChangeAnswer3Event} required />
+                                    <div className="checkbox">
+                                        <input type="radio" name="option" value="3" onChange={this.onChangeTrueAnswerEvent} required />
                                         <label>Option 1</label>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="a4">
-                                    <input type="text" class="txt-answer4" placeholder="Answer 4" onChange={this.onChangeAnswer4Event}/>
-                                    <div class="checkbox">
-                                        <input type="radio" name="option" value="4" onChange={this.onChangeTrueAnswerEvent} />
+                            <div className="col-md-6">
+                                <div className="a4">
+                                    <input type="text" className="txt-answer4" placeholder="Answer 4" onChange={this.onChangeAnswer4Event} required />
+                                    <div className="checkbox">
+                                        <input type="radio" name="option" value="4" onChange={this.onChangeTrueAnswerEvent} required />
                                         <label>Option 1</label>
                                     </div>
                                 </div>
@@ -96,11 +182,10 @@ class Question extends Component {
 
                     </div>
 
-                    <div class="add-question">
-
-                        <img src="images/quiz/add.png" class="img-add" alt="" />
-
+                    <div className="add-question">
+                        <button class="btn-add" type="submit" value="" onClick={this.onClickEvent} ></button>
                     </div>
+                    </form>
                 </div>
             </div>
         )

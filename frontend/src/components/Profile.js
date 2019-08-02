@@ -12,31 +12,111 @@ class Profile extends Component {
         this.state = {
             profilImg: "",
             username: "",
-            quiz: {},
+            fullname: "",
+            quizs: [],
             loginVisible: false,
         }
     }
 
     componentDidMount() {
         io = Io('profil', localStorage.getItem('token'));
-        io.emit('GetProfilInfo');
-        io.on('SetProfilInfo', (user) => {
+        io.emit('getProfilInfo');
+        io.on('setProfilInfo', (user) => {
             this.setState({
-                username: user.username
+                username: user.username,
+                fullname: user.firstname + " " + user.lastname
+            });
+        });
+        io.on('profilQuiz', (quizs) => {
+            this.setState({
+                quizs
             });
         });
     }
 
+    quizModel() {
+        const stateQuizs = this.state.quizs;
+        const quizs = [];
+        stateQuizs.forEach((quiz, key) => {
+            quizs.push(
+                <div key={key}>
+                    <div data-toggle="modal" data-target={"#quiz-item-modal"+key} className="my-quiz">
+                        <div className="my-quiz-img">
+                            <img src={require('../images/quiz/quiz.png')} className="img-quiz" alt="" />
+                        </div>
+
+                        <div className="my-quiz-name">
+                            {quiz.title}
+                        </div>
+
+                    </div>
+
+                    <div className="modal fade bd-example-modal-lg" id={"quiz-item-modal"+key} tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                        aria-hidden="true">
+                        <div className="modal-dialog modal-dialog-centered modal-xl" role="document">
+
+                            <div className="modal-content">
+
+
+                                <div className="container-fluid">
+                                    <div className="row">
+
+                                        <div className="col-lg-6 modal-left">
+                                            <img src={require('../images/thumb-1920-943148.jpg')} className="img-modal" alt="" />
+                                        </div>
+
+                                        <div className="col-lg-6 modal-right">
+
+                                            <h4 className="h4 modal-h4">{quiz.title}</h4>
+
+                                            <div className="modal-user">
+
+                                                <img src={require('../images/user/Oval.png')} className="img-user-modal" alt="" />
+
+                                                <div className="modal-name">sytopcu</div>
+
+                                                <div className="modal-star">
+
+                                                    <img src={require('../images/quiz/star.png')} alt="" className="img-star" />
+
+                                                    <img src={require('../images/quiz/dot.png')} className="img-dot" alt="" />
+                                                </div>
+
+                                            </div>
+
+                                            <h5 className="h5-subtitle">Description</h5>
+
+                                            <p> {quiz.description} </p>
+
+                                            <button type="button" className="btn-play">Play</button>
+                                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            
+            )
+        });
+        return quizs;
+    }
 
     render() {
         return (
 
             <div>
-
+                <script src="../javascripts/main"></script>
                 {this.state.loginVisible ?
                     <Redirect to='/User' />
                     :
-                    <div>
+                    <div className="capsule-2">
+                        <Link to="#" className="mobil-profil">Profil</Link>
+
                         <header>
 
                             <div className="logo">
@@ -71,7 +151,7 @@ class Profile extends Component {
 
                         <div className="content">
 
-                            <div className="content-profil">
+                            <div className="content-profil" id="profil">
 
                                 <div className="profil-top">
                                     <div className="profil-img">
@@ -80,11 +160,10 @@ class Profile extends Component {
 
                                     <div className="profil-name">
                                         {/* isim soy isim */}
-                                        <h6 className="h6">Yüsra Topçuoğlu <Link to="#"><img src={require('../images/user-icon/edit.png')} className="img-edit"
+                                        <h6 className="h6">{this.state.fullname} <Link to="#"><img src={require('../images/user-icon/edit.png')} className="img-edit"
                                             alt="Edit" /> </Link> </h6>
                                         {/* kullanıcıadı */}
                                         <h6 className="h6-mail"> {this.state.username} </h6>
-
                                     </div>
 
                                 </div>
@@ -93,112 +172,56 @@ class Profile extends Component {
 
                                     <div className="row">
 
-                                        <div className="col-md-6">
+                                        <div className="col-lg-6">
                                             <div className="profil-information-left">
                                                 <div>Quiz Created </div>
                                                 <div> 1 </div>
                                             </div>
                                         </div>
 
-                                        <div className="col-md-6">
+                                        <div className="col-lg-6">
 
                                             <div className=" profil-information-right">
                                                 <div> Hosted Games </div>
                                                 <div> 1 </div>
+
                                             </div>
                                         </div>
 
-                                        <div className="col-md-12">
+                                        <div className="col-lg-12">
                                             <div className="profil-capsule">
-                                                {/* gereksiz */}
                                                 <div>Challenges Played </div>
                                                 <div>1</div>
                                             </div>
                                         </div>
 
-                                        <div className="col-md-12">
+                                        <div className="col-lg-12">
                                             <div className="profil-capsule">
-                                                {/* 2 kat gereksiz */}
                                                 <div>Live Games Played </div>
                                                 <div>1</div>
                                             </div>
                                         </div>
+
                                     </div>
+
                                 </div>
 
                             </div>
 
                             <div className="content-right">
-
                                 <div className="content-menu">
-
-                                    <ul className="">
-                                        <li><Link to="#">My Quiz</Link></li>
+                                    <ul>
+                                        <li><Link className="active" to="#">My Quiz</Link></li>
                                         <li><Link to="#">Favorite</Link></li>
                                         <li><Link to="#">Latest</Link></li>
                                     </ul>
-
                                 </div>
 
-                                <div data-toggle="modal" data-target=".bd-example-modal-lg" className="my-quiz">
-
-                                    <div className="my-quiz-img">
-                                        <img src={require('../images/quiz/quiz.png')} className="img-quiz" alt="" />
-                                    </div>
-
-                                    <div className="my-quiz-name">Gerunds</div>
-
-                                </div>
-
-                                <div className="modal fade bd-example-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                                    <div className="modal-dialog modal-dialog-centered modal-xl" role="document">
-
-                                        <div className="modal-content">
-
-                                            <div className="container-fluid">
-                                                <div className="row">
-
-                                                    <div className="col-lg-6 modal-left">
-                                                        <img src={require('../images/thumb-1920-943148.jpg')} className="img-modal" alt="" />
-                                                    </div>
-
-                                                    <div className="col-lg-6 modal-right">
-
-                                                        <h4 className="h4 modal-h4">Gerunds</h4>
-
-                                                        <div className="modal-user">
-
-                                                            <img src={require('../images/user/Oval.png')} className="img-user-modal" alt="" />
-
-                                                            <div className="modal-name">sytopcu</div>
-
-                                                            <div className="modal-star">
-                                                                <img src="images/quiz/star.png" alt="" className="img-star" />
-
-                                                                <img src="images/quiz/dot.png" className="img-dot" alt="" />
-                                                            </div>
-
-                                                        </div>
-
-                                                        <h5 className="h5-subtitle">Description</h5>
-
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nisl metus, sagittis vitae luctus malesuada, tincidunt ac ligula. Integer mattis volutpat lacinia. Nunc at dui auctor, Nunc ac nunc venenatis, pulvinar quam et, aliquam mauris.</p>
-
-                                                        <button type="button" className="btn-play">Play</button>
-                                                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-                                </div>
+                            {this.quizModel()}
 
                             </div>
-                        </div>
 
+                        </div>
 
                     </div>
                 }

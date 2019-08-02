@@ -27,6 +27,7 @@ class Quiz extends Component {
     }
 
     componentDidMount() {
+        this.resetVarible();
         io = Io('profil', localStorage.getItem('token'));
         io.on('quizId', (quizId) => {
             this.quizId = quizId
@@ -61,15 +62,31 @@ class Quiz extends Component {
     }
 
     // console.log(this.props.location.state.id);
-    onClickEvent = () => {
+    onClickEvent = (e) => {
+        e.preventDefault();
         let state = this.state;
+        console.log("at");
         io.emit('quizCreate', {
             title: state.title,
             description: state.description,
             location: state.location,
             language: state.language,
             question: state.question,
-            pin: 21222,
+            pin: 232223,
+        })
+    }
+
+    resetVarible = () => {
+        this.quizId = "";
+        this.setState({
+            location: "",
+            language: "",
+            title: "",
+            description: "",
+            img: "",
+            loginVisible: false,
+            questionVisible: false,
+            question: [],
         })
     }
 
@@ -87,59 +104,74 @@ class Quiz extends Component {
                             }
                         } />
                         :
-                        <div>
+                        <div className="capsule-2">
                             <header className="quiz-header">
                                 <div className="quiz-logo">
                                     <img src="images/logo/logo-w.png" className="img-quiz-logo" alt="" />
                                 </div>
-                            </header>
-
-                            <div className="quiz-content">
-
-                                <div className="quiz-image">
-                                    <img src="images/thumb-1920-943148.jpg" alt="" />
+                                <div className="close">
+                                    <img src="images/quiz/cancel.png" alt="" />
                                 </div>
+                            </header>
+                            <form action="." method="POST">
+                                <div className="quiz-content">
 
-                                <div className="quiz-right">
-                                    <div className="dropdown">
+                                    <div className="quiz-image">
+                                        <label className="lbl-file" htmlFor="file">    Tap to add cover images   </label>
 
-                                        <div className="select-box select-box-1 ">
-                                            <select name="" id="" >
-                                                <option value="1">Visible to </option>
-                                                <option value="1">option 2</option>
-                                                <option value="1">option 3</option>
-                                                <option value="1">option 4</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="select-box select-box-2" onChange={this.onChangeLocationEvent}>
-                                            <select name="" id="">
-                                                <option value="Turkey">Turkey </option>
-                                                <option value="Germany">Germany</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Egypt">Egypt</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="select-box select-box-3" onChange={this.onChangeLanguageEvent}>
-                                            <select name="" id="">
-                                                <option value="Turkish">Turkish</option>
-                                                <option value="German">German</option>
-                                                <option value="English">English</option>
-                                                <option value="Arabic">Arabic</option>
-                                            </select>
-                                        </div>
+                                        <input className="fileupload" type="file" name="fileToUpload" id="file" />
 
                                     </div>
-                                    <input type="text" placeholder="Title" className="txt-title" onChange={this.onChangeTitleEvent} />
-                                    <textarea placeholder="Description" className="txt-description" onChange={this.onChangeDescAreaEvent} />
-                                </div>
-                            </div>
 
-                            <div className="quiz-enter-button">
-                                <button type="button" className="btn-quiz-enter" onClick={this.onClickEvent}>Enter</button>
-                            </div>
+                                    <div className="quiz-right">
+
+                                        <div className="dropdown">
+
+                                            <div className="select-box select-box-1 ">
+                                                <select name="" id="">
+                                                    <option value="">Visible to  </option>
+                                                    <option value="1">option 2</option>
+                                                    <option value="1">option 3</option>
+                                                    <option value="1">option 4</option>
+                                                </select>
+                                            </div>
+
+                                            <div className="select-box select-box-2" onChange={this.onChangeLocationEvent}>
+                                                <select required name="" id="">
+                                                    <option value="">Location  </option>
+                                                    <option value="Turkey">Turkey</option>
+                                                    <option value="United States">United States</option>
+                                                    <option value="Venezuela">Venezuela</option>
+                                                </select>
+                                            </div>
+
+                                            <div className="select-box select-box-3" onChange={this.onChangeLanguageEvent}>
+                                                <select required name="" id="">
+                                                    <option value="">Language</option>
+                                                    <option value="Turkish">Turkish</option>
+                                                    <option value="English">English</option>
+                                                    <option value="Spanish">Spanish</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <input type="text" placeholder="Title" className="txt-title" required onChange={this.onChangeTitleEvent} />
+
+                                        <textarea placeholder="Description" className="txt-description" required onChange={this.onChangeDescAreaEvent} />
+
+                                    </div>
+
+                                </div>
+
+
+
+
+                                <div className="quiz-enter-button">
+                                    <button type="submit" className="btn-quiz-enter" onClick={this.onClickEvent} >Enter</button>
+                                </div>
+                            </form>
                         </div>
+
 
                 }
             </div>
