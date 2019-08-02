@@ -28,17 +28,14 @@ class RoomControl {
     }
 
     getRoom(roomName) {
-        console.log("room oluştu");
-        let room = this.rooms[roomName] ? 
-        this.rooms[roomName] : {
-            quiz: null,
-            startTime: null,
-            currentQuestion: null,
-            currentQuestionIndex: -1,
-            users: {},
-        }
-        console.log(roomName);
-        console.log(this.rooms[roomName]);
+        let room = this.rooms[roomName] ?
+            this.rooms[roomName] : {
+                quiz: null,
+                startTime: null,
+                currentQuestion: null,
+                currentQuestionIndex: -1,
+                users: {},
+            }
         // console.log(room);
         this.rooms[roomName] = room;
         return room;
@@ -122,19 +119,31 @@ class UserControl {
 }
 
 const pinControl = (data, callback) => {
-    Quiz.find({ pin: data, active: true })
-        .then((data) => {
-            callback(data);
-        }).catch((err) => {
-            callback(err);
-        });
+    if (data) {
+        Quiz.find({ pin: data, active: true })
+            .then((data) => {
+                if (data[0]) {
+                    callback(data);
+                } else {
+                    callback(0);
+                }
+            }).catch((err) => {
+                callback(0);
+            });
+    }
 }
 
 const pinActive = (data, callback) => {
     Quiz.findOneAndUpdate({ pin: data }, { active: true }).then((quiz) => {
         callback(quiz);
     }).catch((err) => {
-        throw err;
+        // callback(err);
+    })
+}
+
+const pinDeactivate = (data) => {
+    Quiz.updateOne({ pin: data }, { active: false }).then((data) => {
+        console.log("Başarıyla active False oldu");
     })
 }
 
@@ -146,58 +155,63 @@ Io.of('/game').on('connection', (socket) => {
     const io = Io.of('/game');
     socket.on('sendPin', (pin) => {
         pinControl(pin, (quiz) => {
-            socket.join(pin, () => {
-                //roomName alınıyor
-                const roomName = Object.keys(socket.rooms)[0];
-                //UserId alınıyor
-                const userId = Object.keys(socket.rooms)[1];
-                //odaya girdiğine dair bilgi
-                console.log("roomName: "+roomName);
-                socket.emit('join', { status: true });
-                //username girdiğininde bu kontroller çalışacak otomatik.
-                socket.on('sendUsername', (username) => {
-                    // gelen kullanıcıyı id ve hangi roomName sahip olduğunu ve kullanıcı adı ile kaydediyor.
-                    roomControl.addUser(userId, roomName, username);
-                    //player ekranında tüm kullanıcılar görünüyor
-                    io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
-                    //client kısmında başla komutu geldiğinde işleyecek.
-                    //result
-                    //soruya cevap verildiğinde ekleniyor
-                    socket.on('sendAnswer', (user) => {
-                        //soru geri gönderilirken currentQuestion.time işe yarayacak.
-                        let questionScore = 0
-                        if (user.answer === roomControl.rooms[roomName].currentQuestion.answer) {
-                            questionScore = (1000 - ((Date.now() - roomControl.rooms[roomName].startTime) / 10));
-                            questionScore = Math.max(100, questionScore);
-                        }
-                        roomControl.addAnswer(roomName, userId, user.answer, questionScore, roomControl.rooms[roomName].currentQuestion.answer);
-                        console.log(roomControl.getRoom(roomName));
-                    });
-
-                    socket.on('disconnect', () => {
-                        roomControl.roomUserDelete(roomName, userId);
+            if (quiz !== 0) {
+                socket.join(pin, () => {
+                    //roomName alınıyor
+                    const roomName = Object.keys(socket.rooms)[0];
+                    //UserId alınıyor
+                    const userId = Object.keys(socket.rooms)[1];
+                    //odaya girdiğine dair bilgi
+                    socket.emit('join', { status: true });
+                    //username girdiğininde bu kontroller çalışacak otomatik.
+                    socket.on('sendUsername', (username) => {
+                        // gelen kullanıcıyı id ve hangi roomName sahip olduğunu ve kullanıcı adı ile kaydediyor.
+                        roomControl.addUser(userId, roomName, username);
+                        //player ekranında tüm kullanıcılar görünüyor
                         io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
+                        socket.emit('userCount', { userCount: socket.adapter.rooms[pin].length - 1, pin });
+                        //client kısmında başla komutu geldiğinde işleyecek.
+                        //result
+                        //soruya cevap verildiğinde ekleniyor
+                        socket.on('sendAnswer', (user) => {
+                            //soru geri gönderilirken currentQuestion.time işe yarayacak.
+                            let questionScore = 0
+                            if (user.answer === roomControl.rooms[roomName].currentQuestion.answer) {
+                                questionScore = (1000 - ((Date.now() - roomControl.rooms[roomName].startTime) / 10));
+                                questionScore = Math.max(100, questionScore);
+                            }
+                            roomControl.addAnswer(roomName, userId, user.answer, questionScore, roomControl.rooms[roomName].currentQuestion.answer);
+                            console.log(roomControl.getRoom(roomName));
+                        });
+
+                        socket.on('disconnect', () => {
+                            roomControl.roomUserDelete(roomName, userId);
+                            io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
+                        });
+
                     });
-
-                });quiz
-
-                // soruları tek tke gönder ve herkese socket.io şeklinde gönder.
-            });
+                    // soruları tek tke gönder ve herkese socket.io şeklinde gönder.
+                });
+            } else {
+                socket.emit('join', { status: false });
+            }
 
         });
 
     });
     socket.on('sendAdmin', (pin) => {
         console.log(pin);
-       
+
         //Odayı kontrol edebilmek için roomControl sınıfına atanıyor
         pinActive(pin, (quiz) => {
             socket.join(pin, () => {
                 const roomName = Object.keys(socket.rooms)[0];
                 room = roomControl.getRoom(roomName);
-                
+                socket.emit('startButton', pin);
+                socket.emit('userCount', { userCount: socket.adapter.rooms[pin].length - 1, pin });
                 socket.on('startGame', () => {
                     //ilk soru ekleniyor.
+                    pinDeactivate(pin);
                     roomControl.setQuiz(roomName, quiz);
                     io.to(pin).emit('gameStart');
                     roomControl.resetRoom(roomName);

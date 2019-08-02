@@ -7,30 +7,50 @@ let io = null;
 class Players extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             person: "",
             players: [],
             userCount: 0,
             isVisible: false,
+            startButton: "",
+            pin: 0,
         }
     }
 
     componentDidMount() {
-        if(document.querySelector('.modal-backdrop')){
+        if (document.querySelector('.modal-backdrop')) {
             document.querySelector('.modal-backdrop').remove();
         }
         io = Io('game');
         if (this.props.location.state.pin !== 0) {
             // io.emit('sendAdmin', this.props.location.state.pin)
             const pin = this.props.location.state.pin
+
             io.emit('sendAdmin', pin);
+
+            io.on('startButton', (pin) => {
+                this.setState({
+                    startButton:
+                        <div className="button-start" >
+                            <button onClick={this.onClickEvent}
+                                className="btn-start"
+                                type="button" > Start </button>
+                        </div>,
+                })
+            });
             console.log(pin);
         }
+        io.on('userCount', (data) => {
+            this.setState({
+                pin: data.pin,
+            })
+        })
         io.on('newUser', (players) => {
+            const userCount = players.length;
             if (isNaN(players)) {
                 this.setState({
-                    players: players
+                    players: players,
+                    userCount:userCount
                 });
             } else {
                 console.log("at");
@@ -53,11 +73,11 @@ class Players extends Component {
         return (
             <div>
                 {this.state.isVisible ?
-                    <Redirect to= '/Answer' />
+                    <Redirect to='/Answer' />
                     :
                     <div>
                         <div className="container players-content" >
-                            <div className="players-top" > {this.state.userCount} </div>
+                            <div className="players-top" > {this.state.pin}  </div>
                             <div className="players-bottom" > {
                                 this.state.players.map((player, i) => {
                                     return (< div key={i} > {player} </div>)
@@ -65,12 +85,8 @@ class Players extends Component {
                             } </div>
                         </div>
                         <div className="container-fluid players-start" >
-                            <div className="players-number" > 20 Players </div>
-                            <div className="button-start" >
-                                <button onClick={this.onClickEvent}
-                                    className="btn-start"
-                                    type="button" > Start </button>
-                            </div>
+                            <div className="players-number" > {this.state.userCount} Players </div>
+                            {this.state.startButton}
                         </div>
                     </div>
                 }

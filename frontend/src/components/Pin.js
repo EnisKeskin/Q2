@@ -12,7 +12,8 @@ class Pin extends Component {
 
     this.state = {
       value: "",
-      isVisible: false
+      isVisible: false,
+      err:""
     }
   }
 
@@ -26,7 +27,9 @@ class Pin extends Component {
       if (req.status) {
         this.setState({ isVisible: true });
       } else {
-        console.log("Böyle bir quiz yok");
+        this.setState({
+          err: <div className="alert alert-danger">Pin bulunamadı</div>
+        })
       }
     });
   };
@@ -53,6 +56,7 @@ class Pin extends Component {
                 <div className="pin-logo">
                   <img src={require('../images/logo/logo-w.png')} className="img-pin-logo" alt="" />
                 </div>
+                {this.state.err}
                 <div className="pin-text">
                   <input type="text" className="txt-pin" placeholder="Game Pin" onChange={this.onChangeEvent} />
                 </div>
