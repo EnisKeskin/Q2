@@ -17,7 +17,7 @@ class Profile extends Component {
             loginVisible: false,
         }
     }
-
+    
     componentDidMount() {
         io = Io('profil', localStorage.getItem('token'));
         io.emit('getProfilInfo');
@@ -88,7 +88,7 @@ class Profile extends Component {
 
                                             <p> {quiz.description} </p>
 
-                                            <button type="button" className="btn-play">Play</button>
+                                            <Link to={{pathname: '/Players',  state: {pin: quiz.pin}}} className="btn-play">Play</Link>
                                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                                         </div>
 

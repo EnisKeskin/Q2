@@ -17,7 +17,16 @@ class Players extends Component {
     }
 
     componentDidMount() {
+        if(document.querySelector('.modal-backdrop')){
+            document.querySelector('.modal-backdrop').remove();
+        }
         io = Io('game');
+        if (this.props.location.state.pin !== 0) {
+            // io.emit('sendAdmin', this.props.location.state.pin)
+            const pin = this.props.location.state.pin
+            io.emit('sendAdmin', pin);
+            console.log(pin);
+        }
         io.on('newUser', (players) => {
             if (isNaN(players)) {
                 this.setState({
@@ -44,12 +53,7 @@ class Players extends Component {
         return (
             <div>
                 {this.state.isVisible ?
-                    <Redirect to={
-                        {
-                            pathname: '/Answer',
-                            state: { id: 0 }
-                        }
-                    } />
+                    <Redirect to= '/Answer' />
                     :
                     <div>
                         <div className="container players-content" >

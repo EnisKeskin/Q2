@@ -18,7 +18,7 @@ class RoomControl {
     }
 
     addUser(userId, roomName, username) {
-        let room = this.getRoom(roomName);
+        const room = this.getRoom(roomName);
 
         room.users[userId] = {
             username: username,
@@ -28,13 +28,18 @@ class RoomControl {
     }
 
     getRoom(roomName) {
-        let room = this.rooms[roomName] ? this.rooms[roomName] : {
+        console.log("room oluştu");
+        let room = this.rooms[roomName] ? 
+        this.rooms[roomName] : {
             quiz: null,
             startTime: null,
             currentQuestion: null,
             currentQuestionIndex: -1,
             users: {},
         }
+        console.log(roomName);
+        console.log(this.rooms[roomName]);
+        // console.log(room);
         this.rooms[roomName] = room;
         return room;
     }
@@ -49,7 +54,7 @@ class RoomControl {
         this.calcTotalPoint(roomName, userId, score);
     }
 
-    calcTotalPoint(roomName, userId, score) {
+    calcTotalPoint(roomName, userId) {
         let user = this.getRoom(roomName).users[userId];
         user.totalPoint = 0;
         user.answers.forEach((answer) => {
@@ -93,10 +98,10 @@ class RoomControl {
         const room = this.getRoom(roomName);
         room.currentQuestionIndex += 1;
         console.log(room.currentQuestionIndex);
-        if (room.currentQuestionIndex > room.quiz[0].question.length) {
+        if (room.currentQuestionIndex > room.quiz.question.length) {
             return null;
         }
-        room.currentQuestion = room.quiz[0].question[room.currentQuestionIndex];
+        room.currentQuestion = room.quiz.question[room.currentQuestionIndex];
         //oyun başladığında sayaçta başlatılıyor.
         room.startTime = Date.now();
         return room.currentQuestion;
@@ -124,24 +129,30 @@ const pinControl = (data, callback) => {
             callback(err);
         });
 }
+
+const pinActive = (data, callback) => {
+    Quiz.findOneAndUpdate({ pin: data }, { active: true }).then((quiz) => {
+        callback(quiz);
+    }).catch((err) => {
+        throw err;
+    })
+}
+
+let roomControl = new RoomControl();
+let room = {};
 Io.of('/game').on('connection', (socket) => {
     console.log('Bağlandı');
     socket.emit('connected');
     const io = Io.of('/game');
     socket.on('sendPin', (pin) => {
-        const roomControl = new RoomControl();
         pinControl(pin, (quiz) => {
-
             socket.join(pin, () => {
                 //roomName alınıyor
                 const roomName = Object.keys(socket.rooms)[0];
                 //UserId alınıyor
                 const userId = Object.keys(socket.rooms)[1];
-                //Odayı kontrol edebilmek için roomControl sınıfına atanıyor
-                const room = roomControl.getRoom(roomName);
-                //odanın içinq quiz atanıyor
-                roomControl.setQuiz(roomName, quiz);
                 //odaya girdiğine dair bilgi
+                console.log("roomName: "+roomName);
                 socket.emit('join', { status: true });
                 //username girdiğininde bu kontroller çalışacak otomatik.
                 socket.on('sendUsername', (username) => {
@@ -150,46 +161,6 @@ Io.of('/game').on('connection', (socket) => {
                     //player ekranında tüm kullanıcılar görünüyor
                     io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
                     //client kısmında başla komutu geldiğinde işleyecek.
-                    socket.on('startGame', () => {
-                        //ilk soru ekleniyor.
-                        io.to(pin).emit('gameStart');
-                        roomControl.resetRoom(roomName);
-                        //soruyu gönderiyor
-                        // room resetlenecek bir fonksiyonlanacak
-                        room.currentQuestion = null;
-                        nextQuestion();
-                    });
-
-                    let answernumber = 0;
-
-                    const nextQuestion = () => {
-
-                        const question = roomControl.nextQuestion(roomName);
-                        console.log(question)
-                        if (!question) {
-                            io.to(roomName).emit('showScoreboard');
-                            io.to(roomName).emit('Scoreboard', roomControl.top5(roomName));
-
-                            return;
-                        }
-                        io.to(roomName).emit('newQuestion', question);
-
-                        setTimeout(() => {
-                            let answStatic = []
-                            Object.keys(room.users).forEach((userId) => {
-                                answStatic.push(room.users[userId].answers[answernumber]);
-                            });
-                            answernumber++;
-                            io.to(roomName).emit('staticstics', answStatic);
-
-                            setTimeout(() => {
-                                if (room.quiz[0].question.length !== question) {
-                                    nextQuestion();
-                                }
-                            }, 5000);
-
-                        }, room.currentQuestion.time * 1000);
-                    }
                     //result
                     //soruya cevap verildiğinde ekleniyor
                     socket.on('sendAnswer', (user) => {
@@ -200,7 +171,7 @@ Io.of('/game').on('connection', (socket) => {
                             questionScore = Math.max(100, questionScore);
                         }
                         roomControl.addAnswer(roomName, userId, user.answer, questionScore, roomControl.rooms[roomName].currentQuestion.answer);
-
+                        console.log(roomControl.getRoom(roomName));
                     });
 
                     socket.on('disconnect', () => {
@@ -208,15 +179,65 @@ Io.of('/game').on('connection', (socket) => {
                         io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
                     });
 
-                });
+                });quiz
+
                 // soruları tek tke gönder ve herkese socket.io şeklinde gönder.
             });
 
         });
 
     });
+    socket.on('sendAdmin', (pin) => {
+        console.log(pin);
+       
+        //Odayı kontrol edebilmek için roomControl sınıfına atanıyor
+        pinActive(pin, (quiz) => {
+            socket.join(pin, () => {
+                const roomName = Object.keys(socket.rooms)[0];
+                room = roomControl.getRoom(roomName);
+                
+                socket.on('startGame', () => {
+                    //ilk soru ekleniyor.
+                    roomControl.setQuiz(roomName, quiz);
+                    io.to(pin).emit('gameStart');
+                    roomControl.resetRoom(roomName);
+                    //soruyu gönderiyor
+                    // room resetlenecek bir fonksiyonlanacak
+                    room.currentQuestion = null;
+                    nextQuestion();
+                });
+                let answernumber = 0;
+                const nextQuestion = () => {
+                    const question = roomControl.nextQuestion(roomName);
+                    if (!question) {
+                        io.to(roomName).emit('showScoreboard');
+                        io.to(roomName).emit('Scoreboard', roomControl.top5(roomName));
 
+                        return;
+                    }
+                    io.to(roomName).emit('newQuestion', question);
+
+                    setTimeout(() => {
+                        let answStatic = []
+                        Object.keys(room.users).forEach((userId) => {
+                            answStatic.push(room.users[userId].answers[answernumber]);
+                        });
+                        answernumber++;
+                        io.to(roomName).emit('staticstics', answStatic);
+
+                        setTimeout(() => {
+                            if (room.quiz.question.length !== question) {
+                                nextQuestion();
+                            }
+                        }, 5000);
+
+                    }, room.currentQuestion.time * 1000);
+                }
+            })
+        });
+    })
 });
+
 
 Io.of('/profil').use((socket, next) => {
     const token = socket.handshake.query.token
@@ -246,16 +267,17 @@ Io.of('/profil').use((socket, next) => {
         User.findById(socket.decoded.userId, (err, user) => {
             if (err)
                 throw err
-            socket.emit('setProfilInfo',  {username: user.username , userId: user._id, firstname: user.firstname , lastname: user.lastname} );
-            Quiz.find({userId:user._id},(err, res) => {
-                const quizs= [];
+            socket.emit('setProfilInfo', { username: user.username, userId: user._id, firstname: user.firstname, lastname: user.lastname });
+            Quiz.find({ userId: user._id }, (err, res) => {
+                const quizs = [];
                 res.forEach((quiz) => {
-                  quizs.push({
-                     title: quiz.title,
-                     description: quiz.description,
-                     img: quiz.img,
-                     userId: quiz.userId,
-                  });
+                    quizs.push({
+                        title: quiz.title,
+                        description: quiz.description,
+                        img: quiz.img,
+                        userId: quiz.userId,
+                        pin: quiz.pin
+                    });
                 });
                 socket.emit('profilQuiz', quizs);
             })
@@ -263,14 +285,14 @@ Io.of('/profil').use((socket, next) => {
     });
 
     socket.on('addingQuestions', (question) => {
-    Quiz.findById(question.quizId, (err, res) => {
-        if (err)
-            throw err;
-        delete question.quizId
-        res.question.push(question);
-        res.save();
-        socket.emit('newQuestionCreate');
-    });
+        Quiz.findById(question.quizId, (err, res) => {
+            if (err)
+                throw err;
+            delete question.quizId
+            res.question.push(question);
+            res.save();
+            socket.emit('newQuestionCreate');
+        });
     });
 
 
