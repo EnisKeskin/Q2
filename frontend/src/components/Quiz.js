@@ -1,6 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import Io from '../connection';
-import { Redirect } from 'react-router'
+import { Redirect } from 'react-router';
+import { Link } from 'react-router-dom';
+// import Superagent from 'superagent';
 
 let io = null;
 
@@ -9,6 +11,7 @@ class Quiz extends Component {
     constructor(props) {
         super(props);
         this.quizId = "";
+        this.file = "";
         this.state = {
             location: "",
             language: "",
@@ -23,7 +26,7 @@ class Quiz extends Component {
         this.onchangeLanguageEvent = this.onChangeLanguageEvent.bind(this);
         this.onChangeTitleEvent = this.onChangeTitleEvent.bind(this);
         this.onChangeDescAreaEvent = this.onChangeDescAreaEvent.bind(this);
-        //     this.onChangeRUserEvent = this.onChangeRUserEvent.bind(this);
+        this.onChangeUploadEvent = this.onChangeUploadEvent.bind(this);
     }
 
     componentDidMount() {
@@ -61,18 +64,21 @@ class Quiz extends Component {
         })
     }
 
+    onChangeUploadEvent = (e) => {
+        this.file = e.target.files[0]
+    }
+
     // console.log(this.props.location.state.id);
     onClickEvent = (e) => {
         e.preventDefault();
         let state = this.state;
-        console.log("at");
+
         io.emit('quizCreate', {
             title: state.title,
             description: state.description,
             location: state.location,
             language: state.language,
             question: state.question,
-            pin: 765411,
         })
     }
 
@@ -107,10 +113,10 @@ class Quiz extends Component {
                         <div className="capsule-2">
                             <header className="quiz-header">
                                 <div className="quiz-logo">
-                                    <img src="images/logo/logo-w.png" className="img-quiz-logo" alt="" />
+                                    <img src={require('../images/logo/logo-w.png')} className="img-quiz-logo" alt="" />
                                 </div>
                                 <div className="close">
-                                    <img src="images/quiz/cancel.png" alt="" />
+                                    <Link to='/profil'><img src={require('../images/quiz/cancel.png')} alt="" /></Link>
                                 </div>
                             </header>
                             <form action="." method="POST">
@@ -119,7 +125,7 @@ class Quiz extends Component {
                                     <div className="quiz-image">
                                         <label className="lbl-file" htmlFor="file">    Tap to add cover images   </label>
 
-                                        <input className="fileupload" type="file" name="fileToUpload" id="file" />
+                                        <input className="fileupload" type="file" name="fileToUpload" id="file" encType="multipart/form-data" onChange={this.onChangeUploadEvent} />
 
                                     </div>
 

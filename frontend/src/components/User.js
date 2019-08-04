@@ -14,6 +14,8 @@ class User extends Component {
       rusername: "",
       rpassword: "",
       remail: "",
+      rfirstname: "",
+      rlastname: "",
       profilVisible: false,
       loginInfo: "",
     }
@@ -26,11 +28,19 @@ class User extends Component {
     this.onChangeRPasswordEvent = this.onChangeRPasswordEvent.bind(this);
     this.onChangeRUserEvent = this.onChangeRUserEvent.bind(this);
     this.onClickRegisterEvent = this.onClickRegisterEvent.bind(this);
+    this.onChangeRFirstEvent = this.onChangeRFirstEvent.bind(this);
+    this.onChangeRLastEvent = this.onChangeRLastEvent.bind(this);
+
 
   }
 
   componentDidMount() {
     io = Io('user');
+    if(localStorage.getItem('token')){
+      this.setState({
+        profilVisible: true
+      }); 
+    }
     io.on('succLogin', (token) => {
       if (isNaN(token)) {
         localStorage.removeItem('token');
@@ -48,47 +58,60 @@ class User extends Component {
     })
   }
 
-  onChangeEmailEvent(e) {
+  onChangeEmailEvent = (e) => {
     this.setState({
       lemail: e.target.value
     });
   }
 
-  onChangePassEvent(e) {
+  onChangePassEvent = (e) => {
     this.setState({
       lpassword: e.target.value
     });
   }
 
-  onClickLoginEvent(e) {
+  onClickLoginEvent = (e) => {
     e.preventDefault();
     const state = this.state;
     io.emit('userLogin', state.lemail, state.lpassword);
   }
 
-  onChangeRUserEvent(e) {
+  onChangeRUserEvent = (e) => {
     this.setState({
       rusername: e.target.value
     });
   }
 
-  onChangeRMailEvent(e) {
+  onChangeRMailEvent = (e) => {
     this.setState({
       remail: e.target.value
     });
   }
 
-  onChangeRPasswordEvent(e) {
+  onChangeRPasswordEvent = (e) => {
     this.setState({
       rpassword: e.target.value
     });
   }
 
-  onClickRegisterEvent(e) {
+  onChangeRFirstEvent = (e) => {
+    this.setState({
+      rfirstName: e.target.value
+    })
+  }
+  
+  onChangeRLastEvent = (e) => {
+    this.setState({
+      rlastName: e.target.value
+    })
+  }
+
+  onClickRegisterEvent = (e) => {
     e.preventDefault();
     const state = this.state;
-    io.emit('userRegister', state.remail, state.rpassword, state.rusername);
+    io.emit('userRegister', state.remail, state.rpassword, state.rusername, state.rfirstname, state.rlastname);
   }
+
 
   render() {
     return (
@@ -98,59 +121,59 @@ class User extends Component {
           :
           <div>
 
-            <div class="figure">
+            <div className="figure">
 
             </div>
-            <div class="figure-2">
+            <div className="figure-2">
 
             </div>
 
-            <div class="capsule">
+            <div className="capsule">
 
 
 
-              <div class="container user">
-                <div class="user-logo">
-                  <img src={require('../images/logo/logo-w.png')} class="img-user-logo" alt="Quiz" />
+              <div className="container user">
+                <div className="user-logo">
+                  <img src={require('../images/logo/logo-w.png')} className="img-user-logo" alt="Quiz" />
                 </div>
 
 
-                <div class="row">
+                <div className="row">
 
-                  <div class="col-lg-6 login">
+                  <div className="col-lg-6 login">
 
-                    <div class="login-text">Log In</div>
+                    <div className="login-text">Log In</div>
 
-                    <div class="login-in">
+                    <div className="login-in">
 
                       <form action="." method="POST">
-                        <div class="login-input">
+                        <div className="login-input">
 
-                          <div class="login-img">
-                            <img src={require('../images/user-icon/user.png')} class="img-user" alt="" />
+                          <div className="login-img">
+                            <img src={require('../images/user-icon/user.png')} className="img-user" alt="" />
                           </div>
 
-                          <div class="login-textarea">
-                            <input type="text" placeholder="User Name" class="txt-user" required onChange={this.onChangeEmailEvent} />
-                          </div>
-
-                        </div>
-
-                        <div class="login-password-input">
-
-                          <div class="login-img">
-                            <img src={require('../images/user-icon/password.png')} class="img-password" alt="" />
-                          </div>
-
-                          <div class="login-textarea">
-                            <input type="password" placeholder="Password" class="txt-password" required onChange={this.onChangePassEvent} />
+                          <div className="login-textarea">
+                            <input type="text" placeholder="User Name" className="txt-user" autoComplete="username" required onChange={this.onChangeEmailEvent} />
                           </div>
 
                         </div>
 
-                        <div class="login-button">
+                        <div className="login-password-input">
 
-                          <button type="submit" class="btn-login" onClick={this.onClickLoginEvent} >Enter</button>
+                          <div className="login-img">
+                            <img src={require('../images/user-icon/password.png')} className="img-password" alt="" />
+                          </div>
+
+                          <div className="login-textarea">
+                            <input type="password" placeholder="Password" className="txt-password" autoComplete="current-password" required onChange={this.onChangePassEvent} />
+                          </div>
+
+                        </div>
+
+                        <div className="login-button">
+
+                          <button type="submit" className="btn-login" onClick={this.onClickLoginEvent} >Enter</button>
                         </div>
                       </form>
 
@@ -158,26 +181,24 @@ class User extends Component {
 
                   </div>
 
-                  <div class="col-lg-6 signup">
-                    <div class="signup-text">
-                      Sign Up
-              </div>
-                    <div class="signup-in">
+                  <div className="col-lg-6 signup">
+                    <div className="signup-text">Sign Up</div>
+                    <div className="signup-in">
 
                       <form action="." method="POST">
-                        <div class="user-name">
-                          <input type="text" class="txt-username" placeholder="First Name" required />
+                        <div className="user-name">
+                          <input type="text" className="txt-username" placeholder="First Name" required onChange={this.onChangeRFirstEvent} />
 
-                          <input type="text" class="txt-username" placeholder="Last Name" required  />
+                          <input type="text" className="txt-username" placeholder="Last Name" required onChange={this.onChangeRLastEvent} />
                         </div>
-                        <input type="text" class="txt-signup" placeholder="User Name" required onChange={this.onChangeRUserEvent} />
+                        <input type="text" className="txt-signup" placeholder="User Name" required onChange={this.onChangeRUserEvent} />
 
-                        <input type="email" class="txt-signup" placeholder="E-Mail" required onChange={this.onChangeRMailEvent} />
+                        <input type="email" className="txt-signup" placeholder="E-Mail" autoComplete="username" required onChange={this.onChangeRMailEvent} />
 
-                        <input type="password" class="txt-signup" placeholder="Password" required onChange={this.onChangeRPasswordEvent} />
+                        <input type="password" className="txt-signup" placeholder="Password" autoComplete="current-password" required onChange={this.onChangeRPasswordEvent} />
 
-                        <div class="sign-button">
-                          <button type="submit" class="btn-sign" onClick={this.onClickRegisterEvent} >Sign Up</button>
+                        <div className="sign-button">
+                          <button type="submit" className="btn-sign" onClick={this.onClickRegisterEvent} >Sign Up</button>
                         </div>
                       </form>
 

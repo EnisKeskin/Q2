@@ -15,9 +15,10 @@ class Profile extends Component {
             fullname: "",
             quizs: [],
             loginVisible: false,
+            quizCount: 0,
         }
     }
-    
+
     componentDidMount() {
         io = Io('profil', localStorage.getItem('token'));
         io.emit('getProfilInfo');
@@ -29,18 +30,20 @@ class Profile extends Component {
         });
         io.on('profilQuiz', (quizs) => {
             this.setState({
-                quizs
+                quizs,
+                quizCount: quizs.length
             });
         });
     }
 
     quizModel() {
         const stateQuizs = this.state.quizs;
+        console.log(stateQuizs);
         const quizs = [];
         stateQuizs.forEach((quiz, key) => {
             quizs.push(
                 <div key={key}>
-                    <div data-toggle="modal" data-target={"#quiz-item-modal"+key} className="my-quiz">
+                    <div data-toggle="modal" data-target={"#quiz-item-modal" + key} className="my-quiz">
                         <div className="my-quiz-img">
                             <img src={require('../images/quiz/quiz.png')} className="img-quiz" alt="" />
                         </div>
@@ -51,7 +54,7 @@ class Profile extends Component {
 
                     </div>
 
-                    <div className="modal fade bd-example-modal-lg" id={"quiz-item-modal"+key} tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+                    <div className="modal fade bd-example-modal-lg" id={"quiz-item-modal" + key} tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
                         aria-hidden="true">
                         <div className="modal-dialog modal-dialog-centered modal-xl" role="document">
 
@@ -73,7 +76,7 @@ class Profile extends Component {
 
                                                 <img src={require('../images/user/Oval.png')} className="img-user-modal" alt="" />
 
-                                                <div className="modal-name">sytopcu</div>
+                                                <div className="modal-name">{quiz.user.username}</div>
 
                                                 <div className="modal-star">
 
@@ -88,7 +91,7 @@ class Profile extends Component {
 
                                             <p> {quiz.description} </p>
 
-                                            <Link to={{pathname: '/Players',  state: {pin: quiz.pin}}} className="btn-play">Play</Link>
+                                            <Link to={{ pathname: '/Players', state: { pin: quiz.pin } }} className="btn-play">Play</Link>
                                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                                         </div>
 
@@ -100,7 +103,7 @@ class Profile extends Component {
                         </div>
                     </div>
                 </div>
-            
+
             )
         });
         return quizs;
@@ -172,33 +175,19 @@ class Profile extends Component {
 
                                     <div className="row">
 
-                                        <div className="col-lg-6">
+                                        <div className="col-lg-12 mb-5">
                                             <div className="profil-information-left">
                                                 <div>Quiz Created </div>
-                                                <div> 1 </div>
+                                                <div> {this.state.quizCount} </div>
                                             </div>
                                         </div>
 
-                                        <div className="col-lg-6">
+                                        <div className="col-lg-12">
 
                                             <div className=" profil-information-right">
                                                 <div> Hosted Games </div>
-                                                <div> 1 </div>
+                                                <div> {this.state.quizCount} </div>
 
-                                            </div>
-                                        </div>
-
-                                        <div className="col-lg-12">
-                                            <div className="profil-capsule">
-                                                <div>Challenges Played </div>
-                                                <div>1</div>
-                                            </div>
-                                        </div>
-
-                                        <div className="col-lg-12">
-                                            <div className="profil-capsule">
-                                                <div>Live Games Played </div>
-                                                <div>1</div>
                                             </div>
                                         </div>
 
@@ -217,7 +206,7 @@ class Profile extends Component {
                                     </ul>
                                 </div>
 
-                            {this.quizModel()}
+                                {this.quizModel()}
 
                             </div>
 

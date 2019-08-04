@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Quiz = require('../models/Quiz');
 const jwt = require('jsonwebtoken');
+const fileUpload = require('express-fileupload');
 
 router.get('/', (req, res, next) => {
     res.json({ status: 1 });
@@ -99,6 +100,29 @@ router.post('/user', (req, res) => {
             throw err
         res.json({ status: 1, user });
     })
+})
+
+router.post('/upload', (req, res) => {
+    console.log(req.body);
+    if(req.files)
+    {    
+        console.log("at");
+        const file = req.files.filename,
+                filename = file.name;
+        file.mv('../media/'+filename, (err) => {
+            if(err){
+                throw err
+            }else {
+                res.json('Oldu.')
+            }
+        })  
+    //    Quiz.findOne({ pin: req.quizId }, (err, user) => {
+    //        if (err)
+    //        throw err
+    //        res.json({ status: 1 });
+    //        console.log(user);
+    //     })
+    }
 })
 
 module.exports = router;

@@ -10,7 +10,6 @@ const key = require('../config').api_top_secret_key;
 const Io = socketio();
 socketApi.io = Io;
 
-let ROOMS = {};
 // yeni class yapılacak question room için
 class RoomControl {
     constructor() {
@@ -112,12 +111,6 @@ class RoomControl {
 
 }
 
-class UserControl {
-    constructor() {
-        this.user = {};
-    }
-}
-
 const pinControl = (data, callback) => {
     if (data) {
         Quiz.find({ pin: data, active: true })
@@ -145,6 +138,18 @@ const pinDeactivate = (data) => {
     Quiz.updateOne({ pin: data }, { active: false }).then((data) => {
         console.log("Başarıyla active False oldu");
     })
+}
+
+const pinCreate = (callback) => {
+    let randomKey = 0;
+    randomKey = Math.floor(Math.random() * 10000) + 1000;
+    Quiz.findOne({ pin: randomKey }).then((data) => {
+        if (data) {
+            pinCreate()
+        } else {
+            callback(randomKey);
+        }
+    });
 }
 
 let roomControl = new RoomControl();
@@ -267,14 +272,16 @@ Io.of('/profil').use((socket, next) => {
 }).on('connection', (socket) => {
 
     socket.on('quizCreate', (quiz) => {
-        quiz.userId = socket.decoded.userId;
-        const promise = new Quiz(quiz)
-        promise.save()
-            .then((data) => {
-                socket.emit('quizId', data._id);
-            }).catch((err) => {
-                socket.emit('quizError', message = "Ne yaptın Emmi");
-            });
+        pinCreate((randomKey) => {
+            quiz.userId = socket.decoded.userId;
+            quiz.pin = randomKey;
+            new Quiz(quiz).save()
+                .then((data) => {
+                    socket.emit('quizId', data._id);
+                }).catch((err) => {
+                    socket.emit('quizError', message = "Error");
+                });
+        });
     });
 
     socket.on('getProfilInfo', () => {
@@ -282,18 +289,36 @@ Io.of('/profil').use((socket, next) => {
             if (err)
                 throw err
             socket.emit('setProfilInfo', { username: user.username, userId: user._id, firstname: user.firstname, lastname: user.lastname });
-            Quiz.find({ userId: user._id }, (err, res) => {
-                const quizs = [];
-                res.forEach((quiz) => {
-                    quizs.push({
-                        title: quiz.title,
-                        description: quiz.description,
-                        img: quiz.img,
-                        userId: quiz.userId,
-                        pin: quiz.pin
-                    });
-                });
-                socket.emit('profilQuiz', quizs);
+            Quiz.aggregate([
+                {
+                    $match:{
+                        userId: mongoose.Types.ObjectId(user._id)
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'userId',
+                        foreignField: '_id',
+                        as: 'user'
+                    }
+                },
+                {
+                    $unwind: '$user'
+                },
+                {
+                    $project: {
+                        title: 1,
+                        description: 1,
+                        img: 1,
+                        user: '$user',
+                        pin: 1,
+                    }
+                }
+            ], (err, result) => {
+                if (err)
+                    throw err
+                    socket.emit('profilQuiz', result);
             })
         });
     });
@@ -308,8 +333,6 @@ Io.of('/profil').use((socket, next) => {
             socket.emit('newQuestionCreate');
         });
     });
-
-
 
 });
 
@@ -341,12 +364,13 @@ Io.of('/user').on('connection', (socket) => {
 
     });
 
-
-    socket.on('userRegister', (email, password, username) => {
+    socket.on('userRegister', (email, password, username, firstname, lastname) => {
         bcrypt.hash(password, 10).then((hash) => {
             const user = new User({
                 email,
                 username,
+                firstname,
+                lastname,
                 password: hash
             });
             user.save().then((data) => {

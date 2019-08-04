@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const quizShema = new Schema({
+const quizSchema = new Schema({
     title: {
         type: String,
         // required: true,
@@ -68,4 +68,4 @@ const quizShema = new Schema({
 
 
 
-module.exports = mongoose.model('quiz', quizShema);
+module.exports = mongoose.model('quiz', quizSchema);
