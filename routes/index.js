@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Quiz = require('../models/Quiz');
 const jwt = require('jsonwebtoken');
-const fileUpload = require('express-fileupload');
+const fs = require('fs');
 
 router.get('/', (req, res, next) => {
     res.json({ status: 1 });
@@ -103,27 +103,27 @@ router.post('/user', (req, res) => {
 })
 
 router.post('/upload', (req, res) => {
-    console.log(req.body);
-    if(req.files)
-    {    
-        console.log("at");
-        const file = req.files.filename,
-                filename = file.name;
-        file.mv('../media/'+filename, (err) => {
-            if(err){
-                throw err
-            }else {
-                res.json('Oldu.')
-            }
-        })  
-    //    Quiz.findOne({ pin: req.quizId }, (err, user) => {
-    //        if (err)
-    //        throw err
-    //        res.json({ status: 1 });
-    //        console.log(user);
-    //     })
+    console.log(req.files.theFile.file);
+    console.log(req.body.whereToIns);
+    if (req.body.whereToIns === 'quiz') {
+        Quiz.findByIdAndUpdate({ _id: req.body.quizId }, { img: req.files.theFile.file });
+    } else if (req.body.whereToIns === 'question') {
+        Quiz.update(
+            { 'question._id': req.body.questionId },
+            {
+                '$set': {
+                    'question.$.img': req.files.theFile.file
+                }
+            },
+            (err, result) => {
+                if (err)
+                    throw err
+                console.log(result);
+            })
+
     }
 })
+
 
 module.exports = router;
 

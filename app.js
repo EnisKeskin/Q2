@@ -7,27 +7,35 @@ const exphbs = require('express-handlebars');
 const db = require('./helper/db')();
 const cors = require('cors');
 const config = require('./config');
-const verifyToken = require('./middleware/verify-token'); 
-
+const verifyToken = require('./middleware/verify-token');
 const indexRouter = require('./routes/index');
+const busboy = require('express-busboy');
 
 const app = express();
 
-app.use(cors({origin: '*'}));
+busboy.extend(app, {
+  upload: true,
+  path: './media',
+  allowedPath: /./,
+})
+
+app.use(cors({ origin: '*' }));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
-app.set('api_top_secret_key', config.api_top_secret_key) 
-
+app.set('api_top_secret_key', config.api_top_secret_key)
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/media',express.static(path.join(__dirname, 'media')));
 
-app.use('/',indexRouter);
+
+
+app.use('/', indexRouter);
 app.use('/api', indexRouter);
 app.use('/api/profil', verifyToken);
 

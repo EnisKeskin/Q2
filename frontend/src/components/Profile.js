@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Redirect } from 'react-router'
 import Io from '../connection';
+import Header from './static/Header'
 
 let io = null;
 
@@ -16,6 +17,7 @@ class Profile extends Component {
             quizs: [],
             loginVisible: false,
             quizCount: 0,
+            file: "",
         }
     }
 
@@ -38,7 +40,6 @@ class Profile extends Component {
 
     quizModel() {
         const stateQuizs = this.state.quizs;
-        console.log(stateQuizs);
         const quizs = [];
         stateQuizs.forEach((quiz, key) => {
             quizs.push(
@@ -65,7 +66,7 @@ class Profile extends Component {
                                     <div className="row">
 
                                         <div className="col-lg-6 modal-left">
-                                            <img src={require('../images/thumb-1920-943148.jpg')} className="img-modal" alt="" />
+                                            <img src={`http://localhost:3000/${quiz.img}`} className="img-modal" alt="" />
                                         </div>
 
                                         <div className="col-lg-6 modal-right">
@@ -74,13 +75,13 @@ class Profile extends Component {
 
                                             <div className="modal-user">
 
-                                                <img src={require('../images/user/Oval.png')} className="img-user-modal" alt="" />
+                                                <img src={`http://localhost:3000/${quiz.img}`} className="img-user-modal" alt="" />
 
-                                                <div className="modal-name">{quiz.user.username}</div>
+                                                <div className="modal-name">{quiz.username}</div>
 
                                                 <div className="modal-star">
 
-                                                    <img src={require('../images/quiz/star.png')} alt="" className="img-star" />
+                                                    <img src='/media/5399802a-37a6-4ce9-980b-6a95a8a8bd01/theFile/24730898.jpeg' alt="" className="img-star" />
 
                                                     <img src={require('../images/quiz/dot.png')} className="img-dot" alt="" />
                                                 </div>
@@ -119,39 +120,7 @@ class Profile extends Component {
                     :
                     <div className="capsule-2">
                         <Link to="#" className="mobil-profil">Profil</Link>
-
-                        <header>
-
-                            <div className="logo">
-                                <img src={require('../images/logo/logo-v.png')} className="img-logo" alt="" />
-                            </div>
-
-                            <div className="menu">
-
-                                <ul>
-                                    <li>
-                                        <div className="icon"> <img src={require('../images/menu-icon/enter-pin.png')} className="img-icon" alt="" /> </div>
-                                        <Link to="#"> Enter Pin </Link>
-                                    </li>
-                                    <li>
-                                        <div className="icon"><img src={require('../images/menu-icon/discover.png')} className="img-icon" alt="" /> </div>
-                                        <Link to="#"> Discover </Link>
-                                    </li>
-                                    <li>
-                                        <div className="icon"> <img src={require('../images/menu-icon/create.png')} className="img-icon" alt="" /> </div>
-                                        <Link to="/quiz"> Create </Link>
-                                    </li>
-
-                                    <li className="li-icon"> <Link to="/profil"><img src={require('../images/menu-icon/profil.png')} className="img-icon" alt="" /> </Link> </li>
-
-                                    <li> <img src={require('../images/menu-icon/settings.png')} className="img-icon" alt="" /> </li>
-
-                                </ul>
-
-                            </div>
-
-                        </header>
-
+                        <Header/>
                         <div className="content">
 
                             <div className="content-profil" id="profil">

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Io from '../connection'
 import { Link } from 'react-router-dom'
+import Superagent from 'superagent';
 
 let io = null
 
@@ -8,6 +9,7 @@ class Question extends Component {
 
     constructor(props) {
         super(props);
+        this.file = "";
         this.answers = [4];
         this.question = {
             quizId: "",
@@ -17,7 +19,9 @@ class Question extends Component {
             time: 0,
             img: "",
         }
-
+        this.state= {
+            file: "",
+        }
 
         this.onChangeQuestionEvent = this.onChangeQuestionEvent.bind(this);
         this.onChangeAnswer1Event = this.onChangeAnswer1Event.bind(this);
@@ -26,6 +30,7 @@ class Question extends Component {
         this.onChangeAnswer4Event = this.onChangeAnswer4Event.bind(this);
         this.onChangeTrueAnswerEvent = this.onChangeTrueAnswerEvent.bind(this);
         this.onChangeTimeEvent = this.onChangeTimeEvent.bind(this);
+        this.onChangeFileEvent = this.onChangeFileEvent.bind(this);
     }
 
     componentDidMount() {
@@ -35,8 +40,17 @@ class Question extends Component {
             this.question.quizId = this.props.location.state.quizId
         }
 
-        io.on('newQuestionCreate', () => {
-            
+        io.on('newQuestionCreate', (quiz) => {
+            if (this.file) {
+                Superagent
+                    .post('http://localhost:3000/api/upload')
+                    .field('questionId', quiz.questionId)
+                    .field('whereToIns', 'question')
+                    .attach("theFile", this.file)
+                    .end((err, result) => {
+
+                    })
+            }
         })
     }
 
@@ -69,6 +83,13 @@ class Question extends Component {
         this.question.time = e.target.value
     }
 
+    onChangeFileEvent = (e) => {
+        this.file = e.target.files[0];
+        this.setState({
+            file : URL.createObjectURL(e.target.files[0])
+        })
+    }
+
     onClickEvent = (e) => {
         e.preventDefault();
         this.resetForm()
@@ -86,6 +107,9 @@ class Question extends Component {
             time: 0,
             img: "",
         }
+        this.setState({
+            file: ""
+        })
     }
 
     resetForm = () => {
@@ -112,9 +136,9 @@ class Question extends Component {
                 <div className="container question-content">
                 <form action="." method="POST" ref={(el) => this.myFormRef = el}>
                     <div className="question-image">
-                    <label class="lbl-file" for="file">   Tap to add cover images    </label>
-                    <input class="fileupload" type="file" name="fileToUpload" id="file"/>
-
+                    <label className="lbl-file" htmlFor="file">   Tap to add cover images    </label>
+                    <input className="fileupload" type="file" name="fileToUpload" id="file" onChange={this.onChangeFileEvent}/>
+                       <img src={this.state.file} alt="" srcset=""/>
                         <div className="select-box-question" onChange={this.onChangeTimeEvent} >
                             <select name="" id="" required>
                                 <option value="0">Select Time</option>
@@ -183,7 +207,7 @@ class Question extends Component {
                     </div>
 
                     <div className="add-question">
-                        <button class="btn-add" type="submit" value="" onClick={this.onClickEvent} ></button>
+                        <button className="btn-add" type="submit" value="" onClick={this.onClickEvent} ></button>
                     </div>
                     </form>
                 </div>

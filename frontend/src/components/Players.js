@@ -46,11 +46,12 @@ class Players extends Component {
             })
         })
         io.on('newUser', (players) => {
-            const userCount = players.length;
+            let userCount = 0;
+            players.length ? userCount = players.length : userCount = 0;
             if (isNaN(players)) {
                 this.setState({
                     players: players,
-                    userCount:userCount
+                    userCount: userCount
                 });
             } else {
                 console.log("at");

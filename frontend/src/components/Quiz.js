@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Io from '../connection';
 import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
-// import Superagent from 'superagent';
+import Superagent from 'superagent';
 
 let io = null;
 
@@ -33,6 +33,16 @@ class Quiz extends Component {
         this.resetVarible();
         io = Io('profil', localStorage.getItem('token'));
         io.on('quizId', (quizId) => {
+            if (this.file) {
+                Superagent
+                    .post('http://localhost:3000/api/upload')
+                    .field('quizId', quizId)
+                    .field('whereToIns', 'quiz')
+                    .attach("theFile", this.file)
+                    .end((err, result) => {
+                        console.log(result);
+                    })
+            }
             this.quizId = quizId
             this.setState({
                 questionVisible: true
@@ -66,20 +76,21 @@ class Quiz extends Component {
 
     onChangeUploadEvent = (e) => {
         this.file = e.target.files[0]
+        console.log(this.file);
     }
 
     // console.log(this.props.location.state.id);
     onClickEvent = (e) => {
         e.preventDefault();
         let state = this.state;
-
         io.emit('quizCreate', {
             title: state.title,
             description: state.description,
             location: state.location,
             language: state.language,
             question: state.question,
-        })
+            img: ""
+        });
     }
 
     resetVarible = () => {

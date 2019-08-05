@@ -142,7 +142,7 @@ const pinDeactivate = (data) => {
 
 const pinCreate = (callback) => {
     let randomKey = 0;
-    randomKey = Math.floor(Math.random() * 10000) + 1000;
+    randomKey = Math.floor(Math.random() * 1000000) + 100000;
     Quiz.findOne({ pin: randomKey }).then((data) => {
         if (data) {
             pinCreate()
@@ -291,7 +291,7 @@ Io.of('/profil').use((socket, next) => {
             socket.emit('setProfilInfo', { username: user.username, userId: user._id, firstname: user.firstname, lastname: user.lastname });
             Quiz.aggregate([
                 {
-                    $match:{
+                    $match: {
                         userId: mongoose.Types.ObjectId(user._id)
                     }
                 },
@@ -318,7 +318,7 @@ Io.of('/profil').use((socket, next) => {
             ], (err, result) => {
                 if (err)
                     throw err
-                    socket.emit('profilQuiz', result);
+                socket.emit('profilQuiz', result);
             })
         });
     });
@@ -330,9 +330,40 @@ Io.of('/profil').use((socket, next) => {
             delete question.quizId
             res.question.push(question);
             res.save();
-            socket.emit('newQuestionCreate');
+            socket.emit('newQuestionCreate', { questionId: res.question[res.question.length - 1]._id });
         });
     });
+
+    socket.on('getDiscover', () => {
+        Quiz.aggregate([
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'user'
+                }
+            },
+            {
+                $unwind: '$user'
+            },
+            {
+                $project: {
+                    title: 1,
+                    description: 1,
+                    img: 1,
+                    username: '$user.username',
+                    pin: 1,
+                    questionCount: { $size: '$question' }
+                },
+            },
+
+        ], (err, result) => {
+            if (err)
+                throw err
+            socket.emit('setDiscover', result);
+        })
+    })
 
 });
 

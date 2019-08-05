@@ -9,6 +9,7 @@ import Profil from './components/Profile';
 import Answer from './components/Answer';
 import Username from './components/Username';
 import Scoreboard from './components/Scoreboard'
+import Discover from './components/Discover'
 
 
 class App extends Component {
@@ -25,6 +26,8 @@ class App extends Component {
                 <Route exact path='/Profil' component={Profil} />
                 <Route exact path='/Quiz' component={Quiz} />
                 <Route exact path='/Question' component={Question} />
+
+                <Route exact path='/Discover' component={Discover} />
 
                 {/* <Route component = {}/> farklı linklere gidildiğinde */}
             </Router>

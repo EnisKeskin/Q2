@@ -18,10 +18,7 @@ class Answer extends Component {
             progress: 100,
             isVisible: true,
             statistics: false,
-            a: 0,
-            b: 0,
-            c: 0,
-            d: 0,
+            a: 0, b: 0, c: 0, d: 0,
         }
     }
 
@@ -38,14 +35,10 @@ class Answer extends Component {
                     progress: 100,
                     isVisible: true,
                     statistics: false,
-                    a: 0,
-                    b: 0,
-                    c: 0,
-                    d: 0,
+                    a: 0, b: 0, c: 0, d: 0,
                 });
                 this.interval = 0;
                 this.time = 0;
-
                 this.time = question.time;
 
                 this.interval = setInterval(() => {
@@ -114,8 +107,6 @@ class Answer extends Component {
             });
         })
     };
-    //serdada 10 sn başlıcak zaman oldu statictis ekranana yollucak
-    //router üzerinden gidilicek
     componentDidUpdate() {
         if (this.state.time === 0) {
             clearInterval(this.interval);
@@ -133,66 +124,65 @@ class Answer extends Component {
             block.style.pointerEvents = "none";
 
         });
-        console.log(answer);
         io.emit('sendAnswer', { answer });
 
     }
 
     render() {
         const question =
-        <div>
-            <div className="container answer-contet">
+            <div>
+                <div className="container answer-contet">
 
-                <div className="answer-top">
-                    <div className="answer-top-in">
-                        <div className="answer-image">
-                            <img src={require('../images/quiz/quiz.png')} alt="" srcSet="" />
+                    <div className="answer-top">
+                        <div className="answer-top-in">
+                            <div className="answer-image">
+                                <img src={require('../images/quiz/quiz.png')} alt="" srcSet="" />
+                            </div>
+                            <div className="answer-question">
+                                {this.state.questionTitle}
+                                <div className="triangle"></div>
+                            </div>
                         </div>
-                        <div className="answer-question">
-                            {this.state.questionTitle}
-                            <div className="triangle"></div>
+                    </div>
+                    <div className="progressbar" style={{ 'width': `${this.state.progress}%` }}>
+                        {this.state.time}
+                    </div>
+
+                </div>
+
+                <div className="answer-bottom">
+
+                    <div className="container answer-bottom-in">
+                        <div className="row">
+
+                            <div className="col-md-6">
+                                <div className="answer-1" onClick={this.onCLickEvent.bind(this, 0)}>
+                                    {this.state.answers[0]}
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="answer-2" onClick={this.onCLickEvent.bind(this, 1)}>
+                                    {this.state.answers[1]}
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="answer-3" onClick={this.onCLickEvent.bind(this, 2)}>
+                                    {this.state.answers[2]}
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="answer-4" onClick={this.onCLickEvent.bind(this, 3)}>
+                                    {this.state.answers[3]}
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
-                <div className="progressbar" style={{ 'width': `${this.state.progress}%` }}>
-                    {this.state.time}
-                </div>
-
-            </div>
-
-            <div className="answer-bottom">
-
-                <div className="container answer-bottom-in">
-                    <div className="row">
-
-                        <div className="col-md-6">
-                            <div className="answer-1" onClick={this.onCLickEvent.bind(this, 0)}>
-                                {this.state.answers[0]}
-                            </div>
-                        </div>
-
-                        <div className="col-md-6">
-                            <div className="answer-2" onClick={this.onCLickEvent.bind(this, 1)}>
-                                {this.state.answers[1]}
-                            </div>
-                        </div>
-
-                        <div className="col-md-6">
-                            <div className="answer-3" onClick={this.onCLickEvent.bind(this, 2)}>
-                                {this.state.answers[2]}
-                            </div>
-                        </div>
-
-                        <div className="col-md-6">
-                            <div className="answer-4" onClick={this.onCLickEvent.bind(this, 3)}>
-                                {this.state.answers[3]}
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>;
+            </div>;
 
         return (
             <div>
@@ -262,7 +252,7 @@ class Answer extends Component {
 
                                 </div>
                             </div>
-                            :  <Redirect to='/Scoreboard' />
+                            : <Redirect to='/Scoreboard' />
                         }
                     </div>
                 }
