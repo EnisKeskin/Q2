@@ -1,55 +1,48 @@
-<header class="quiz-header">
-    <div class="quiz-logo">
-        <img src="images/logo/logo-w.png" class="img-quiz-logo" alt="">
-    </div>
-</header>
-<form action="/quiz" method="POST" >
-    <div class="quiz-content">
-        <div class="quiz-image">
-            <img src="images/thumb-1920-943148.jpg" alt="">
+<div class="capsule-2">
+    <header class="quiz-header">
+        <div class="quiz-logo">
+            <img src="images/logo/logo-w.png" class="img-quiz-logo" alt="">
         </div>
-        <div class="quiz-right">
-            <div class="dropdown">
-                <div class="select-box select-box-1 ">
-                    <select name="visibility" id="">
-                        {{#each visibility}}
-                        <option value="{{option}}">{{option}}</option>
-                        {{/each}}
-                    </select>
-                </div>
-                <div class="select-box select-box-2">
-                    <select name="location" id="">
-                        {{#each location}}
-                        <option value="{{option}}">{{option}}</option>
-                        {{/each}}
-                    </select>
-                </div>
-                <div class="select-box select-box-3">
-                    <select name="language" id="">
-                        {{#each language}}
-                        <option value="{{option}}">{{option}}</option>
-                        {{/each}}
-                    </select>
-                </div>
+        <div class="close">
+            <img src="images/quiz/cancel.png" alt="">
+        </div>
+    </header>
+    <form action="." method="POST">
+        <div class="quiz-content">
+            <div class="quiz-image">
+                <label class="lbl-file" for="file"> Tap to add cover images </label>
+                <input class="fileupload" type="file" name="fileToUpload" id="file">
             </div>
-            <input type="text" name="title" placeholder="Title" class="txt-title">
-            <textarea placeholder="Description" name="description" class="txt-description"></textarea>
-        </div>
-    </div>
-    <div class="quiz-questions">
-        <h2>Questions</h2>
-        <div class="questions-image">
-            {{#each questions}}
-            <div class="questions-image-in">
-                <div class="q-image">
-                    <img src="{{imageurl}}" alt="">
+            <div class="quiz-right">
+                <div class="dropdown">
+                    <div class="select-box select-box-1 ">
+                        <select name="visibility" id="" required="">
+                            {{#each visibility}}
+                            <option value="{{option}}">{{option}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="select-box select-box-2">
+                        <select name="location" id="" required="">
+                            {{#each location}}
+                            <option value="{{option}}">{{option}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="select-box select-box-3">
+                        <select name="language" id="" required="">
+                            {{#each language}}
+                            <option value="{{option}}">{{option}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
                 </div>
-                <div class="spn-questions">Question {{@index}}</div>
+                <input type="text" name="title" placeholder="Title" class="txt-title" required="">
+                <textarea placeholder="Description" name="description" class="txt-description" required=""></textarea>
             </div>
-            {{/each}}
         </div>
-    </div>
-    <div class="quiz-enter-button">
-        <button type="submit" class="btn-quiz-enter">Enter</button>
-    </div>
-</form>
+        <div class="quiz-enter-button">
+            <button type="submit" class="btn-quiz-enter">Enter</button>
+        </div>
+    </form>
+</div>

@@ -1,1 +1,51 @@
-layout
+<div class="capsule-2">
+    <header class="quiz-header">
+        <div class="quiz-logo">
+            <img src="images/logo/logo-w.png" class="img-quiz-logo" alt="">
+        </div>
+        <div class="close">
+            <img src="images/quiz/cancel.png" alt="">
+        </div>
+    </header>
+    <div class="quiz-content">
+        <div class="quiz-image">
+            <label class="lbl-file" for="file"> Tap to add cover images </label>
+            <input class="fileupload" type="file" name="fileToUpload" id="file">
+        </div>
+        <div class="quiz-right">
+            <form action="." method="POST">
+                <div class="dropdown">
+                    <div class="select-box select-box-1 ">
+                        <select name="" id="" required="">
+                            <option value="">Visible to </option>
+                            <option value="1">option 2</option>
+                            <option value="1">option 3</option>
+                            <option value="1">option 4</option>
+                        </select>
+                    </div>
+                    <div class="select-box select-box-2">
+                        <select required="" name="" id="">
+                            <option value="">Location </option>
+                            <option value="1">option 2</option>
+                            <option value="1">option 3</option>
+                            <option value="1">option 4</option>
+                        </select>
+                    </div>
+                    <div class="select-box select-box-3">
+                        <select required="" name="" id="">
+                            <option value="">Language </option>
+                            <option value="1">option 2</option>
+                            <option value="1">option 3</option>
+                            <option value="1">option 4</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="text" placeholder="Title" class="txt-title" required="">
+                <textarea placeholder="Description" class="txt-description" required=""></textarea>
+            </form>
+        </div>
+    </div>
+    <div class="quiz-enter-button">
+        <button type="submit" class="btn-quiz-enter">Enter</button>
+    </div>
+</div>

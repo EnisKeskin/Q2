@@ -17,7 +17,6 @@ module.exports = (io) => {
     }
     else {
       quiz.find({ pin: pin }).then((data) => {
-        console.log(data);
         if (data.length != 0) {
           Rooms[pin] = {
             players: {},
