@@ -15,9 +15,8 @@ router.post('/register', (req, res, next) => {
       username,
       password: hash
     });
-    const promise = user.save();
 
-    promise.then((data) => {
+    user.save().then((data) => {
       res.json({ status: 1 });
     }).catch((err) => {
       res.json(err);
@@ -27,10 +26,10 @@ router.post('/register', (req, res, next) => {
 });
 
 router.post('/login', (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   User.findOne({
-    email
+    username
   }, (err, user) => {
     if (err)
       throw err
@@ -42,12 +41,12 @@ router.post('/login', (req, res) => {
     } else {
       bcrypt.compare(password, user.password).then((result) => {
         if (!result) {
-          res.render('user', {
+          res.render('users', {
             status: 0,
             message: "Login error",
           });
         } else {
-          res.redirect('/users');
+          res.redirect('/home');
         }
       });
     };

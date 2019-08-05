@@ -9,23 +9,21 @@
           Log In
         </div>
         <div class="login-in">
-          <form action="." method="POST">
-            <!-- textarea -->
+          <form action="/login" method="POST">
             <div class="login-input">
               <div class="login-img">
                 <img src="images/user-icon/user.png" class="img-user" alt="">
               </div>
               <div class="login-textarea">
-                <input type="text" placeholder="User Name" class="txt-user" required="">
+                <input name="username" type="text" placeholder="User Name" class="txt-user" required="">
               </div>
             </div>
-            <!-- textarea -->
             <div class="login-password-input">
               <div class="login-img">
                 <img src="images/user-icon/password.png" class="img-password" alt="">
               </div>
               <div class="login-textarea">
-                <input type="password" placeholder="Password" class="txt-password" required="">
+                <input name="password" type="password" placeholder="Password" class="txt-password" required="">
               </div>
             </div>
             <div class="login-button">
@@ -39,14 +37,14 @@
           Sign Up
         </div>
         <div class="signup-in">
-          <form action="." method="POST">
+          <form action="/register" method="POST">
             <div class="user-name">
-              <input type="text" class="txt-username" placeholder="First Name" required="">
-              <input type="text" class="txt-username" placeholder="Last Name" required="">
+              <input name="firstname" type="text" class="txt-username" placeholder="First Name" required="">
+              <input name="lastname" type="text" class="txt-username" placeholder="Last Name" required="">
             </div>
-            <input type="text" class="txt-signup" placeholder="User Name" required="">
-            <input type="email" class="txt-signup" placeholder="E-Mail" required="">
-            <input type="password" class="txt-signup" placeholder="Password" required="">
+            <input name="username" type="text" class="txt-signup" placeholder="User Name" required="">
+            <input name="email" type="email" class="txt-signup" placeholder="E-Mail" required="">
+            <input name="password" type="password" class="txt-signup" placeholder="Password" required="">
             <div class="sign-button">
               <button type="submit" class="btn-sign">Sign Up</button>
             </div>
