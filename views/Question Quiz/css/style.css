@@ -34,6 +34,9 @@ ul {
     margin: 0;
     padding: 0;
 }
+.menu{
+    position: relative;
+}
 
 .menu ul {
     list-style-type: none;
@@ -73,6 +76,32 @@ ul {
 .menu ul li a:hover{
     color: gray;
     opacity: 0.8;
+}
+
+.menu ul li ul{
+    list-style: none;
+    position: absolute;
+    top:30px;
+    right: -1px;
+    display: none;
+    border: 1px solid #d5d5d5;
+    background-color: white;
+    border-radius: 15px;
+}
+.menu ul li ul li{
+    width: 70px;
+    height: 38px;
+display: flex;
+justify-content: center;
+align-items: center;
+padding-left: 15px;
+}
+.menu ul li ul li a{
+    font-size: 17px;
+}
+
+.menu ul li:hover ul{
+    display: block;
 }
 
 .content {
@@ -473,6 +502,9 @@ transform: scale(1.02);
     .li-icon {
         margin-left: 0;
     }
+    .menu ul li ul li a{
+        font-size: 14px;
+    }
 }
 
 @media only screen and (max-width: 600px) {
@@ -702,7 +734,27 @@ transform: scale(1.02);
     display: flex;
     justify-content: flex-start;
 }
-
+.login-error{
+    width: 347px;
+    min-height: 40px;
+    margin: auto;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: white;
+    background-image: url("../images/quiz/cancel-2.png");
+    background-size: 32px;
+    background-repeat: no-repeat;
+    background-position: 0%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+.sign-err{
+    margin-top: 0px;
+}
 .login-img {
     width: 19px;
     height: 56px;
@@ -764,13 +816,11 @@ transform: scale(1.02);
     outline: none;
     border-bottom-right-radius: 8px;
     font-size: 15px;
-
-
+    margin-bottom: 50px;    
 }
 
 .login-button {
     text-align: center;
-    margin-top: 23px;
 }
 
 .btn-login {
@@ -932,6 +982,7 @@ transform: scale(1.02);
     padding: 0px;
     width: 100%;
     display: flex;
+    position: relative;
 }
 
 .quiz-image {
@@ -965,6 +1016,7 @@ transform: scale(1.02);
     padding-left: 50px;
     width: calc(100% - 900px);
     padding-right: 50px;
+    position: relative;
 }
 
 .txt-title {
@@ -1007,6 +1059,20 @@ transform: scale(1.02);
     transform: scale(1.02); 
     position: relative;
 }
+
+.quiz-error{
+    width:100%;
+    min-height: 40px;
+    background-image: url("../images/quiz/cancel-2.png");
+    background-size: 32px;
+    background-repeat: no-repeat;
+    background-position: 0%;
+    padding-left: 50px;
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
 .dropdown {
     display: flex;
 }
@@ -1291,7 +1357,7 @@ select::-ms-expand {
     cursor: pointer;
     overflow: hidden;
     width: 100%;
-    height: 430px;
+    height: 570px;
     color: #CAC4C4;
     font-style: normal;
     font-weight: 500;
@@ -1336,8 +1402,8 @@ select::-ms-expand {
 }
 
 .question-image img {
-    max-height: 430px;
-    min-height: 430px;
+    max-height: 570px;
+    min-height: 570px;
     border-radius: 30px;
     display: block;
     width: 100%;
@@ -1531,6 +1597,23 @@ select::-ms-expand {
 .btn-add:hover{
     
 }
+.question-error{
+    width:50%;
+    min-height: 40px;
+    background-image: url("../images/quiz/cancel-2.png");
+    background-size: 32px;
+    background-repeat: no-repeat;
+    background-position: 0%;
+    padding-left: 50px;
+    padding-right: 50px;
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    justify-content: center;
+    margin: auto;
+    margin-bottom: 20px;
+
+}
 .custom-control {
     height: 100px;
 }
@@ -1672,7 +1755,11 @@ select::-ms-expand {
     transition: 0.3s;
     transform: scale(1.05);
 }
-
+@media only screen and (max-width:1000px) {
+    .question-error{
+        width: 100%;
+    }
+}
 @media only screen and (max-width:720px) {
     .players-content {
         display: block;
@@ -1690,6 +1777,7 @@ select::-ms-expand {
     .players-number {
         font-size: 30px;
     }
+  
 }
 
 @media only screen and (max-width:450px) {
