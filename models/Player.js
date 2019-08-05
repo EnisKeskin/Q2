@@ -1,7 +1,8 @@
 module.exports = class Player {
-    constructor(username, socket) {
+    constructor(username, socket, pin) {
         this.username = username;
         this.socket = socket;
+        this.pin = pin;
         this.answers = [];
         this.totalPoint = 0;
     }

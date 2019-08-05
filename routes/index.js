@@ -13,12 +13,13 @@ module.exports = (io) => {
     const pin = req.body.pin;
     var Room = Rooms[pin];
     if (Room != null || Room != undefined) {
-      res.redirect('game?pin=' + p);
+      res.redirect('game?pin=' + pin);
     }
     else {
       quiz.find({ pin: pin }).then((data) => {
+        console.log(data);
         if (data.length != 0) {
-          Room = {
+          Rooms[pin] = {
             players: {},
             started: false,
             questionIndex: 0,
@@ -27,7 +28,7 @@ module.exports = (io) => {
             answers: [0,0,0,0],
             time: 0
           };
-          res.redirect('game?pin=' + p);
+          res.redirect('game?pin=' + pin);
         } else {
           alert("There is no game with given pin");
         }

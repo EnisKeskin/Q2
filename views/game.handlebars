@@ -11,7 +11,7 @@
     var url = new URL(url_string);
     var pin = url.searchParams.get("pin");
     function emit() {
-        socket.emit("start-the-game", { p: pin });
+        socket.emit("start-the-game", { pin: pin });
     }
     function answer(index) {
         socket.emit('give-answer',

@@ -31,9 +31,8 @@ module.exports = (io) => {
   gameNamespace.on("connect", function (socket) {
 
     socket.on('enter-lobby', (pin) => {
-      var player = new Player('player_' + Math.floor(Math.random() * 10000), socket);
       var Room = Rooms[pin];
-      Room.players[socket.id] = player;
+      Room.players[socket.id] = new Player('player_' + Math.floor(Math.random() * 10000), socket);
       if (Room.started) {
         quiz.find({ pin: pin }).then((data) => {
           if (data.length != 0) {
@@ -54,13 +53,13 @@ module.exports = (io) => {
       }
       else {
         var playersInLobby = [];
-        const playerkeys = Object.keys(Room.players);
+        const players = Object.values(Room.players);
 
-        playerkeys.forEach((p) => {
-          playersInLobby.push({ name: p.username.split("|")[0] });
+        players.forEach((player) => {
+          playersInLobby.push({ name: player.username });
         });
-        playerkeys.forEach((p) => {
-          gameNamespace.to(p.socket.id).emit('render-content',
+        players.forEach((player) => {
+          gameNamespace.to(player.socket.id).emit('render-content',
             {
               pin: pin,
               players: playersInLobby,
@@ -72,7 +71,7 @@ module.exports = (io) => {
     });
 
     socket.on('start-the-game', (data) => {
-      var pin = data.p;
+      var pin = data.pin;
       var Room = Rooms[pin];
       Room.time = Date.now();
       Room.started = true;
@@ -81,7 +80,7 @@ module.exports = (io) => {
       quiz.find({ pin: pin }).then((result) => {
         if (result.length != 0) {
           var question = result[0].question[index];
-          Object.keys(Room.players).forEach((player) => {
+          Object.values(Room.players).forEach((player) => {
             gameNamespace.to(player.socket.id).emit('render-content',
               {
                 question: question.questionTitle,
@@ -98,21 +97,21 @@ module.exports = (io) => {
 
     function nextQ(pin) {
       var Room = Rooms[pin];
-      var playerKeys = Object.keys(Room.players);
+      var players = Object.values(Room.players);
       var index = Room.questionIndex;
       var results = [];
 
       Room.questionIndex++;
       Room.time = Date.now();
 
-      playerKeys.forEach((player) => {
+      players.forEach((player) => {
         results.push({ name: player.username, point: player.calculateTotalPoints() });
       });
       results.sort((a, b) => { return b.point - a.point; });
       var firstPlace = results.splice(0, 1)[0];
 
       if (index >= Room.questionCount) {
-        playerKeys.forEach((player) => {
+        players.forEach((player) => {
           gameNamespace.to(player.socket.id).emit('render-content',
             {
               first: firstPlace,
@@ -126,7 +125,7 @@ module.exports = (io) => {
         quiz.find({ pin: pin }).then((result) => {
           if (result.length != 0) {
             var question = result[0].question[index];
-            playerKeys.forEach((player) => {
+            players.forEach((key) => {
               gameNamespace.to(player.socket.id).emit('render-content',
                 {
                   question: question.questionTitle,
@@ -146,29 +145,29 @@ module.exports = (io) => {
       var pin = data.pin;
       var Room = Rooms[pin];
       var index = Room.questionIndex;
-      var thePlayer = Room[socket.id];
-      let playerKeys = Object.keys(Room.players);
+      var thePlayer = Room.players[socket.id];
+      let players = Object.values(Room.players);
 
       if (thePlayer.answers.length <= index) {
         quiz.find({ pin: pin }).then((result) => {
           if (result.length != 0) {
             var quiz = result[0];
             var question = quiz.question[index];
-            const answer = new Answer(Room.time, Date.now(), data.answer, data.answer == q.answer);
+            const answer = new Answer(Room.time, Date.now(), data.answer, data.answer == question.answer);
             thePlayer.answers.push(answer);
             Room.answers[data.answer]++;
             Room.playersAnswered++;
 
-            if (playerKeys.length <= Room.playersAnswered) {
-              playerKeys.forEach((player) => {
+            if (players.length <= Room.playersAnswered) {
+              players.forEach((player) => {
                 player.answers[index].setTime(Room.time - Date.now());
               });
               var count = Room.playersAnswered;
               var percentages = [
-                Rooms[p].answers[0] * 100 / count,
-                Rooms[p].answers[1] * 100 / count,
-                Rooms[p].answers[2] * 100 / count,
-                Rooms[p].answers[3] * 100 / count
+                Room.answers[0] * 100 / count,
+                Room.answers[1] * 100 / count,
+                Room.answers[2] * 100 / count,
+                Room.answers[3] * 100 / count
               ];
               var colors = [
                 "lightgray",
@@ -178,7 +177,7 @@ module.exports = (io) => {
               ];
               colors[quiz.question[index].answer] = "green";
               Room.playersAnswered = 0;
-              playerKeys.forEach((player) => {
+              players.forEach((player) => {
                 gameNamespace.to(player.socket.id).emit('render-content',
                   {
                     count: Room.answers,
@@ -189,7 +188,7 @@ module.exports = (io) => {
                   });
               });
               Room.answers = [0, 0, 0, 0];
-              setTimeout(() => { nextQ(p); }, STATISTICS_TIMEOUT);
+              setTimeout(() => { nextQ(pin); }, STATISTICS_TIMEOUT);
             }
             else {
               gameNamespace.to(socket.id).emit('render-content',
