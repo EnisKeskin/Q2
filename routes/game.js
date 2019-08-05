@@ -98,10 +98,9 @@ module.exports = (io) => {
     function nextQ(pin) {
       var Room = Rooms[pin];
       var players = Object.values(Room.players);
-      var index = Room.questionIndex;
+      var index = ++(Room.questionIndex);
       var results = [];
 
-      Room.questionIndex++;
       Room.time = Date.now();
 
       players.forEach((player) => {
@@ -125,7 +124,7 @@ module.exports = (io) => {
         quiz.find({ pin: pin }).then((result) => {
           if (result.length != 0) {
             var question = result[0].question[index];
-            players.forEach((key) => {
+            players.forEach((player) => {
               gameNamespace.to(player.socket.id).emit('render-content',
                 {
                   question: question.questionTitle,
@@ -151,9 +150,10 @@ module.exports = (io) => {
       if (thePlayer.answers.length <= index) {
         quiz.find({ pin: pin }).then((result) => {
           if (result.length != 0) {
+            console.log(result[0]);
             var quiz = result[0];
             var question = quiz.question[index];
-            const answer = new Answer(Room.time, Date.now(), data.answer, data.answer == question.answer);
+            var answer = new Answer(Room.time, Date.now(), data.answer, data.answer == question.answer);
             thePlayer.answers.push(answer);
             Room.answers[data.answer]++;
             Room.playersAnswered++;

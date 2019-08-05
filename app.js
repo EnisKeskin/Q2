@@ -22,9 +22,6 @@ const usersRouter = require('./routes/users');
 const quizRouter = require('./routes/quiz');
 const answerRouter = require('./routes/answer');
 const homeRouter = require('./routes/home');
-
-const scoreboardRouter = require('./routes/scoreboard');
-const playRouter = require('./routes/play');
 const discoverRouter = require('./routes/discover');
 
 
@@ -52,9 +49,6 @@ app.use('/game', gameRouter);
 app.use('/quiz', quizRouter);
 app.use('/answer', answerRouter);
 app.use('/home', homeRouter);
-
-app.use('/scoreboard', scoreboardRouter);
-app.use('/play', playRouter);
 app.use('/discover', discoverRouter);
 
 // catch 404 and forward to error handler
