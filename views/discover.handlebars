@@ -5,18 +5,21 @@
         </div>
         <div class="menu">
             <ul>
-                <li><a href="/">
+                <a href="index.html">
+                    <li>
                         <div class="icon"><img src="images/menu-icon/enter-pin.png" class="img-icon" alt=""> </div>
                         Enter Pin
-                    </a></li>
-                <li><a href="discover">
+                </a></li>
+                <a href="discover.html">
+                    <li>
                         <div class="icon"><img src="images/menu-icon/discover.png" class="img-icon" alt=""> </div>
                         Discover
-                    </a></li>
-                <li><a href="quiz">
+                </a></li>
+                <a href="quiz.html">
+                    <li>
                         <div class="icon"> <img src="images/menu-icon/create.png" class="img-icon" alt=""> </div> Create
-                    </a></li>
-                <li class="li-icon"> <a href="home"><img src="images/menu-icon/profil.png" class="img-icon" alt="">
+                </a></li>
+                <li class="li-icon"> <a href="home.html"><img src="images/menu-icon/profil.png" class="img-icon" alt="">
                     </a> </li>
                 <li> <a href="#"><img src="images/menu-icon/settings.png" class="img-icon" alt=""> </a> </li>
             </ul>
@@ -38,52 +41,40 @@
                 <span class="spn-discover-title">Trending</span>
                 <span> <a href="#"> See All </a></span>
             </div>
-            <div class="discover-trend-bottom slick-initialized slick-slider"><button class="slick-prev slick-arrow"
-                    aria-label="Previous" type="button" style="">Previous</button>
-                <div class="slick-list draggable">
-                    <div class="slick-track"
-                        style="opacity: 1; width: 25000px; transform: translate3d(0px, 0px, 0px);">
-                        {{#each Trending}}
-                        <div class="discover-trend-block slick-slide" tabindex="-1"
-                            data-slick-index="{{this.slickIndex}}" aria-hidden="true">
-                            <img src="{{this.quizImage}}" alt="quiz image">
-                            <div class="discover-block-text">
-                                <span class="spn-discover">{{this.quizTitle}} </span>
-                                <span class="spn-discover-2"> {{this.questionCount}} Questions</span>
-                                <div class="discover-owner">
-                                    {{this.ownerName}} <img src="{{this.ownerImage}}" alt="owner image">
-                                </div>
-                            </div>
-                        </div>
-                        {{/each}}
-                    </div>
-                </div><button class="slick-next slick-arrow" aria-label="Next" type="button" style="">Next</button>
-            </div>
-        </div>
-    </div>
-    <div class="discover-quizs">
-        <div class="discover-quizs-title">
-            <h3>Quizzes</h3>
-        </div>
-        <div class="discover-quizs-bottom slick-initialized slick-slider"><button class="slick-prev slick-arrow"
-                aria-label="Previous" type="button" style="">Previous</button>
-            <div class="slick-list draggable">
-                <div class="slick-track" style="opacity: 1; width: 8944px; transform: translate3d(0px, 0px, 0px);">
-                    {{#each Discover}}
-                    <div class="discover-quizs-block slick-slide" tabindex="-1" style="width: 668px;"
-                        data-slick-index="{{this.slickIndex}}" aria-hidden="true">
+            <div class="discover-trend-bottom" style="overflow:hidden; border-right: solid 20px rgba(0, 0, 0, 0);">
+                    {{#each Trending}}
+                    <div class="discover-trend-block">
                         <img src="{{this.quizImage}}" alt="quiz image">
-                        <div class="discover-quizs-text">
-                            <span class="spn-discover-quizs">{{this.quizTitle}}</span>
-                            <span class="spn-discover-2-quizs"> {{this.questionCount}} Questions</span>
-                            <div class="discover-owner-quizs">
-                                {{this.ownerName}} <img src="{{this.ownerImage}}" alt="">
+                        <div class="discover-block-text">
+                            <span class="spn-discover">{{this.quizTitle}} </span>
+                            <span class="spn-discover-2"> {{this.questionCount}} Questions</span>
+                            <div class="discover-owner">
+                                {{this.ownerName}} <img src="{{this.ownerImage}}" alt="owner image">
                             </div>
                         </div>
                     </div>
                     {{/each}}
                 </div>
-            </div><button class="slick-next slick-arrow" aria-label="Next" type="button" style="">Next</button>
+            </div>
+        </div>
+    </div>
+    <div class="discover-quizs">
+        <div class="discover-quizs-title">
+            <h3>Quizs</h3>
+        </div>
+        <div class="discover-quizs-bottom" style="overflow:hidden;">
+            {{#each Discover}}
+            <div class="discover-quizs-block">
+                <img src="{{this.quizImage}}" alt="quiz image">
+                <div class="discover-quizs-text">
+                    <span class="spn-discover-quizs">{{this.quizName}}</span>
+                    <span class="spn-discover-2-quizs"> {{this.questionCount}} Questions</span>
+                    <div class="discover-owner-quizs">
+                        {{this.ownerName}} <img src="{{this.ownerImage}}" alt="owner image">
+                    </div>
+                </div>
+            </div>
+            {{/each}}
         </div>
     </div>
 </div>

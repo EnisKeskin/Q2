@@ -1,4 +1,4 @@
-function slickk() {
+$(document).ready(function () {
 
 	$('.questions-image').slick({
 		infinite: false,
@@ -21,8 +21,8 @@ function slickk() {
 
 
 	$('.discover-trend-bottom').slick({
-		infinite: true,
-		slidesToShow: 4,
+		infinite: false,
+		slidesToShow: 3,
 		slidesToScroll: 1,
 		variableWidth: true,
 		responsive: [
@@ -50,8 +50,8 @@ function slickk() {
 
 
 	$('.discover-quizs-bottom').slick({
-		infinite: true,
-		slidesToShow: 4,
+		infinite: false,
+		slidesToShow: 3,
 		slidesToScroll: 1,
 
 		responsive: [
@@ -93,4 +93,4 @@ function slickk() {
 
 
 
-}
+});
