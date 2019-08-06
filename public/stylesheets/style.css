@@ -2320,6 +2320,7 @@ select::-ms-expand {
 }
 
 .discover-trend-bottom .slick-arrow.slick-next {
+    background: url("../images/quiz/next-arrow-w.png");
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: 0px 50%;
