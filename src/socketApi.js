@@ -272,16 +272,21 @@ Io.of('/profil').use((socket, next) => {
 }).on('connection', (socket) => {
 
     socket.on('quizCreate', (quiz) => {
-        pinCreate((randomKey) => {
-            quiz.userId = socket.decoded.userId;
-            quiz.pin = randomKey;
-            new Quiz(quiz).save()
-                .then((data) => {
-                    socket.emit('quizId', data._id);
-                }).catch((err) => {
-                    socket.emit('quizError', message = "Error");
-                });
-        });
+        console.log(quiz);
+        if ((quiz.title !== '') && (quiz.location !== '') && (quiz.language !== '')) {
+            pinCreate((randomKey) => {
+                quiz.userId = socket.decoded.userId;
+                quiz.pin = randomKey;
+                new Quiz(quiz).save()
+                    .then((data) => {
+                        socket.emit('quizId', data._id);
+                    }).catch((err) => {
+                        socket.emit('quizError', { message: "Unknown Error" });
+                    });
+            });
+        } else {
+            socket.emit('quizError', { message: 'Title, Location, language Cannot Be Left Blank' })
+        }
     });
 
     socket.on('getProfilInfo', () => {
@@ -324,14 +329,26 @@ Io.of('/profil').use((socket, next) => {
     });
 
     socket.on('addingQuestions', (question) => {
-        Quiz.findById(question.quizId, (err, res) => {
-            if (err)
-                throw err;
-            delete question.quizId
-            res.question.push(question);
-            res.save();
-            socket.emit('newQuestionCreate', { questionId: res.question[res.question.length - 1]._id });
+        let boolean = true;
+        question.answers.forEach((answer) => {
+            if (answer === '') {
+                boolean = false;
+                return;
+            }
         });
+        if ((boolean) && (question.questionTitle !== '') && ((question.answer) !== -1) && (question.time > 0)) {
+        //validasyonlar yapılacak
+            Quiz.findById(question.quizId, (err, quiz) => {
+                if (err)
+                    throw err;
+                delete question.quizId
+                quiz.question.push(question);
+                quiz.save();
+                socket.emit('newQuestionCreate', { questionId: quiz.question[quiz.question.length - 1]._id });
+            });
+        }else {
+            socket.emit('questionErr', {message: ' Please Type The Question And Answer, Select The Correct Option'})
+        }
     });
 
     socket.on('getDiscover', () => {
@@ -368,48 +385,56 @@ Io.of('/profil').use((socket, next) => {
 });
 
 Io.of('/user').on('connection', (socket) => {
-
     socket.on('userLogin', (email, password) => {
-        User.findOne({
-            email
-        }, (err, user) => {
-            if (err)
-                throw err
-            if (!user) {
-                socket.emit('UnsuccLogin');
-            } else {
-                bcrypt.compare(password, user.password).then((result) => {
-                    if (!result) {
-                        //yanlış giriş
-                        socket.emit('UnsuccLogin');
-                    } else {
-                        const payload = {
-                            userId: user._id,
+        if (email !== null && password !== null) {
+            User.findOne({
+                email
+            }, (err, user) => {
+                if (err)
+                    throw err
+                if (!user) {
+                    socket.emit('unsuccLogin');
+                } else {
+                    bcrypt.compare(password, user.password).then((result) => {
+                        console.log(result);
+                        if (!result) {
+                            //yanlış giriş
+                            socket.emit('unsuccLogin');
+                        } else {
+                            console.log(result);
+                            const payload = {
+                                userId: user._id,
+                            }
+                            const token = jwt.sign(payload, key);
+                            socket.emit('succLogin', token);
                         }
-                        const token = jwt.sign(payload, key);
-                        socket.emit('succLogin', token);
-                    }
-                });
-            };
-        });
-
+                    });
+                };
+            });
+        } else {
+            socket.emit('unsuccLogin');
+        }
     });
 
-    socket.on('userRegister', (email, password, username, firstname, lastname) => {
-        bcrypt.hash(password, 10).then((hash) => {
-            const user = new User({
-                email,
-                username,
-                firstname,
-                lastname,
-                password: hash
-            });
-            user.save().then((data) => {
-                console.log(data);
-            }).catch((err) => {
-                console.log(err);
-            });
-        })
+    socket.on('userRegister', (userRegister) => {
+        if ((userRegister.email !== '') && (userRegister.password !== '') && (userRegister.username !== '') && (userRegister.firstname !== '') && (userRegister.lastname !== '')) {
+            bcrypt.hash(userRegister.password, 10).then((hash) => {
+                const user = new User({
+                    email: userRegister.email,
+                    username: userRegister.username,
+                    firstname: userRegister.firstname,
+                    lastname: userRegister.lastname,
+                    password: hash
+                });
+                user.save().then((data) => {
+                    console.log(data);
+                }).catch((err) => {
+                    console.log(err);
+                });
+            })
+        } else {
+            socket.emit('err', { message: 'Fields Cannot Be Left Blank' })
+        }
     });
 
 

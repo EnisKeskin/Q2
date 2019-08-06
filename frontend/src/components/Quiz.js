@@ -21,6 +21,8 @@ class Quiz extends Component {
             loginVisible: false,
             questionVisible: false,
             question: [],
+            file: "",
+            quizError: "",
         }
         this.onChangeLocationEvent = this.onChangeLocationEvent.bind(this);
         this.onchangeLanguageEvent = this.onChangeLanguageEvent.bind(this);
@@ -48,6 +50,12 @@ class Quiz extends Component {
                 questionVisible: true
             })
         });
+        io.on('quizError', (quiz) => {
+            this.setState({
+                quizError:
+                <div class="quiz-error">{quiz.message}</div> 
+            })
+        })
     }
 
     onChangeLocationEvent = (e) => {
@@ -76,7 +84,9 @@ class Quiz extends Component {
 
     onChangeUploadEvent = (e) => {
         this.file = e.target.files[0]
-        console.log(this.file);
+        this.setState({
+            file: URL.createObjectURL(e.target.files[0])
+        })
     }
 
     // console.log(this.props.location.state.id);
@@ -137,7 +147,7 @@ class Quiz extends Component {
                                         <label className="lbl-file" htmlFor="file">    Tap to add cover images   </label>
 
                                         <input className="fileupload" type="file" name="fileToUpload" id="file" encType="multipart/form-data" onChange={this.onChangeUploadEvent} />
-
+                                        <img src={this.state.file} alt=""/>
                                     </div>
 
                                     <div className="quiz-right">
@@ -175,14 +185,10 @@ class Quiz extends Component {
                                         <input type="text" placeholder="Title" className="txt-title" required onChange={this.onChangeTitleEvent} />
 
                                         <textarea placeholder="Description" className="txt-description" required onChange={this.onChangeDescAreaEvent} />
-
+                                        {this.state.quizError}
                                     </div>
 
                                 </div>
-
-
-
-
                                 <div className="quiz-enter-button">
                                     <button type="submit" className="btn-quiz-enter" onClick={this.onClickEvent} >Enter</button>
                                 </div>

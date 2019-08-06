@@ -77,10 +77,6 @@ $(document).ready(function() {
   
 	  });
   
-
-	
-
-
 	$(".mobil-profil").click(function(e){
 		e.preventDefault();
 		$(".content-profil").addClass("open");
@@ -91,7 +87,4 @@ $(document).ready(function() {
 		$(".content-profil").removeClass("open");
 	});
 
-
-
 });
-

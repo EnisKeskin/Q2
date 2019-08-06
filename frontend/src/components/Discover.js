@@ -30,7 +30,7 @@ class Discover extends Component {
         stateQuizs.forEach((element, key) => {
             quizs.push(
                 <div className="discover-trend-block" key={key}>
-                    <img src="images/sago.jpg" alt="" />
+                    <img src={`http://localhost:3000/${element.img}`} alt="" />
 
                     <div className="discover-block-text">
                         <span className="spn-discover">{element.title} </span>
@@ -50,7 +50,7 @@ class Discover extends Component {
             quizs.push(
                 <div className="discover-quizs-block" key={key}>
 
-                <img src="images/sago.jpg" alt="" />
+                <img src={`http://localhost:3000/${element.img}`} alt="" />
 
                 <div className="discover-quizs-text">
                     <span className="spn-discover-quizs">{element.title}</span>
@@ -69,6 +69,7 @@ class Discover extends Component {
 
     render() {
         return (
+            
             <div className="capsule-2">
 
                 <Header />
@@ -111,7 +112,9 @@ class Discover extends Component {
                         {this.quizsShow()}
                     </div>
                 </div>
+
             </div>
+
         )
     }
 }

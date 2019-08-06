@@ -18,6 +18,7 @@ class User extends Component {
       rlastname: "",
       profilVisible: false,
       loginInfo: "",
+      registerInfo: "",
     }
 
     this.onChangePassEvent = this.onChangePassEvent.bind(this);
@@ -36,10 +37,10 @@ class User extends Component {
 
   componentDidMount() {
     io = Io('user');
-    if(localStorage.getItem('token')){
+    if (localStorage.getItem('token')) {
       this.setState({
         profilVisible: true
-      }); 
+      });
     }
     io.on('succLogin', (token) => {
       if (isNaN(token)) {
@@ -53,9 +54,17 @@ class User extends Component {
 
     io.on('unsuccLogin', () => {
       this.setState({
-        loginInfo: "email and password incorrect"
+        loginInfo: 
+        <div class="login-error sign-err">{"Email and Password incorrect"}</div>
       });
+    });
+
+    io.on('err', (err) => {
+      this.setState({
+        registerInfo: <div class="login-error sign-err">{err.message}</div>
+      })
     })
+
   }
 
   onChangeEmailEvent = (e) => {
@@ -99,7 +108,7 @@ class User extends Component {
       rfirstName: e.target.value
     })
   }
-  
+
   onChangeRLastEvent = (e) => {
     this.setState({
       rlastName: e.target.value
@@ -109,9 +118,8 @@ class User extends Component {
   onClickRegisterEvent = (e) => {
     e.preventDefault();
     const state = this.state;
-    io.emit('userRegister', state.remail, state.rpassword, state.rusername, state.rfirstname, state.rlastname);
+    io.emit('userRegister', { email: state.remail, password: state.rpassword, username: state.rusername, firstname: state.rfirstname, lastname: state.rlastname });
   }
-
 
   render() {
     return (
@@ -154,7 +162,7 @@ class User extends Component {
                           </div>
 
                           <div className="login-textarea">
-                            <input type="text" placeholder="User Name" className="txt-user" autoComplete="username" required onChange={this.onChangeEmailEvent} />
+                            <input type="text" placeholder="User Name" className="txt-user" autoComplete="username" onChange={this.onChangeEmailEvent} />
                           </div>
 
                         </div>
@@ -166,11 +174,11 @@ class User extends Component {
                           </div>
 
                           <div className="login-textarea">
-                            <input type="password" placeholder="Password" className="txt-password" autoComplete="current-password" required onChange={this.onChangePassEvent} />
+                            <input type="password" placeholder="Password" className="txt-password" autoComplete="current-password" onChange={this.onChangePassEvent} />
                           </div>
 
                         </div>
-
+                        {this.state.loginInfo}
                         <div className="login-button">
 
                           <button type="submit" className="btn-login" onClick={this.onClickLoginEvent} >Enter</button>
@@ -196,10 +204,12 @@ class User extends Component {
                         <input type="email" className="txt-signup" placeholder="E-Mail" autoComplete="username" required onChange={this.onChangeRMailEvent} />
 
                         <input type="password" className="txt-signup" placeholder="Password" autoComplete="current-password" required onChange={this.onChangeRPasswordEvent} />
+                        <div>{this.state.registerInfo}</div>
 
                         <div className="sign-button">
                           <button type="submit" className="btn-sign" onClick={this.onClickRegisterEvent} >Sign Up</button>
                         </div>
+
                       </form>
 
                     </div>

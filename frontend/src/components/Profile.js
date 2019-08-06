@@ -46,7 +46,7 @@ class Profile extends Component {
                 <div key={key}>
                     <div data-toggle="modal" data-target={"#quiz-item-modal" + key} className="my-quiz">
                         <div className="my-quiz-img">
-                            <img src={require('../images/quiz/quiz.png')} className="img-quiz" alt="" />
+                            <img src={`http://localhost:3000/${quiz.img}`} className="img-quiz" alt="" />
                         </div>
 
                         <div className="my-quiz-name">
@@ -144,7 +144,7 @@ class Profile extends Component {
 
                                     <div className="row">
 
-                                        <div className="col-lg-12 mb-5">
+                                        <div className="col-lg-12 ">
                                             <div className="profil-information-left">
                                                 <div>Quiz Created </div>
                                                 <div> {this.state.quizCount} </div>

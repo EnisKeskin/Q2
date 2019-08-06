@@ -9,18 +9,18 @@ class Question extends Component {
 
     constructor(props) {
         super(props);
-        this.file = "";
+        this.file = '';
         this.answers = [4];
         this.question = {
-            quizId: "",
-            questionTitle: "",
+            quizId: '',
+            questionTitle: '',
             answers: [],
-            answer: 0,
+            answer: -1,
             time: 0,
-            img: "",
+            img: '',
         }
-        this.state= {
-            file: "",
+        this.state = {
+            file: '',
         }
 
         this.onChangeQuestionEvent = this.onChangeQuestionEvent.bind(this);
@@ -47,10 +47,15 @@ class Question extends Component {
                     .field('questionId', quiz.questionId)
                     .field('whereToIns', 'question')
                     .attach("theFile", this.file)
-                    .end((err, result) => {
-
-                    })
             }
+        })
+
+        io.on('questionErr', (question) => {
+            this.setState({
+                questionErr: <div class="question-error">
+                    {question.message}
+                </div>
+            })
         })
     }
 
@@ -75,6 +80,7 @@ class Question extends Component {
     }
 
     onChangeTrueAnswerEvent = (e) => {
+        console.log(e.target.value);
         this.question.answer = e.target.value
 
     }
@@ -86,7 +92,7 @@ class Question extends Component {
     onChangeFileEvent = (e) => {
         this.file = e.target.files[0];
         this.setState({
-            file : URL.createObjectURL(e.target.files[0])
+            file: URL.createObjectURL(e.target.files[0])
         })
     }
 
@@ -94,21 +100,22 @@ class Question extends Component {
         e.preventDefault();
         this.resetForm()
         this.question.answers = this.answers;
-        io.emit('addingQuestions', this.question );
+        io.emit('addingQuestions', this.question);
     }
 
     resetVariable = () => {
-        this.answers = [4];
+        this.answers = ['', '', '', ''];
         this.question = {
-            quizId: "",
-            questionTitle: "",
+            quizId: '',
+            questionTitle: '',
             answers: [],
-            answer: 0,
+            answer: -1,
             time: 0,
-            img: "",
+            img: '',
         }
         this.setState({
-            file: ""
+            file: '',
+            questionErr: '',
         })
     }
 
@@ -122,93 +129,93 @@ class Question extends Component {
 
                 <header className="quiz-header">
                     <div className="quiz-logo">
-                        <img src={require('../images/logo/logo-w.png')} className="img-quiz-logo" alt="" />
+                        <img src={require('../images/logo/logo-w.png')} className="img-quiz-logo" alt='' />
 
                     </div>
 
                     <div className="close">
-                    <Link to='/profil'><img src={require('../images/quiz/cancel.png')} alt="" /></Link>
-                        
+                        <Link to='/profil'><img src={require('../images/quiz/cancel.png')} alt='' /></Link>
+
                     </div>
 
                 </header>
 
                 <div className="container question-content">
-                <form action="." method="POST" ref={(el) => this.myFormRef = el}>
-                    <div className="question-image">
-                    <label className="lbl-file" htmlFor="file">   Tap to add cover images    </label>
-                    <input className="fileupload" type="file" name="fileToUpload" id="file" onChange={this.onChangeFileEvent}/>
-                       <img src={this.state.file} alt="" srcset=""/>
-                        <div className="select-box-question" onChange={this.onChangeTimeEvent} >
-                            <select name="" id="" required>
-                                <option value="0">Select Time</option>
-                                <option value="10">10 sec </option>
-                                <option value="20">20 sec </option>
-                                <option value="30">30 sec </option>
-                                <option value="40">40 sec </option>
-                                <option value="50">50 sec </option>
-                                <option value="60">60 sec </option>
+                    <form action="." method="POST" ref={(el) => this.myFormRef = el}>
+                        <div className="question-image">
+                            <label className="lbl-file" htmlFor="file">   Tap to add cover images    </label>
+                            <input className="fileupload" type="file" name="fileToUpload" id="file" onChange={this.onChangeFileEvent} />
+                            <img src={this.state.file} alt='' srcset='' />
+                            <div className="select-box-question" onChange={this.onChangeTimeEvent} >
+                                <select name='' id='' required>
+                                    <option value="0">Select Time</option>
+                                    <option value="10">10 sec </option>
+                                    <option value="20">20 sec </option>
+                                    <option value="30">30 sec </option>
+                                    <option value="40">40 sec </option>
+                                    <option value="50">50 sec </option>
+                                    <option value="60">60 sec </option>
 
-                            </select>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div className="question-text">
+                            {/* kısa bicimde yaz */}
+                            <input type="text" className="txt-question" placeholder="Tap to add question" onChange={this.onChangeQuestionEvent} required />
+
                         </div>
 
-                    </div>
-                    <div className="question-text">
+                        <div className="question-answer">
 
-                        <input type="text" className="txt-question" placeholder="Tap to add question" onChange={this.onChangeQuestionEvent} required />
+                            <div className="row">
 
-                    </div>
+                                <div className="col-md-6 ">
+                                    <div className="a1">
+                                        <input type="text" className="txt-answer1" placeholder="Answer 1" onChange={this.onChangeAnswer1Event} required />
+                                        <div className="checkbox">
+                                            <input type="radio" name="option" value="0" onChange={this.onChangeTrueAnswerEvent} required />
+                                            <label>Option 1</label>
+                                        </div>
+                                    </div>
+                                </div>
 
-                    <div className="question-answer">
+                                <div className="col-md-6">
+                                    <div className="a2">
+                                        <input type="text" className="txt-answer2" placeholder="Answer 2" onChange={this.onChangeAnswer2Event} required />
+                                        <div className="checkbox">
+                                            <input type="radio" name="option" value="1" onChange={this.onChangeTrueAnswerEvent} required />
+                                            <label>Option 1</label>
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <div className="row">
+                                <div className="col-md-6 ">
+                                    <div className="a3">
+                                        <input type="text" className="txt-answer3" placeholder="Answer 3" onChange={this.onChangeAnswer3Event} required />
+                                        <div className="checkbox">
+                                            <input type="radio" name="option" value="2" onChange={this.onChangeTrueAnswerEvent} required />
+                                            <label>Option 1</label>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div className="col-md-6 ">
-                                <div className="a1">
-                                    <input type="text" className="txt-answer1" placeholder="Answer 1" onChange={this.onChangeAnswer1Event} required />
-                                    <div className="checkbox">
-                                        <input type="radio" name="option" value="1" onChange={this.onChangeTrueAnswerEvent} required />
-                                        <label>Option 1</label>
+                                <div className="col-md-6">
+                                    <div className="a4">
+                                        <input type="text" className="txt-answer4" placeholder="Answer 4" onChange={this.onChangeAnswer4Event} required />
+                                        <div className="checkbox">
+                                            <input type="radio" name="option" value="3" onChange={this.onChangeTrueAnswerEvent} required />
+                                            <label>Option 1</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="col-md-6">
-                                <div className="a2">
-                                    <input type="text" className="txt-answer2" placeholder="Answer 2" onChange={this.onChangeAnswer2Event} required />
-                                    <div className="checkbox">
-                                        <input type="radio" name="option" value="2" onChange={this.onChangeTrueAnswerEvent} required />
-                                        <label>Option 1</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="col-md-6 ">
-                                <div className="a3">
-                                    <input type="text" className="txt-answer3" placeholder="Answer 3" onChange={this.onChangeAnswer3Event} required />
-                                    <div className="checkbox">
-                                        <input type="radio" name="option" value="3" onChange={this.onChangeTrueAnswerEvent} required />
-                                        <label>Option 1</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="col-md-6">
-                                <div className="a4">
-                                    <input type="text" className="txt-answer4" placeholder="Answer 4" onChange={this.onChangeAnswer4Event} required />
-                                    <div className="checkbox">
-                                        <input type="radio" name="option" value="4" onChange={this.onChangeTrueAnswerEvent} required />
-                                        <label>Option 1</label>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-
-                    </div>
-
-                    <div className="add-question">
-                        <button className="btn-add" type="submit" value="" onClick={this.onClickEvent} ></button>
-                    </div>
+                        <div>{this.state.questionErr}</div>
+                        <div className="add-question">
+                            <button className="btn-add" type="submit" value='' onClick={this.onClickEvent} ></button>
+                        </div>
                     </form>
                 </div>
             </div>
