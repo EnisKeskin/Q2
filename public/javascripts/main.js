@@ -1,97 +1,96 @@
-$(document).ready(function() {
+function slickk() {
 
 	$('.questions-image').slick({
-	  infinite: false,
-	  slidesToShow: 5,
-	  slidesToScroll: 1,
-	  
-	  responsive: [
-		{
-		  breakpoint: 700,
-		  settings: {
-			slidesToShow: 1,
-			slidesToScroll: 1,
-			infinite: true,
+		infinite: false,
+		slidesToShow: 5,
+		slidesToScroll: 1,
 
-		  }
-		}
-	  ]
+		responsive: [
+			{
+				breakpoint: 700,
+				settings: {
+					slidesToShow: 1,
+					slidesToScroll: 1,
+					infinite: true,
+
+				}
+			}
+		]
 
 	});
 
 
 	$('.discover-trend-bottom').slick({
-	  infinite: true,
-	  slidesToShow: 4,
-	  slidesToScroll: 1,
+		infinite: true,
+		slidesToShow: 4,
+		slidesToScroll: 1,
 		variableWidth: true,
-	  responsive: [
-		{
-		  breakpoint: 1300,
-		  settings: {
-			slidesToShow: 2,
-			slidesToScroll: 1,
-			infinite: true,
-		  }
-		}
-	  ,
+		responsive: [
+			{
+				breakpoint: 1300,
+				settings: {
+					slidesToShow: 2,
+					slidesToScroll: 1,
+					infinite: true,
+				}
+			}
+			,
 
-		{
-		  breakpoint: 800,
-		  settings: {
-			slidesToShow: 1,
-			slidesToScroll: 1,
-			infinite: true,
-		  }
-		}
-	  ]
+			{
+				breakpoint: 800,
+				settings: {
+					slidesToShow: 1,
+					slidesToScroll: 1,
+					infinite: true,
+				}
+			}
+		]
 
 	});
 
 
 	$('.discover-quizs-bottom').slick({
 		infinite: true,
-		slidesToShow:4 ,
+		slidesToShow: 4,
 		slidesToScroll: 1,
-		
+
 		responsive: [
-		  {
-			breakpoint: 1300,
-			settings: {
-			  slidesToShow: 2,
-			  slidesToScroll: 1,
-			  infinite: true,
+			{
+				breakpoint: 1300,
+				settings: {
+					slidesToShow: 2,
+					slidesToScroll: 1,
+					infinite: true,
+				}
 			}
-		  }
-		,
-  
-		  {
-			breakpoint: 800,
-			settings: {
-			  slidesToShow: 1,
-			  slidesToScroll: 1,
-			  infinite: true,
+			,
+
+			{
+				breakpoint: 800,
+				settings: {
+					slidesToShow: 1,
+					slidesToScroll: 1,
+					infinite: true,
+				}
 			}
-		  }
 		]
-  
-	  });
-  
 
-	
+	});
 
 
-	$(".mobil-profil").click(function(e){
+
+
+
+	$(".mobil-profil").click(function (e) {
 		e.preventDefault();
 		$(".content-profil").addClass("open");
 	});
 
-	$(".profil-close").click(function(e){
+	$(".profil-close").click(function (e) {
 		e.preventDefault();
 		$(".content-profil").removeClass("open");
 	});
 
 
 
-});
-
+}

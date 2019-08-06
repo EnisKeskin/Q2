@@ -35,6 +35,10 @@ ul {
     padding: 0;
 }
 
+.menu {
+    position: relative;
+}
+
 .menu ul {
     list-style-type: none;
 }
@@ -73,6 +77,34 @@ ul {
 .menu ul li a:hover {
     color: gray;
     opacity: 0.8;
+}
+
+.menu ul li ul {
+    list-style: none;
+    position: absolute;
+    top: 30px;
+    right: -1px;
+    display: none;
+    border: 1px solid #d5d5d5;
+    background-color: white;
+    border-radius: 15px;
+}
+
+.menu ul li ul li {
+    width: 70px;
+    height: 38px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 15px;
+}
+
+.menu ul li ul li a {
+    font-size: 17px;
+}
+
+.menu ul li:hover ul {
+    display: block;
 }
 
 .content {
@@ -160,6 +192,7 @@ ul {
     display: flex;
     justify-content: space-between;
     padding-right: 15px;
+    margin-bottom: 20px;
 }
 
 .profil-information-right {
@@ -257,21 +290,27 @@ ul {
 
 .img-quiz {
     width: 250px;
+    min-height: 180px;
+    max-height: 180px;
     border-radius: 41px;
+    object-fit: cover;
 }
 
 .my-quiz-name {
     color: #626060;
     font-size: 20px;
-    padding-top: 70px;
+    display: flex;
+    align-items: center;
     font-family: 'Poppins', sans-serif;
     font-weight: 300;
+    width: calc(100% - 250px);
 }
 
 .modal-content {
     min-width: 100%;
     display: flex;
     justify-content: space-between;
+    overflow: hidden;
 }
 
 .modal-left {
@@ -282,9 +321,9 @@ ul {
 .img-modal {
     width: 100%;
     height: 500px;
-    border-bottom-right-radius: 15px;
     display: block;
     object-fit: cover;
+    border-radius: 4px;
 }
 
 .modal-right {
@@ -388,10 +427,6 @@ ul {
         border-top-right-radius: 20px;
         border-bottom-right-radius: 20px;
     }
-    .mobil-profil:hover {
-        text-decoration: none;
-        color: white;
-    }
     .profil-close {
         display: block;
         width: 20px;
@@ -408,11 +443,14 @@ ul {
         width: 100px;
         transition: 0.5s;
         cursor: pointer;
+        text-decoration: none;
+        color: white;
     }
     .content-profil {
         position: absolute;
         left: -100%;
         width: 100%;
+        height: 100vh;
         z-index: 1;
         padding-bottom: 50px;
         transition: left .5s;
@@ -433,17 +471,15 @@ ul {
         height: auto;
     }
     .my-quiz-img {
-        width: 40%;
         margin-right: 30px;
     }
     .my-quiz-name {
         padding-top: 0;
         display: flex;
         align-items: center;
+        width: calc(100% - 30%)
     }
     .img-quiz {
-        width: 100%;
-        height: 100%;
         object-fit: cover;
     }
     .img-modal {
@@ -471,6 +507,29 @@ ul {
     .li-icon {
         margin-left: 0;
     }
+    .menu ul li ul li a {
+        font-size: 14px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .my-quiz {
+        display: block;
+        padding: 15px;
+    }
+    .my-quiz-name {
+        width: 100%;
+        padding-left: 10px;
+        padding-top: 20px;
+    }
+    .my-quiz-img {
+        margin: 0;
+    }
+    .img-quiz {
+        width: 100%;
+        min-height: 200px;
+        max-height: 200px;
+    }
 }
 
 /*Profil page*/
@@ -488,6 +547,29 @@ ul {
     flex-wrap: wrap;
     max-width: 508px;
     margin: 0 auto;
+}
+
+.pin-error {
+    width: 45%;
+    height: 60px;
+    background: rgb(185, 99, 241);
+    opacity: 0.85;
+    border: 6px solid #e34e43;
+    color: white;
+    margin: auto;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.img-cancel-2 {
+    width: 38px;
+    height: 38px;
+    margin-right: 20px;
 }
 
 .pin-logo {
@@ -562,6 +644,12 @@ ul {
 @media only screen and (max-width: 600px) {
     .txt-pin {
         width: 90%;
+    }
+}
+
+@media only screen and (max-width: 445px) {
+    .pin-error {
+        width: 72%;
     }
 }
 
@@ -643,7 +731,7 @@ ul {
 
 .login-input {
     width: 347px;
-    height: 48px;
+    height: 56px;
     background-color: white;
     margin: auto;
     border-radius: 8px;
@@ -651,11 +739,36 @@ ul {
     justify-content: flex-start;
 }
 
+.login-error {
+    width: 347px;
+    min-height: 40px;
+    margin: auto;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: white;
+    background-image: url("../images/quiz/cancel-2.png");
+    background-size: 32px;
+    background-repeat: no-repeat;
+    background-position: 0%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.sign-err {
+    margin-top: 0px;
+}
+
 .login-img {
     width: 19px;
-    height: 48px;
+    height: 56px;
     line-height: 48px;
     margin-left: 15px;
+    display: flex;
+    align-items: center;
 }
 
 .img-user {
@@ -669,7 +782,7 @@ ul {
 
 .txt-user {
     width: 100%;
-    height: 48px;
+    height: 56px;
     border: 0px solid;
     padding-left: 15px;
     border-top-right-radius: 8px;
@@ -677,12 +790,12 @@ ul {
     border-bottom-right-radius: 8px;
     font-size: 15px;
     padding-top: 15px;
-    padding-bottom: 10px
+    padding-bottom: 10px;
 }
 
 .login-password-input {
     width: 347px;
-    height: 48px;
+    height: 56px;
     background-color: white;
     margin: auto;
     border-radius: 8px;
@@ -700,18 +813,18 @@ ul {
     padding-top: 23px;
     padding-bottom: 24px;
     width: 100%;
-    height: 48px;
+    height: 56px;
     border: 0px solid;
     padding-left: 15px;
     border-top-right-radius: 8px;
     outline: none;
     border-bottom-right-radius: 8px;
     font-size: 15px;
+    margin-bottom: 50px;
 }
 
 .login-button {
     text-align: center;
-    margin-top: 23px;
 }
 
 .btn-login {
@@ -754,7 +867,7 @@ ul {
 
 .txt-signup {
     width: 347px;
-    height: 48px;
+    height: 56px;
     border-radius: 8px;
     border: 0px solid;
     padding-left: 23px;
@@ -870,6 +983,7 @@ ul {
     padding: 0px;
     width: 100%;
     display: flex;
+    position: relative;
 }
 
 .quiz-image {
@@ -903,6 +1017,7 @@ ul {
     padding-left: 50px;
     width: calc(100% - 900px);
     padding-right: 50px;
+    position: relative;
 }
 
 .txt-title {
@@ -944,6 +1059,19 @@ ul {
     transition: all .2s ease-in;
     transform: scale(1.02);
     position: relative;
+}
+
+.quiz-error {
+    width: 100%;
+    min-height: 40px;
+    background-image: url("../images/quiz/cancel-2.png");
+    background-size: 32px;
+    background-repeat: no-repeat;
+    background-position: 0%;
+    padding-left: 50px;
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
 }
 
 .dropdown {
@@ -1040,7 +1168,7 @@ ul {
     position: relative;
     vertical-align: middle;
     width: 198px;
-    height: 40px;
+    height: 45px;
     background: #FFFFFF;
     box-shadow: 0px 2px 4px #DEDEDE;
     border-radius: 12px;
@@ -1226,11 +1354,24 @@ select::-ms-expand {
 }
 
 .question-image {
+    cursor: pointer;
+    overflow: hidden;
+    width: 100%;
+    height: 570px;
+    color: #CAC4C4;
+    font-style: normal;
+    font-weight: 500;
+    background: #FCFBFB;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
     position: relative;
 }
 
 .lbl-file {
-    background: #FCFBFB;
     border-radius: 30px;
     height: 430px;
     display: flex;
@@ -1240,6 +1381,8 @@ select::-ms-expand {
     position: relative;
     color: #CAC4C4;
     font-size: 17px;
+    width: 100%;
+    position: absolute;
 }
 
 .lbl-file:hover {
@@ -1263,7 +1406,8 @@ select::-ms-expand {
 }
 
 .question-image img {
-    max-height: 430px;
+    max-height: 570px;
+    min-height: 570px;
     border-radius: 30px;
     display: block;
     width: 100%;
@@ -1311,10 +1455,12 @@ select::-ms-expand {
     background: #FFFFFF;
     box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.21);
     border-radius: 16px;
-    border: 0px solid;
     outline: 0;
     text-align: center;
     transition: 0.2s;
+    padding-left: 80px;
+    padding-right: 80px;
+    border: none;
 }
 
 .txt-question:hover {
@@ -1452,6 +1598,23 @@ select::-ms-expand {
 }
 
 .btn-add:hover {}
+
+.question-error {
+    width: 50%;
+    min-height: 40px;
+    background-image: url("../images/quiz/cancel-2.png");
+    background-size: 32px;
+    background-repeat: no-repeat;
+    background-position: 0%;
+    padding-left: 50px;
+    padding-right: 50px;
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    justify-content: center;
+    margin: auto;
+    margin-bottom: 20px;
+}
 
 .custom-control {
     height: 100px;
@@ -1592,6 +1755,12 @@ select::-ms-expand {
     transform: scale(1.05);
 }
 
+@media only screen and (max-width:1000px) {
+    .question-error {
+        width: 100%;
+    }
+}
+
 @media only screen and (max-width:720px) {
     .players-content {
         display: block;
@@ -1617,6 +1786,10 @@ select::-ms-expand {
         padding: 8px;
     }
 }
+
+/*players page*/
+
+/*answer page*/
 
 .answer-contet {
     overflow: hidden;
@@ -1680,7 +1853,7 @@ select::-ms-expand {
     width: 100%;
     margin: 0 auto 20px;
     min-height: 350px;
-    display: none;
+    display: flex;
     justify-content: space-between;
 }
 
@@ -1746,6 +1919,10 @@ select::-ms-expand {
     background: #F60E4C;
     margin-top: 10px;
     border-radius: 18px;
+    transition: 1.7s;
+    padding-right: 15px;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .answer-bottom {

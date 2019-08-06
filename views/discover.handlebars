@@ -42,14 +42,14 @@
                     aria-label="Previous" type="button" style="">Previous</button>
                 <div class="slick-list draggable">
                     <div class="slick-track"
-                        style="opacity: 1; width: 25000px; transform: translate3d(-275px, 0px, 0px);">
+                        style="opacity: 1; width: 25000px; transform: translate3d(0px, 0px, 0px);">
                         {{#each Trending}}
                         <div class="discover-trend-block slick-slide" tabindex="-1"
                             data-slick-index="{{this.slickIndex}}" aria-hidden="true">
                             <img src="{{this.quizImage}}" alt="quiz image">
                             <div class="discover-block-text">
                                 <span class="spn-discover">{{this.quizTitle}} </span>
-                                <span class="spn-discover-2"> {{this.questionCount}} Quuestions</span>
+                                <span class="spn-discover-2"> {{this.questionCount}} Questions</span>
                                 <div class="discover-owner">
                                     {{this.ownerName}} <img src="{{this.ownerImage}}" alt="owner image">
                                 </div>
@@ -68,14 +68,14 @@
         <div class="discover-quizs-bottom slick-initialized slick-slider"><button class="slick-prev slick-arrow"
                 aria-label="Previous" type="button" style="">Previous</button>
             <div class="slick-list draggable">
-                <div class="slick-track" style="opacity: 1; width: 8944px; transform: translate3d(-688px, 0px, 0px);">
+                <div class="slick-track" style="opacity: 1; width: 8944px; transform: translate3d(0px, 0px, 0px);">
                     {{#each Discover}}
                     <div class="discover-quizs-block slick-slide" tabindex="-1" style="width: 668px;"
                         data-slick-index="{{this.slickIndex}}" aria-hidden="true">
                         <img src="{{this.quizImage}}" alt="quiz image">
                         <div class="discover-quizs-text">
                             <span class="spn-discover-quizs">{{this.quizTitle}}</span>
-                            <span class="spn-discover-2-quizs"> {{this.questionCount}} Quuestions</span>
+                            <span class="spn-discover-2-quizs"> {{this.questionCount}} Questions</span>
                             <div class="discover-owner-quizs">
                                 {{this.ownerName}} <img src="{{this.ownerImage}}" alt="">
                             </div>
