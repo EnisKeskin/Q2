@@ -68,9 +68,9 @@ ul {
     text-decoration: none;
     font-size: 17px;
     transition: 0.1s;
-
 }
-.menu ul li a:hover{
+
+.menu ul li a:hover {
     color: gray;
     opacity: 0.8;
 }
@@ -130,20 +130,19 @@ ul {
     padding-right: 15px;
 }
 
-
-.profil-information-left:hover{
-background: #9b3adb; 
-cursor: pointer;
-transition: .2s;
-transform: scale(1.02);
-}
-
-.profil-information-right:hover{
-    background: #9b3adb; 
+.profil-information-left:hover {
+    background: #9b3adb;
     cursor: pointer;
     transition: .2s;
     transform: scale(1.02);
-    }
+}
+
+.profil-information-right:hover {
+    background: #9b3adb;
+    cursor: pointer;
+    transition: .2s;
+    transform: scale(1.02);
+}
 
 .profil-bottom {
     height: auto;
@@ -190,13 +189,14 @@ transform: scale(1.02);
     padding-right: 15px;
     transition: .2s;
 }
-.profil-capsule:hover{
-    background: #9b3adb; 
+
+.profil-capsule:hover {
+    background: #9b3adb;
     cursor: pointer;
     transition: .2s;
     transform: scale(1.02);
-
 }
+
 .content-right {
     min-height: 100%;
     width: calc(100% - 560px);
@@ -226,7 +226,6 @@ transform: scale(1.02);
     text-decoration: none;
     font-weight: 300;
 }
-
 
 .content-menu ul li a.active {
     border-bottom: 3px solid #9B3ADB;
@@ -343,10 +342,12 @@ transform: scale(1.02);
     color: white;
     border: none;
 }
-.btn-play:hover{
+
+.btn-play:hover {
     background: #27CB31;
     transition: 0.2s;
 }
+
 .btn-secondary {
     width: 180px;
     height: 40px;
@@ -357,7 +358,8 @@ transform: scale(1.02);
     border: none;
     float: right;
 }
-.btn-secondary:hover{
+
+.btn-secondary:hover {
     background-color: #fe3c70;
     transition: 0.2s;
 }
@@ -531,20 +533,17 @@ transform: scale(1.02);
     font-size: 20px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.36);
     border-radius: 8px;
-    transition:0.2s;
-
+    transition: 0.2s;
 }
-.btn-pin:hover{
+
+.btn-pin:hover {
     background-color: #fe3c70;
-
-    transition:0.2s;
+    transition: 0.2s;
 }
-.btn-pin:focus{
+
+.btn-pin:focus {
     background-color: #00d38e;
-
 }
-
-
 
 .a-pin {
     text-align: center;
@@ -727,7 +726,6 @@ transform: scale(1.02);
     transition: 0.2s;
 }
 
-
 .btn-login:hover {
     transition: 0.2s;
     background-color: #fe3c70;
@@ -765,7 +763,8 @@ transform: scale(1.02);
     font-size: 15px;
     margin-bottom: 23px;
 }
-.user-name{
+
+.user-name {
     height: auto;
     width: 347px;
     margin: auto;
@@ -773,14 +772,16 @@ transform: scale(1.02);
     justify-content: space-between;
     margin-bottom: 23px;
 }
-.txt-username{
+
+.txt-username {
     width: 48%;
     height: 48px;
     border-radius: 8px;
-    border:none;
+    border: none;
     outline: none;
     padding-left: 23px;
 }
+
 .btn-sign {
     background: #24E6E4;
     width: 223px;
@@ -791,15 +792,15 @@ transform: scale(1.02);
     font-size: 20px;
     color: white;
     transition: 0.2s;
-
 }
-.btn-sign:hover{
+
+.btn-sign:hover {
     background-color: #fe3c70;
     transition: 0.2s;
 }
 
 @media only screen and (max-width: 990px) {
-    .user{
+    .user {
         padding-top: 50px;
     }
     .signup {
@@ -812,7 +813,7 @@ transform: scale(1.02);
 }
 
 @media only screen and (max-width: 500px) {
-    .user-name{
+    .user-name {
         width: 100%;
     }
     .txt-signup {
@@ -916,11 +917,11 @@ transform: scale(1.02);
     padding-left: 15px;
     margin-top: 40px;
     transition: all .2s ease-in;
-
 }
-.txt-title:hover{
+
+.txt-title:hover {
     transition: all .2s ease-in;
-    transform: scale(1.02); 
+    transform: scale(1.02);
     position: relative;
 }
 
@@ -938,11 +939,13 @@ transform: scale(1.02);
     outline: none;
     transition: all .2s ease-in;
 }
-.txt-description:hover{
+
+.txt-description:hover {
     transition: all .2s ease-in;
-    transform: scale(1.02); 
+    transform: scale(1.02);
     position: relative;
 }
+
 .dropdown {
     display: flex;
 }
@@ -978,12 +981,12 @@ transform: scale(1.02);
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     transition: all .2s ease-in;
-
 }
-.questions-image-in:hover{
+
+.questions-image-in:hover {
     cursor: pointer;
     transition: all .2s ease-in;
-    transform: scale(1.05); 
+    transform: scale(1.05);
     position: relative;
 }
 
@@ -1042,9 +1045,11 @@ transform: scale(1.02);
     box-shadow: 0px 2px 4px #DEDEDE;
     border-radius: 12px;
 }
-.select-box select:hover{
+
+.select-box select:hover {
     cursor: pointer;
 }
+
 .select-box:after {
     content: "";
     position: absolute;
@@ -1141,14 +1146,15 @@ select::-ms-expand {
     margin-bottom: 50px;
     transition: 0.2s;
 }
-.btn-quiz-enter:hover{
+
+.btn-quiz-enter:hover {
     background: #27CB31;
     transition: 0.2s;
     transform: scale(1.04);
 }
+
 @media only screen and (max-width: 1480px) {
     .quiz-right {
-
         width: calc(100% - 800px);
     }
     .select-box {
@@ -1159,31 +1165,30 @@ select::-ms-expand {
         width: 800px;
     }
 }
+
 @media only screen and (max-width: 1320px) {
-    .dropdown{
+    .dropdown {
         display: block;
-        
     }
-    .select-box{
+    .select-box {
         margin-bottom: 20px;
     }
-    .quiz-right{
-        padding-right:20px;
+    .quiz-right {
+        padding-right: 20px;
         padding-left: 20px;
         padding-top: 10px;
     }
-    .txt-description{
+    .txt-description {
         min-height: 170px;
     }
-    
 }
+
 @media only screen and (max-width: 1200px) {
-    .quiz-image{
+    .quiz-image {
         width: 650px;
     }
-    .quiz-right{
+    .quiz-right {
         width: calc(100% - 650px);
-
     }
 }
 
@@ -1221,9 +1226,10 @@ select::-ms-expand {
 }
 
 .question-image {
-position: relative;
+    position: relative;
 }
-.lbl-file{
+
+.lbl-file {
     background: #FCFBFB;
     border-radius: 30px;
     height: 430px;
@@ -1235,21 +1241,24 @@ position: relative;
     color: #CAC4C4;
     font-size: 17px;
 }
-.lbl-file:hover{
-    cursor: pointer;
 
+.lbl-file:hover {
+    cursor: pointer;
 }
-.fileupload{
+
+.fileupload {
     width: 100%;
     height: 100%;
     top: 0;
     position: absolute;
     opacity: 0;
 }
-.fileupload:hover{
+
+.fileupload:hover {
     cursor: pointer;
 }
-.question-image{
+
+.question-image {
     cursor: pointer;
 }
 
@@ -1306,12 +1315,13 @@ position: relative;
     outline: 0;
     text-align: center;
     transition: 0.2s;
-
 }
-.txt-question:hover{
+
+.txt-question:hover {
     transform: scale(1.03);
     transition: 0.2s;
 }
+
 .question-answer {
     margin-top: 20px;
     margin-bottom: 50px;
@@ -1328,10 +1338,12 @@ position: relative;
     outline: 0;
     padding: 35px;
 }
-.a1:hover , .a2:hover , .a3:hover , .a4:hover{
+
+.a1:hover, .a2:hover, .a3:hover, .a4:hover {
     transform: scale(1.03);
     transition: 0.2s;
 }
+
 .txt-answer2 {
     height: 150px;
     width: 100%;
@@ -1433,14 +1445,14 @@ position: relative;
 .btn-add {
     width: 65px;
     height: 65px;
-    background-image: url("../images/quiz/add.png") ;
+    background-image: url("../images/quiz/add.png");
     background-size: 100%;
     border: none;
     background-color: white;
 }
-.btn-add:hover{
-    
-}
+
+.btn-add:hover {}
+
 .custom-control {
     height: 100px;
 }
@@ -1525,16 +1537,15 @@ position: relative;
     overflow: hidden;
 }
 
-
-.players-bottom ul{
+.players-bottom ul {
     display: flex;
     flex-wrap: wrap;
     list-style-type: none;
-
 }
-.players-bottom ul li{
+
+.players-bottom ul li {
     width: calc(100% / 3);
-    min-height:60px;
+    min-height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1544,8 +1555,6 @@ position: relative;
     font-weight: 600;
     margin-bottom: 15px;
 }
-
-
 
 .players-start {
     height: 125px;
@@ -1575,9 +1584,9 @@ position: relative;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.36);
     border-radius: 8px;
     transition: 0.3s;
-
 }
-.btn-start:hover{
+
+.btn-start:hover {
     background: #27CB31;
     transition: 0.3s;
     transform: scale(1.05);
@@ -1604,15 +1613,10 @@ position: relative;
 
 @media only screen and (max-width:450px) {
     .players-bottom ul li {
-       margin-bottom: 30px;
-       padding:8px;
+        margin-bottom: 30px;
+        padding: 8px;
     }
-
 }
-
-/*players page*/
-
-/*answer page*/
 
 .answer-contet {
     overflow: hidden;
@@ -1668,7 +1672,7 @@ position: relative;
     padding-right: 40px;
     display: flex;
     align-items: center;
-    }
+}
 
 .statistics {
     position: relative;
@@ -1719,10 +1723,12 @@ position: relative;
 .statistics-item-fill-4 {
     background: #00d48d
 }
-.statistics-item-fill-1:hover , .statistics-item-fill-2:hover , .statistics-item-fill-3:hover , .statistics-item-fill-4:hover{
+
+.statistics-item-fill-1:hover, .statistics-item-fill-2:hover, .statistics-item-fill-3:hover, .statistics-item-fill-4:hover {
     transform: scale(1.05);
     cursor: pointer;
 }
+
 .triangle {
     width: 0px;
     height: 0px;
@@ -1767,7 +1773,7 @@ position: relative;
     text-align: center;
     margin-bottom: 20px;
     transition: 0.2s;
-    border:none;
+    border: none;
 }
 
 .answer-2 {
@@ -1779,7 +1785,7 @@ position: relative;
     line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
-    border:none;
+    border: none;
     transition: 0.2s;
 }
 
@@ -1792,7 +1798,7 @@ position: relative;
     line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
-    border:none;
+    border: none;
     transition: 0.2s;
 }
 
@@ -1806,7 +1812,7 @@ position: relative;
     line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
-    border:none;
+    border: none;
     transition: 0.2s;
 }
 
@@ -1837,42 +1843,39 @@ position: relative;
     transition: 0.2s;
     transform: scale(1.03);
 }
-@media only screen and (max-width: 1200px) {
-    .answer-image{
-        min-width: 70%;
 
+@media only screen and (max-width: 1200px) {
+    .answer-image {
+        min-width: 70%;
     }
-    .answer-question{
+    .answer-question {
         min-width: 70%;
     }
 }
 
 @media only screen and (max-width: 991.5px) {
-    .answer-image{
+    .answer-image {
         min-width: 50%;
     }
-    .answer-question{
-        min-width:50%;
+    .answer-question {
+        min-width: 50%;
     }
-
 }
 
 @media only screen and (max-width: 767.5px) {
-    .answer-top-in{
+    .answer-top-in {
         display: block;
         max-width: 100%;
     }
-    .answer-top{
+    .answer-top {
         min-height: 700px;
         max-width: 100%;
-
     }
-    .answer-question{
+    .answer-question {
         margin: auto;
         margin-top: -20px;
-
     }
-    .answer-image{
+    .answer-image {
         min-width: 100%;
         position: relative;
         z-index: 2;
@@ -1940,12 +1943,14 @@ position: relative;
     margin-left: -47%;
     transition: 0.2s;
 }
-.score-block-1st:hover{
+
+.score-block-1st:hover {
     cursor: pointer;
-    background-color:rgb(223, 223, 223);
+    background-color: rgb(223, 223, 223);
     transition: 0.2s;
 }
-.score-block:hover{
+
+.score-block:hover {
     cursor: pointer;
     transform: scale(1.05);
     transition: 0.2s;
@@ -1968,7 +1973,6 @@ position: relative;
     font-size: 28px;
     align-items: center;
     transition: 0.2s;
-
 }
 
 /*Scoreboard page*/
@@ -2003,7 +2007,8 @@ position: relative;
     font-weight: 300;
     transition: .1s;
 }
-.discover-menu ul li a:hover{
+
+.discover-menu ul li a:hover {
     color: #57188E;
     transition: .1s;
 }
@@ -2042,10 +2047,12 @@ position: relative;
 .spn-discover-title {
     font-size: 25px;
 }
-.discover-title span a{
+
+.discover-title span a {
     color: white;
     text-decoration: none;
 }
+
 .discover-trend-bottom {
     padding-left: 10px;
     display: flex;
@@ -2067,19 +2074,21 @@ position: relative;
     transition: all .2s ease-in;
 }
 
-.discover-trend-block:hover{
+.discover-trend-block:hover {
     cursor: pointer;
     transition: all .2s ease-in;
-    transform: scale(1.05); 
+    transform: scale(1.05);
     position: relative;
 }
-.slick-track{
+
+.slick-track {
     min-height: 260px;
     display: flex;
     align-items: center;
     min-width: 100%;
 }
-.slick-list{
+
+.slick-list {
     width: 100%;
 }
 
@@ -2187,16 +2196,15 @@ position: relative;
     margin-right: 10px;
     margin-bottom: 5px;
     transition: all .2s ease-in;
-
 }
-.discover-quizs-block:hover{
+
+.discover-quizs-block:hover {
     cursor: pointer;
     transition: all .2s ease-in;
-    transform: scale(1.03); 
+    transform: scale(1.03);
     position: relative;
     border-radius: 200px;
 }
-
 
 .discover-quizs-block img {
     width: 100%;
@@ -2247,30 +2255,28 @@ position: relative;
 .spn-discover-2-quizs {
     font-size: 13px;
 }
+
 @media only screen and (max-width: 1000px) {
-    .discover-menu{
+    .discover-menu {
         padding-right: 10px;
         padding-left: 10px;
     }
-
-
-
 }
 
 @media only screen and (max-width: 550px) {
-    .discover-title{
+    .discover-title {
         padding-left: 20px;
         padding-right: 20px;
     }
-    .discover-owner{
+    .discover-owner {
         top: 3px;
     }
-    .discover-menu ul li a{
+    .discover-menu ul li a {
         font-size: 15px;
     }
-    .discover-trend-in{
+    .discover-trend-in {
         width: 80%;
     }
-
 }
+
 /*Discover page*/
