@@ -21,7 +21,7 @@ $(document).ready(function() {
 
 
 	$('.discover-trend-bottom').slick({
-	  infinite: true,
+	  infinite: false,
 	  slidesToShow: 4,
 	  slidesToScroll: 1,
 		variableWidth: true,
@@ -95,22 +95,6 @@ $(document).ready(function() {
 	$('#demo-form').parsley();	
 
 
-function answer(){
-	document.querySelectorAll('.col-md-6').forEach((block) => {
 
-		if (!(block.children[0] === e.target)) {
-			block.children[0].style.background = "grey";
-			block.children[0].style.boxShadow = "rgb(111, 103, 103) 2px 2px 2px 2px";
-		}
-		block.children[0].style.boxShadow = "rgb(111, 103, 103) 2px 2px 2px 2px";
-		block.style.pointerEvents = "none";
-
-	});
-}
-        
-
-
-    
-	
 
 });
