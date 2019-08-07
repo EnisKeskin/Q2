@@ -19,10 +19,6 @@ class Pin extends Component {
 
   componentDidMount() {
     io = Io('game');
-    io.on('connected', (data) => {
-      console.log('bağlandun');
-    })
-
     io.on('join', (req) => {
       if (req.status) {
         this.setState({ isVisible: true });
@@ -33,6 +29,10 @@ class Pin extends Component {
       }
     });
   };
+
+  componentWillUnmount() {
+    io.removeListener('join');
+  }
 
   onClickEvent = (e) => {
     io.emit("sendPin", this.state.value);

@@ -12,6 +12,7 @@ class Profile extends Component {
         super(props);
         this.state = {
             profilImg: "",
+            user: {},
             username: "",
             fullname: "",
             quizs: [],
@@ -22,22 +23,55 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        io = Io('profil', localStorage.getItem('token'));
-        io.emit('getProfilInfo');
-        io.on('setProfilInfo', (user) => {
-            this.setState({
-                username: user.username,
-                fullname: user.firstname + " " + user.lastname
-            });
-        });
-        io.on('profilQuiz', (quizs) => {
-            this.setState({
-                quizs,
-                quizCount: quizs.length
-            });
-        });
-    }
+        this.resetVariable()
+        if (localStorage.getItem('token')) {
+            io = Io('profil', localStorage.getItem('token'));
 
+            console.log(io);
+            io.emit('getProfilInfo');
+            io.on('error', () => {
+                this.setState({
+                    loginVisible: true
+                })
+            })
+            io.on('setProfilInfo', (user) => {
+                this.setState({
+                    user,
+                    username: user.username,
+                    fullname: user.firstname + " " + user.lastname
+                });
+
+            });
+            io.on('profilQuiz', (quizs) => {
+                this.setState({
+                    quizs,
+                    quizCount: quizs.length
+                });
+            });
+        } else {
+            this.setState({
+                loginVisible: true
+            })
+        }
+    }
+    componentWillUnmount() {
+        if (localStorage.getItem('token')) {
+            io.removeListener('error');
+            io.removeListener('setProfilInfo');
+            io.removeListener('profilQuiz');
+        }
+    }
+    resetVariable = () => {
+        this.setState({
+            profilImg: "",
+            username: "",
+            fullname: "",
+            quizs: [],
+            loginVisible: false,
+            quizCount: 0,
+            file: "",
+        })
+    }
     quizModel() {
         const stateQuizs = this.state.quizs;
         const quizs = [];
@@ -45,6 +79,7 @@ class Profile extends Component {
             quizs.push(
                 <div key={key}>
                     <div data-toggle="modal" data-target={"#quiz-item-modal" + key} className="my-quiz">
+
                         <div className="my-quiz-img">
                             <img src={`http://localhost:3000/${quiz.img}`} className="img-quiz" alt="" />
                         </div>
@@ -60,7 +95,6 @@ class Profile extends Component {
                         <div className="modal-dialog modal-dialog-centered modal-xl" role="document">
 
                             <div className="modal-content">
-
 
                                 <div className="container-fluid">
                                     <div className="row">
@@ -81,9 +115,7 @@ class Profile extends Component {
 
                                                 <div className="modal-star">
 
-                                                    <img src='/media/5399802a-37a6-4ce9-980b-6a95a8a8bd01/theFile/24730898.jpeg' alt="" className="img-star" />
-
-                                                    <img src={require('../images/quiz/dot.png')} className="img-dot" alt="" />
+                                                    <img src={require('../images/quiz/delete.png')} className="img-delete" alt="" />
                                                 </div>
 
                                             </div>
@@ -91,9 +123,10 @@ class Profile extends Component {
                                             <h5 className="h5-subtitle">Description</h5>
 
                                             <p> {quiz.description} </p>
-
-                                            <Link to={{ pathname: '/Players', state: { pin: quiz.pin } }} className="btn-play">Play</Link>
-                                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <div className="modal-start">
+                                                <Link to={{ pathname: '/Players', state: { pin: quiz.pin } }} className="btn-play">Play</Link>
+                                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
                                         </div>
 
                                     </div>
@@ -119,8 +152,8 @@ class Profile extends Component {
                     <Redirect to='/User' />
                     :
                     <div className="capsule-2">
+                        <Header />
                         <Link to="#" className="mobil-profil">Profil</Link>
-                        <Header/>
                         <div className="content">
 
                             <div className="content-profil" id="profil">
@@ -170,8 +203,6 @@ class Profile extends Component {
                                 <div className="content-menu">
                                     <ul>
                                         <li><Link className="active" to="#">My Quiz</Link></li>
-                                        <li><Link to="#">Favorite</Link></li>
-                                        <li><Link to="#">Latest</Link></li>
                                     </ul>
                                 </div>
 

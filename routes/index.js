@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Quiz = require('../models/Quiz');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
 
 router.get('/', (req, res, next) => {
     res.json({ status: 1 });
@@ -106,7 +104,11 @@ router.post('/upload', (req, res) => {
     console.log(req.files.theFile.file);
     console.log(req.body.whereToIns);
     if (req.body.whereToIns === 'quiz') {
-        Quiz.findByIdAndUpdate({ _id: req.body.quizId }, { img: req.files.theFile.file });
+        Quiz.findByIdAndUpdate({ _id: req.body.quizId }, { img: req.files.theFile.file }).then((data) => {
+            res.json('Başarılıyla Eklendi');
+        }).catch((err) => {
+            res.json(err);
+        });
     } else if (req.body.whereToIns === 'question') {
         Quiz.update(
             { 'question._id': req.body.questionId },
@@ -120,7 +122,6 @@ router.post('/upload', (req, res) => {
                     throw err
                 console.log(result);
             })
-
     }
 })
 

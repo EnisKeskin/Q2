@@ -40,9 +40,9 @@ class Players extends Component {
             });
             console.log(pin);
         }
-        io.on('userCount', (data) => {
+        io.on('quizPin', (quiz) => {
             this.setState({
-                pin: data.pin,
+                pin: quiz.pin,
             })
         })
         io.on('newUser', (players) => {
@@ -65,7 +65,12 @@ class Players extends Component {
         });
 
     };
-
+    componentWillUnmount() {
+        io.removeListener('startButton');
+        io.removeListener('quizPin');
+        io.removeListener('newUser');
+        io.removeListener('gameStart');
+    }
     onClickEvent = (e) => {
         io.emit('startGame')
     }

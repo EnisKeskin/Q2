@@ -1,6 +1,5 @@
 const socketio = require('socket.io');
 const socketApi = {};
-const superagent = require('superagent');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
@@ -35,7 +34,7 @@ class RoomControl {
                 currentQuestionIndex: -1,
                 users: {},
             }
-        // console.log(room);
+
         this.rooms[roomName] = room;
         return room;
     }
@@ -93,7 +92,6 @@ class RoomControl {
     nextQuestion(roomName) {
         const room = this.getRoom(roomName);
         room.currentQuestionIndex += 1;
-        console.log(room.currentQuestionIndex);
         if (room.currentQuestionIndex > room.quiz.question.length) {
             return null;
         }
@@ -136,7 +134,6 @@ const pinActive = (data, callback) => {
 
 const pinDeactivate = (data) => {
     Quiz.updateOne({ pin: data }, { active: false }).then((data) => {
-        console.log("Başarıyla active False oldu");
     })
 }
 
@@ -155,7 +152,7 @@ const pinCreate = (callback) => {
 let roomControl = new RoomControl();
 let room = {};
 Io.of('/game').on('connection', (socket) => {
-    console.log('Bağlandı');
+
     socket.emit('connected');
     const io = Io.of('/game');
     socket.on('sendPin', (pin) => {
@@ -174,7 +171,7 @@ Io.of('/game').on('connection', (socket) => {
                         roomControl.addUser(userId, roomName, username);
                         //player ekranında tüm kullanıcılar görünüyor
                         io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
-                        socket.emit('userCount', { userCount: socket.adapter.rooms[pin].length - 1, pin });
+                        socket.emit('quizPin', { pin: socket.adapter.rooms[pin].length - 1, pin });
                         //client kısmında başla komutu geldiğinde işleyecek.
                         //result
                         //soruya cevap verildiğinde ekleniyor
@@ -186,7 +183,6 @@ Io.of('/game').on('connection', (socket) => {
                                 questionScore = Math.max(100, questionScore);
                             }
                             roomControl.addAnswer(roomName, userId, user.answer, questionScore, roomControl.rooms[roomName].currentQuestion.answer);
-                            console.log(roomControl.getRoom(roomName));
                         });
 
                         socket.on('disconnect', () => {
@@ -205,8 +201,6 @@ Io.of('/game').on('connection', (socket) => {
 
     });
     socket.on('sendAdmin', (pin) => {
-        console.log(pin);
-
         //Odayı kontrol edebilmek için roomControl sınıfına atanıyor
         pinActive(pin, (quiz) => {
             socket.join(pin, () => {
@@ -260,17 +254,19 @@ Io.of('/game').on('connection', (socket) => {
 
 Io.of('/profil').use((socket, next) => {
     const token = socket.handshake.query.token
-    jwt.verify(token, key, (err, decoded) => {
-        if (err) {
-            console.log(err);
-            next(new Error('Authentication error'));
-        } else {
-            socket.decoded = decoded
-            return next();
-        }
-    });
+    if (token) {
+        jwt.verify(token, key, (err, decoded) => {
+            if (err) {
+                next(new Error('Authentication error'));
+            } else {
+                socket.decoded = decoded
+                return next();
+            }
+        });
+    } else {
+        next(new Error('Authentication error'));
+    }
 }).on('connection', (socket) => {
-
     socket.on('quizCreate', (quiz) => {
         console.log(quiz);
         if ((quiz.title !== '') && (quiz.location !== '') && (quiz.language !== '')) {
@@ -278,8 +274,8 @@ Io.of('/profil').use((socket, next) => {
                 quiz.userId = socket.decoded.userId;
                 quiz.pin = randomKey;
                 new Quiz(quiz).save()
-                    .then((data) => {
-                        socket.emit('quizId', data._id);
+                    .then((quiz) => {
+                        socket.emit('quizId', quiz._id);
                     }).catch((err) => {
                         socket.emit('quizError', { message: "Unknown Error" });
                     });
@@ -316,10 +312,11 @@ Io.of('/profil').use((socket, next) => {
                         title: 1,
                         description: 1,
                         img: 1,
-                        user: '$user',
+                        username: '$user.username',
                         pin: 1,
                     }
-                }
+                },
+                { $sort: { date: -1 } },
             ], (err, result) => {
                 if (err)
                     throw err
@@ -336,22 +333,23 @@ Io.of('/profil').use((socket, next) => {
                 return;
             }
         });
+
         if ((boolean) && (question.questionTitle !== '') && ((question.answer) !== -1) && (question.time > 0)) {
-        //validasyonlar yapılacak
+            //validasyonlar yapılacak
             Quiz.findById(question.quizId, (err, quiz) => {
                 if (err)
-                    throw err;
+                    throw err
                 delete question.quizId
                 quiz.question.push(question);
                 quiz.save();
                 socket.emit('newQuestionCreate', { questionId: quiz.question[quiz.question.length - 1]._id });
             });
-        }else {
-            socket.emit('questionErr', {message: ' Please Type The Question And Answer, Select The Correct Option'})
+        } else {
+            socket.emit('questionErr', { message: ' Please Type The Question And Answer, Select The Correct Option' })
         }
     });
 
-    socket.on('getDiscover', () => {
+    socket.on('getDiscover', (userId) => {
         Quiz.aggregate([
             {
                 $lookup: {
@@ -370,6 +368,7 @@ Io.of('/profil').use((socket, next) => {
                     description: 1,
                     img: 1,
                     username: '$user.username',
+                    userImg: '$user.img',
                     pin: 1,
                     questionCount: { $size: '$question' }
                 },
@@ -378,32 +377,73 @@ Io.of('/profil').use((socket, next) => {
         ], (err, result) => {
             if (err)
                 throw err
-            socket.emit('setDiscover', result);
+            socket.emit('setDiscoverTrend', result);
+        });
+        Quiz.aggregate([
+            {
+                $match: {
+                    userId: mongoose.Types.ObjectId(socket.decoded.userId)
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'user'
+                }
+            },
+            {
+                $unwind: '$user'
+            },
+            {
+                $project: {
+                    title: 1,
+                    description: 1,
+                    img: 1,
+                    username: '$user.username',
+                    userImg: '$user.img',
+                    pin: 1,
+                    questionCount: { $size: '$question' }
+                },
+            },
+
+        ], (err, result) => {
+            if (err)
+                throw err
+            socket.emit('setDiscoverMyQuiz', result);
         })
     })
 
+    socket.on('disconnect', () => {
+        console.log("at");
+    })
 });
 
+
+
+
+//login test için hazır
 Io.of('/user').on('connection', (socket) => {
-    socket.on('userLogin', (email, password) => {
-        if (email !== null && password !== null) {
+    socket.on('userLogin', (user) => {
+        console.log(user);
+        if (user.email !== null && user.password !== null) {
             User.findOne({
-                email
-            }, (err, user) => {
+                email: user.email
+            }, (err, User) => {
                 if (err)
                     throw err
-                if (!user) {
-                    socket.emit('unsuccLogin');
+                if (!User) {
+                    console.log("at");
+                    socket.emit('loginErr', { message: "Email and Password incorrect" });
                 } else {
-                    bcrypt.compare(password, user.password).then((result) => {
-                        console.log(result);
+                    bcrypt.compare(user.password, User.password).then((result) => {
                         if (!result) {
                             //yanlış giriş
-                            socket.emit('unsuccLogin');
+                            socket.emit('loginErr', { message: " Email or Password incorrect " });
                         } else {
-                            console.log(result);
                             const payload = {
-                                userId: user._id,
+                                userId: User._id,
                             }
                             const token = jwt.sign(payload, key);
                             socket.emit('succLogin', token);
@@ -412,11 +452,12 @@ Io.of('/user').on('connection', (socket) => {
                 };
             });
         } else {
-            socket.emit('unsuccLogin');
+            socket.emit('loginErr', { message: "Email or Password field cannot be left blank" });
         }
     });
-
+    //register test için hazırlanacak
     socket.on('userRegister', (userRegister) => {
+        console.log(userRegister);
         if ((userRegister.email !== '') && (userRegister.password !== '') && (userRegister.username !== '') && (userRegister.firstname !== '') && (userRegister.lastname !== '')) {
             bcrypt.hash(userRegister.password, 10).then((hash) => {
                 const user = new User({
@@ -427,16 +468,16 @@ Io.of('/user').on('connection', (socket) => {
                     password: hash
                 });
                 user.save().then((data) => {
-                    console.log(data);
+
                 }).catch((err) => {
+
                     console.log(err);
                 });
             })
         } else {
-            socket.emit('err', { message: 'Fields Cannot Be Left Blank' })
+            socket.emit('registerError', { message: 'Fields Cannot Be Left Blank' })
         }
     });
-
 
 })
 

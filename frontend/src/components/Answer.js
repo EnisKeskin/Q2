@@ -107,6 +107,13 @@ class Answer extends Component {
             });
         })
     };
+
+    componentWillUnmount() {
+        io.removeListener('showScoreboard');
+        io.removeListener('staticstics');
+        io.removeListener('newQuestion');
+    }
+
     componentDidUpdate() {
         if (this.state.time === 0) {
             clearInterval(this.interval);

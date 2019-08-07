@@ -12,74 +12,69 @@ class Quiz extends Component {
         super(props);
         this.quizId = "";
         this.file = "";
-        this.state = {
+        this.quiz = {
             location: "",
             language: "",
             title: "",
             description: "",
             img: "",
+            question: [],
+        }
+        this.state = {
             loginVisible: false,
             questionVisible: false,
-            question: [],
             file: "",
             quizError: "",
         }
-        this.onChangeLocationEvent = this.onChangeLocationEvent.bind(this);
-        this.onchangeLanguageEvent = this.onChangeLanguageEvent.bind(this);
-        this.onChangeTitleEvent = this.onChangeTitleEvent.bind(this);
-        this.onChangeDescAreaEvent = this.onChangeDescAreaEvent.bind(this);
         this.onChangeUploadEvent = this.onChangeUploadEvent.bind(this);
     }
 
     componentDidMount() {
-        this.resetVarible();
-        io = Io('profil', localStorage.getItem('token'));
-        io.on('quizId', (quizId) => {
-            if (this.file) {
-                Superagent
-                    .post('http://localhost:3000/api/upload')
-                    .field('quizId', quizId)
-                    .field('whereToIns', 'quiz')
-                    .attach("theFile", this.file)
-                    .end((err, result) => {
-                        console.log(result);
-                    })
-            }
-            this.quizId = quizId
-            this.setState({
-                questionVisible: true
+        if (localStorage.getItem('token')) {
+            this.resetVarible();
+            io = Io('profil', localStorage.getItem('token'));
+            io.on('error', () => {
+                this.setState({
+                    loginVisible: true
+                })
             })
-        });
-        io.on('quizError', (quiz) => {
-            this.setState({
-                quizError:
-                <div class="quiz-error">{quiz.message}</div> 
+            io.on('quizId', (quizId) => {
+                if (this.file) {
+                    Superagent
+                        .post('http://localhost:3000/api/upload')
+                        .field('quizId', quizId)
+                        .field('whereToIns', 'quiz')
+                        .attach("theFile", this.file)
+                        .end((err, result) => {
+                            if (err)
+                                throw err
+                            console.log(result);
+                        })
+                }
+                this.quizId = quizId
+                this.setState({
+                    questionVisible: true
+                })
+            });
+            io.on('quizError', (quiz) => {
+                this.setState({
+                    quizError:
+                        <div className="quiz-error">{quiz.message}</div>
+                })
             })
-        })
+        } else {
+            this.setState({
+                loginVisible: true
+            })
+        }
     }
 
-    onChangeLocationEvent = (e) => {
-        this.setState({
-            location: e.target.value
-        })
-    }
-
-    onChangeLanguageEvent = (e) => {
-        this.setState({
-            language: e.target.value
-        })
-    }
-
-    onChangeTitleEvent = (e) => {
-        this.setState({
-            title: e.target.value
-        })
-    }
-
-    onChangeDescAreaEvent = (e) => {
-        this.setState({
-            description: e.target.value
-        })
+    componentWillUnmount() {
+        if (localStorage.getItem('token')) {
+            io.removeListener('error');
+            io.removeListener('quizId');
+            io.removeListener('quizError');
+        }
     }
 
     onChangeUploadEvent = (e) => {
@@ -89,32 +84,29 @@ class Quiz extends Component {
         })
     }
 
-    // console.log(this.props.location.state.id);
     onClickEvent = (e) => {
         e.preventDefault();
-        let state = this.state;
-        io.emit('quizCreate', {
-            title: state.title,
-            description: state.description,
-            location: state.location,
-            language: state.language,
-            question: state.question,
-            img: ""
-        });
+        io.emit('quizCreate', this.quiz);
     }
 
     resetVarible = () => {
         this.quizId = "";
-        this.setState({
+        this.file = "";
+        this.quiz = {
             location: "",
             language: "",
             title: "",
             description: "",
             img: "",
-            loginVisible: false,
-            questionVisible: false,
             question: [],
-        })
+        };
+        this.setState(
+            {
+                loginVisible: false,
+                questionVisible: false,
+                file: "",
+                quizError: "",
+            })
     }
 
     render() {
@@ -147,7 +139,7 @@ class Quiz extends Component {
                                         <label className="lbl-file" htmlFor="file">    Tap to add cover images   </label>
 
                                         <input className="fileupload" type="file" name="fileToUpload" id="file" encType="multipart/form-data" onChange={this.onChangeUploadEvent} />
-                                        <img src={this.state.file} alt=""/>
+                                        <img src={this.state.file} alt="" />
                                     </div>
 
                                     <div className="quiz-right">
@@ -156,14 +148,13 @@ class Quiz extends Component {
 
                                             <div className="select-box select-box-1 ">
                                                 <select name="" id="">
-                                                    <option value="">Visible to  </option>
-                                                    <option value="1">option 2</option>
-                                                    <option value="1">option 3</option>
-                                                    <option value="1">option 4</option>
+                                                    <option value="">Visible to </option>
+                                                    <option value="0">Private</option>
+                                                    <option value="1">Public</option>
                                                 </select>
                                             </div>
 
-                                            <div className="select-box select-box-2" onChange={this.onChangeLocationEvent}>
+                                            <div className="select-box select-box-2" onChange={(e) => { this.quiz.location = e.target.value }}>
                                                 <select required name="" id="">
                                                     <option value="">Location  </option>
                                                     <option value="Turkey">Turkey</option>
@@ -172,7 +163,7 @@ class Quiz extends Component {
                                                 </select>
                                             </div>
 
-                                            <div className="select-box select-box-3" onChange={this.onChangeLanguageEvent}>
+                                            <div className="select-box select-box-3" onChange={(e) => { this.quiz.language = e.target.value }}>
                                                 <select required name="" id="">
                                                     <option value="">Language</option>
                                                     <option value="Turkish">Turkish</option>
@@ -182,9 +173,9 @@ class Quiz extends Component {
                                             </div>
                                         </div>
 
-                                        <input type="text" placeholder="Title" className="txt-title" required onChange={this.onChangeTitleEvent} />
+                                        <input type="text" placeholder="Title" className="txt-title" required onChange={(e) => { this.quiz.title = e.target.value }} />
 
-                                        <textarea placeholder="Description" className="txt-description" required onChange={this.onChangeDescAreaEvent} />
+                                        <textarea placeholder="Description" className="txt-description" required onChange={(e) => { this.quiz.description = e.target.value }} />
                                         {this.state.quizError}
                                     </div>
 

@@ -7,41 +7,36 @@ let io = null;
 class User extends Component {
   constructor(props) {
     super(props);
-
+    this.userLogin = {
+      email: "",
+      password: "",
+    }
+    this.register = {
+      email: "",
+      password: "",
+      username: "",
+      firstname: "",
+      lastname: "",
+    }
     this.state = {
-      lemail: "",
-      lpassword: "",
-      rusername: "",
-      rpassword: "",
-      remail: "",
-      rfirstname: "",
-      rlastname: "",
       profilVisible: false,
-      loginInfo: "",
-      registerInfo: "",
+      loginErrMessage: "",
+      registerErrMessage: "",
     }
 
-    this.onChangePassEvent = this.onChangePassEvent.bind(this);
-    this.onChangeEmailEvent = this.onChangeEmailEvent.bind(this);
     this.onClickLoginEvent = this.onClickLoginEvent.bind(this);
-
-    this.onChangeRMailEvent = this.onChangeRMailEvent.bind(this);
-    this.onChangeRPasswordEvent = this.onChangeRPasswordEvent.bind(this);
-    this.onChangeRUserEvent = this.onChangeRUserEvent.bind(this);
     this.onClickRegisterEvent = this.onClickRegisterEvent.bind(this);
-    this.onChangeRFirstEvent = this.onChangeRFirstEvent.bind(this);
-    this.onChangeRLastEvent = this.onChangeRLastEvent.bind(this);
-
-
   }
 
   componentDidMount() {
-    io = Io('user');
+    //io çıktığı için sıkıntı
+    io = Io('user')
     if (localStorage.getItem('token')) {
       this.setState({
         profilVisible: true
       });
     }
+
     io.on('succLogin', (token) => {
       if (isNaN(token)) {
         localStorage.removeItem('token');
@@ -52,73 +47,34 @@ class User extends Component {
       });
     });
 
-    io.on('unsuccLogin', () => {
+    io.on('loginErr', (err) => {
       this.setState({
-        loginInfo: 
-        <div class="login-error sign-err">{"Email and Password incorrect"}</div>
-      });
-    });
+        loginErrMessage: <div className="login-error sign-err">{err.message}</div>
+      })
+    })
 
-    io.on('err', (err) => {
+    io.on('registerError', (err) => {
       this.setState({
-        registerInfo: <div class="login-error sign-err">{err.message}</div>
+        registerErrMessage: <div className="login-error sign-err">{err.message}</div>
       })
     })
 
   }
 
-  onChangeEmailEvent = (e) => {
-    this.setState({
-      lemail: e.target.value
-    });
-  }
-
-  onChangePassEvent = (e) => {
-    this.setState({
-      lpassword: e.target.value
-    });
+  componentWillUnmount() {
+    io.removeListener('succLogin');
+    io.removeListener('loginErr');
+    io.removeListener('registerError');
   }
 
   onClickLoginEvent = (e) => {
     e.preventDefault();
-    const state = this.state;
-    io.emit('userLogin', state.lemail, state.lpassword);
-  }
-
-  onChangeRUserEvent = (e) => {
-    this.setState({
-      rusername: e.target.value
-    });
-  }
-
-  onChangeRMailEvent = (e) => {
-    this.setState({
-      remail: e.target.value
-    });
-  }
-
-  onChangeRPasswordEvent = (e) => {
-    this.setState({
-      rpassword: e.target.value
-    });
-  }
-
-  onChangeRFirstEvent = (e) => {
-    this.setState({
-      rfirstName: e.target.value
-    })
-  }
-
-  onChangeRLastEvent = (e) => {
-    this.setState({
-      rlastName: e.target.value
-    })
+    io.emit('userLogin', this.userLogin);
   }
 
   onClickRegisterEvent = (e) => {
     e.preventDefault();
-    const state = this.state;
-    io.emit('userRegister', { email: state.remail, password: state.rpassword, username: state.rusername, firstname: state.rfirstname, lastname: state.rlastname });
+    io.emit('userRegister', this.register);
   }
 
   render() {
@@ -129,22 +85,15 @@ class User extends Component {
           :
           <div>
 
-            <div className="figure">
-
-            </div>
-            <div className="figure-2">
-
-            </div>
+            <div className="figure"></div>
+            <div className="figure-2"></div>
 
             <div className="capsule">
-
-
 
               <div className="container user">
                 <div className="user-logo">
                   <img src={require('../images/logo/logo-w.png')} className="img-user-logo" alt="Quiz" />
                 </div>
-
 
                 <div className="row">
 
@@ -162,7 +111,7 @@ class User extends Component {
                           </div>
 
                           <div className="login-textarea">
-                            <input type="text" placeholder="User Name" className="txt-user" autoComplete="username" onChange={this.onChangeEmailEvent} />
+                            <input type="text" placeholder="User Name" className="txt-user" autoComplete="username" onChange={(e) => { this.userLogin.email = e.target.value }} />
                           </div>
 
                         </div>
@@ -174,11 +123,11 @@ class User extends Component {
                           </div>
 
                           <div className="login-textarea">
-                            <input type="password" placeholder="Password" className="txt-password" autoComplete="current-password" onChange={this.onChangePassEvent} />
+                            <input type="password" placeholder="Password" className="txt-password" autoComplete="current-password" onChange={(e) => { this.userLogin.password = e.target.value }} />
                           </div>
 
                         </div>
-                        {this.state.loginInfo}
+                        {this.state.loginErrMessage}
                         <div className="login-button">
 
                           <button type="submit" className="btn-login" onClick={this.onClickLoginEvent} >Enter</button>
@@ -195,16 +144,16 @@ class User extends Component {
 
                       <form action="." method="POST">
                         <div className="user-name">
-                          <input type="text" className="txt-username" placeholder="First Name" required onChange={this.onChangeRFirstEvent} />
+                          <input type="text" className="txt-username" placeholder="First Name" required onChange={(e) => { this.register.firstname = e.target.value }} />
 
-                          <input type="text" className="txt-username" placeholder="Last Name" required onChange={this.onChangeRLastEvent} />
+                          <input type="text" className="txt-username" placeholder="Last Name" required onChange={(e) => { this.register.lastname = e.target.value }} />
                         </div>
-                        <input type="text" className="txt-signup" placeholder="User Name" required onChange={this.onChangeRUserEvent} />
+                        <input type="text" className="txt-signup" placeholder="User Name" required onChange={(e) => { this.register.username = e.target.value }} />
 
-                        <input type="email" className="txt-signup" placeholder="E-Mail" autoComplete="username" required onChange={this.onChangeRMailEvent} />
+                        <input type="email" className="txt-signup" placeholder="E-Mail" autoComplete="username" required onChange={(e) => { this.register.email = e.target.value }} />
 
-                        <input type="password" className="txt-signup" placeholder="Password" autoComplete="current-password" required onChange={this.onChangeRPasswordEvent} />
-                        <div>{this.state.registerInfo}</div>
+                        <input type="password" className="txt-signup" placeholder="Password" autoComplete="current-password" required onChange={(e) => { this.register.password = e.target.value }} />
+                        <div>{this.state.registerErrMessage}</div>
 
                         <div className="sign-button">
                           <button type="submit" className="btn-sign" onClick={this.onClickRegisterEvent} >Sign Up</button>
