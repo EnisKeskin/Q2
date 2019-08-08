@@ -7,10 +7,17 @@ module.exports = class Player {
         this.totalPoint = 0;
     }
 
+    fillAnswers(count) {
+        for (let i = 0; i < count; i++)
+            this.answers.push({ isNull: true });
+    }
+
     calculateTotalPoints() {
         this.totalPoint = 0;
-        for (let i = 0; i < this.answers.length; i++)
-            this.totalPoint += this.answers[i].getPoint();
+        this.answers.forEach((answer) => {
+            if (!answer["isNull"])
+                this.totalPoint += answer.getPoint();
+        });
         return Math.floor(this.totalPoint);
     }
 }

@@ -6,7 +6,8 @@ module.exports = (io) => {
   const quiz = require('../models/Quiz');
   const Player = require('../models/Player');
   const Answer = require('../models/Answer');
-  const STATISTICS_TIMEOUT = 5000;
+  const SECOND = 1000;
+  const STATISTICS_TIMEOUT = 4 * SECOND;
 
   router.get('/', (req, res, next) => {
     const pin = req.query.pin;
@@ -32,12 +33,15 @@ module.exports = (io) => {
 
     socket.on('enter-lobby', (pin) => {
       var Room = Rooms[pin];
-      Room.players[socket.id] = new Player('player_' + Math.floor(Math.random() * 10000), socket);
-      if (Room.started) {
-        quiz.find({ pin: pin }).then((data) => {
-          if (data.length != 0) {
+      var thePlayer = new Player('player_' + Math.floor(Math.random() * 10000), socket);
+      Room.players[socket.id] = thePlayer;
+      quiz.find({ pin: pin }).then((data) => {
+        if (data.length != 0) {
+          if (Room.started) {
             const index = Room.questionIndex;
             var question = data[0].question[index];
+
+            thePlayer.fillAnswers(data[0].question.length);
 
             gameNamespace.to(socket.id).emit('render-content',
               {
@@ -49,25 +53,27 @@ module.exports = (io) => {
                 command: "QH"
               });
           }
-        });
-      }
-      else {
-        var playersInLobby = [];
-        const players = Object.values(Room.players);
+          else {
+            var playersInLobby = [];
+            const players = Object.values(Room.players);
 
-        players.forEach((player) => {
-          playersInLobby.push({ name: player.username });
-        });
-        players.forEach((player) => {
-          gameNamespace.to(player.socket.id).emit('render-content',
-            {
-              pin: pin,
-              players: playersInLobby,
-              num: playersInLobby.length,
-              command: "GH"
+            thePlayer.fillAnswers(data[0].question.length);
+
+            players.forEach((player) => {
+              playersInLobby.push({ name: player.username });
             });
-        });
-      }
+            players.forEach((player) => {
+              gameNamespace.to(player.socket.id).emit('render-content',
+                {
+                  pin: pin,
+                  players: playersInLobby,
+                  num: playersInLobby.length,
+                  command: "GH"
+                });
+            });
+          }
+        }
+      });
     });
 
     socket.on('start-the-game', (data) => {
@@ -91,6 +97,7 @@ module.exports = (io) => {
                 command: "QH"
               });
           });
+          setTimeout(() => { statistics(pin); }, question.time * SECOND);
         }
       });
     });
@@ -135,9 +142,49 @@ module.exports = (io) => {
                   command: "QH"
                 });
             });
+            setTimeout(() => { statistics(pin); }, question.time * SECOND);
           }
         });
       }
+    }
+
+    function statistics(pin) {
+      var Room = Rooms[pin];
+      var index = Room.questionIndex;
+      let players = Object.values(Room.players);
+      var count = Room.playersAnswered;
+      quiz.find({ pin: pin }).then((result) => {
+        if (result.length != 0) {
+          var theQuiz = result[0];
+          var question = theQuiz.question[index];
+          var percentages = [
+            Room.answers[0] * 100 / count,
+            Room.answers[1] * 100 / count,
+            Room.answers[2] * 100 / count,
+            Room.answers[3] * 100 / count
+          ];
+          var colors = [
+            "lightgray",
+            "lightgray",
+            "lightgray",
+            "lightgray"
+          ];
+          colors[theQuiz.question[index].answer] = "green";
+          Room.playersAnswered = 0;
+          players.forEach((player) => {
+            gameNamespace.to(player.socket.id).emit('render-content',
+              {
+                count: Room.answers,
+                percent: percentages,
+                color: colors,
+                answer: question.answers,
+                command: "SH"
+              });
+          });
+          Room.answers = [0, 0, 0, 0];
+          setTimeout(() => { nextQ(pin); }, STATISTICS_TIMEOUT);
+        }
+      });
     }
 
     socket.on('give-answer', (data) => {
@@ -147,56 +194,15 @@ module.exports = (io) => {
       var thePlayer = Room.players[socket.id];
       let players = Object.values(Room.players);
 
-      if (thePlayer.answers.length <= index) {
+      if ("isNull" in thePlayer.answers[index]) {
         quiz.find({ pin: pin }).then((result) => {
           if (result.length != 0) {
-            console.log(result[0]);
-            var quiz = result[0];
-            var question = quiz.question[index];
-            var answer = new Answer(Room.time, Date.now(), data.answer, data.answer == question.answer);
-            thePlayer.answers.push(answer);
+            var theQuiz = result[0];
+            var question = theQuiz.question[index];
+            var answer = new Answer(Room.time, Date.now(), question.time, data.answer, data.answer == question.answer);
+            thePlayer.answers[index] = answer;
             Room.answers[data.answer]++;
             Room.playersAnswered++;
-
-            if (players.length <= Room.playersAnswered) {
-              players.forEach((player) => {
-                player.answers[index].setTime(Room.time - Date.now());
-              });
-              var count = Room.playersAnswered;
-              var percentages = [
-                Room.answers[0] * 100 / count,
-                Room.answers[1] * 100 / count,
-                Room.answers[2] * 100 / count,
-                Room.answers[3] * 100 / count
-              ];
-              var colors = [
-                "lightgray",
-                "lightgray",
-                "lightgray",
-                "lightgray"
-              ];
-              colors[quiz.question[index].answer] = "green";
-              Room.playersAnswered = 0;
-              players.forEach((player) => {
-                gameNamespace.to(player.socket.id).emit('render-content',
-                  {
-                    count: Room.answers,
-                    percent: percentages,
-                    color: colors,
-                    answer: question.answers,
-                    command: "SH"
-                  });
-              });
-              Room.answers = [0, 0, 0, 0];
-              setTimeout(() => { nextQ(pin); }, STATISTICS_TIMEOUT);
-            }
-            else {
-              gameNamespace.to(socket.id).emit('render-content',
-                {
-                  color: ["white", "red", "white", "white"],
-                  command: "AH"
-                });
-            }
           }
         });
       }

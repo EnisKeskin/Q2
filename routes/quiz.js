@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+var multer = require('multer');
+var upload = multer({ dest: './uploads' });
 
 const Quiz = require('../models/Quiz');
 

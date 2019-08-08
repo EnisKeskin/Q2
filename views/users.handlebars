@@ -9,7 +9,7 @@
           Log In
         </div>
         <div class="login-in">
-          <form action="/login" method="POST">
+          <form action="users/login" method="POST">
             <div class="login-input">
               <div class="login-img">
                 <img src="images/user-icon/user.png" class="img-user" alt="">
@@ -37,14 +37,20 @@
           Sign Up
         </div>
         <div class="signup-in">
-          <form action="/register" method="POST">
+          <form action="users/register" method="POST">
             <div class="user-name">
-              <input name="firstname" type="text" class="txt-username" placeholder="First Name" required="">
-              <input name="lastname" type="text" class="txt-username" placeholder="Last Name" required="">
+              <input name="firstname" type="text" class="txt-username" placeholder="First Name">
+              <input name="lastname" type="text" class="txt-username" placeholder="Last Name">
             </div>
-            <input name="username" type="text" class="txt-signup" placeholder="User Name" required="">
-            <input name="email" type="email" class="txt-signup" placeholder="E-Mail" required="">
-            <input name="password" type="password" class="txt-signup" placeholder="Password" required="">
+            <input name="username" type="text" class="txt-signup" placeholder="User Name">
+            <input name="email" type="email" class="txt-signup" placeholder="E-Mail">
+            <input name="password1" type="password" class="txt-signup" placeholder="Password">
+            <input name="password2" type="password" class="txt-signup" placeholder="Confirm Password">
+            <ul style="color:red;list-style-type:none;">
+              {{#each errors}}
+              <li>{{this.msg}}</li>
+              {{/each}}
+            </ul>
             <div class="sign-button">
               <button type="submit" class="btn-sign">Sign Up</button>
             </div>

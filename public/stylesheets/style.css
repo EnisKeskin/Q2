@@ -1140,6 +1140,11 @@ ul {
 .slick-arrow {}
 
 .slick-arrow.slick-next {
+    background: url("../images/quiz/next-arrow.png");
+    width: 50px;
+    height: 70%;
+    position: absolute;
+    right: 0;
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: 0px 50%;
@@ -1150,6 +1155,11 @@ ul {
 }
 
 .slick-arrow.slick-prev {
+    background: url("../images/quiz/previous-arrow.png");
+    width: 50px;
+    height: 70%;
+    position: absolute;
+    left: 0;
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: 0px 50%;
@@ -2204,7 +2214,9 @@ select::-ms-expand {
 
 .discover-trend-in {
     height: 400px;
-    width: 65%;
+    width: 67%;
+    position: relative;
+    padding-left: 40px;
     background-color: #9b3adb;
     border-top-right-radius: 50px;
     border-bottom-right-radius: 50px;
@@ -2321,31 +2333,37 @@ select::-ms-expand {
 
 .discover-trend-bottom .slick-arrow.slick-next {
     background: url("../images/quiz/next-arrow-w.png");
+    width: 50px;
+    height: 70%;
+    right: 0;
+    position: absolute;
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: 0px 50%;
-    background-color: white;
     border: none;
     outline-style: none;
     font-size: 0px;
-    background-color: #9b3adb;
 }
 
 .discover-trend-bottom .slick-arrow.slick-prev {
+    background: url("../images/quiz/previous-arrow-w.png");
+    width: 50px;
+    height: 70%;
+    position: absolute;
+    left: 0;
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: 0px 50%;
-    background-color: white;
     border: none;
     outline-style: none;
     font-size: 0px;
-    background-color: #9b3adb;
 }
 
 .discover-quizs {
     width: 100%;
-    padding-left: 10px;
-    padding-right: 10px;
+    position: relative;
+    padding-left: 40px;
+    padding-right: 40px;
     padding-top: 50px;
     margin-bottom: 50px;
 }

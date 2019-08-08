@@ -5,56 +5,90 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../models/User');
 
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
 router.post('/register', (req, res, next) => {
-  const { email, password, firstname, lastname, username } = req.body;
-  bcrypt.hash(password, 10).then((hash) => {
-    const user = new User({
-      email,
-      firstname,
-      lastname,
-      username,
-      password: hash
-    });
+  const { email, password1, password2, firstname, lastname, username } = req.body;
 
-    user.save().then((data) => {
-      res.json({ status: 1 });
-    }).catch((err) => {
-      res.json(err);
-    });
+  req.checkBody("firstname", "First name is required").notEmpty();
+  req.checkBody("lastname", "Last name is required").notEmpty();
+  req.checkBody("username", "Username is required").notEmpty();
+  req.checkBody("email", "E-mail is required").notEmpty();
+  req.checkBody("email", "E-mail is not valid").isEmail();
+  req.checkBody("password1", "Password is required").notEmpty();
+  req.checkBody("password2", "Passwords do not match").equals(req.body.password1);
 
-  })
+  var errors = req.validationErrors();
+
+  if (errors) {
+    res.render('users', {
+      errors: errors
+    })
+  } else {
+    bcrypt.hash(password1, 10).then((hash) => {
+      const user = new User({
+        email: email,
+        firstname: firstname,
+        lastname: lastname,
+        username: username,
+        password: hash
+      });
+
+      user.save().then((data) => {
+        res.location('/home');
+        res.redirect('/home');
+      }).catch((err) => {
+        res.json(err);
+      });
+
+    })
+  }
 });
 
-router.post('/login', (req, res) => {
-  const { username, password } = req.body;
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
 
-  User.findOne({
-    username
-  }, (err, user) => {
-    if (err)
-      throw err
-    if (!user) {
-      res.json({
-        status: false,
-        message: 'Authenticaton failed, user not found.'
-      });
-    } else {
-      bcrypt.compare(password, user.password).then((result) => {
-        if (!result) {
-          res.render('users', {
-            status: 0,
-            message: "Login error",
-          });
-        } else {
-          res.redirect('/home');
-        }
-      });
-    };
+passport.deserializeUser((id, done) => {
+  User.getUserById(id, (err, user) => {
+    done(err, user);
   });
+});
+
+passport.use(new LocalStrategy((username, password, done) => {
+  User.getUserByUsername(username, (err, user) => {
+    if (err) {
+      throw err;
+    }
+    if (!user) {
+      return done(null, false, { message: "Unknown user" });
+    }
+
+    User.comparePassword(password, user.password, (err, isMatch) => {
+      if (err) return done(err);
+      if (isMatch) return done(null, user);
+      else return done(null, false, "Invalid Password");
+    });
+  });
+}));
+
+router.post('/login', passport.authenticate('local', { failureRedirect: "/users", failureFlash: "Invalid username or passwprd" }), (req, res) => {
+  res.redirect("/home");
 });
 
 router.get('/', function (req, res, next) {
   res.render('users');
+});
+
+router.get('/register', function (req, res, next) {
+  res.send('users');
+});
+
+router.get('/logout', (req, res) => {
+  req.logout();
+  res.location('/');
+  res.redirect('/');
 });
 
 module.exports = router;

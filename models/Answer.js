@@ -1,12 +1,8 @@
 module.exports = class Answer {
-    constructor(timestart, timeend, answer, isCorrect) {
-        this.time = timeend - timestart;
+    constructor(timestart, timeend, totaltime, answer, isCorrect) {
+        this.time = (timeend - timestart) / totaltime;
         this.answer = answer;
         this.isCorrect = isCorrect;
-    }
-
-    setTime(totaltime) {
-        this.time /= totaltime;
     }
 
     getPoint() {
