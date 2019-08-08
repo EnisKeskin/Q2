@@ -5,7 +5,8 @@ import Players from './components/Players';
 import User from './components/User';
 import Quiz from './components/Quiz';
 import Question from './components/Question';
-import Profil from './components/Profile';
+import Profile from './components/Profile';
+import ProfileEdit from './components/ProfilEdit'
 import Answer from './components/Answer';
 import Username from './components/Username';
 import Scoreboard from './components/Scoreboard'
@@ -23,7 +24,8 @@ class App extends Component {
                 <Route exact path='/Scoreboard' component={Scoreboard} />
 
                 <Route exact path='/User' component={User} />
-                <Route exact path='/Profil' component={Profil} />
+                <Route exact path='/Profile' component={Profile} />
+                <Route exact path='/Profile/Edit' component={ProfileEdit} />
                 <Route exact path='/Quiz' component={Quiz} />
                 <Route exact path='/Question' component={Question} />
 

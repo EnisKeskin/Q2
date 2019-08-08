@@ -171,18 +171,23 @@ Io.of('/game').on('connection', (socket) => {
                         roomControl.addUser(userId, roomName, username);
                         //player ekranında tüm kullanıcılar görünüyor
                         io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
-                        socket.emit('quizPin', { pin: socket.adapter.rooms[pin].length - 1, pin });
-                        //client kısmında başla komutu geldiğinde işleyecek.
-                        //result
+
+                        socket.emit('quizPin', { pin });
                         //soruya cevap verildiğinde ekleniyor
                         socket.on('sendAnswer', (user) => {
                             //soru geri gönderilirken currentQuestion.time işe yarayacak.
                             let questionScore = 0
+                            console.log("user.answeraaaaaaaaaaaaaaaaaaaaaaaaaa:", user.answer);
+                            if (user.answer === null) {
+                                console.log("at");
+                                user.answer = -1;
+                            }
                             if (user.answer === roomControl.rooms[roomName].currentQuestion.answer) {
                                 questionScore = (1000 - ((Date.now() - roomControl.rooms[roomName].startTime) / 10));
                                 questionScore = Math.max(100, questionScore);
                             }
                             roomControl.addAnswer(roomName, userId, user.answer, questionScore, roomControl.rooms[roomName].currentQuestion.answer);
+                            console.log("roomControl", roomControl);
                         });
 
                         socket.on('disconnect', () => {
@@ -207,7 +212,6 @@ Io.of('/game').on('connection', (socket) => {
                 const roomName = Object.keys(socket.rooms)[0];
                 room = roomControl.getRoom(roomName);
                 socket.emit('startButton', pin);
-                socket.emit('userCount', { userCount: socket.adapter.rooms[pin].length - 1, pin });
                 socket.on('startGame', () => {
                     //ilk soru ekleniyor.
                     pinDeactivate(pin);
@@ -215,7 +219,7 @@ Io.of('/game').on('connection', (socket) => {
                     io.to(pin).emit('gameStart');
                     roomControl.resetRoom(roomName);
                     //soruyu gönderiyor
-                    // room resetlenecek bir fonksiyonlanacak
+                    // room resetlenecek bir fonksiyonlana  cak
                     room.currentQuestion = null;
                     nextQuestion();
                 });
@@ -232,10 +236,20 @@ Io.of('/game').on('connection', (socket) => {
 
                     setTimeout(() => {
                         let answStatic = []
+                        console.log("answernumber:", answernumber);
+                        console.log("room.user:", room.users);
+
                         Object.keys(room.users).forEach((userId) => {
+                            if (typeof (room.users[userId].answers[answernumber]) === 'undefined') {
+                                console.log("attttttttttttttttttttttt");
+                                room.users[userId].answers[answernumber] = { answer: -1, score: 0 }
+                            }
+                            console.log("room.users[userId].answers:", room.users[userId].answers);
                             answStatic.push(room.users[userId].answers[answernumber]);
+                            console.log("room.users[userId].answers[answernumber]:", room.users[userId].answers[answernumber]);
                         });
                         answernumber++;
+                        console.log("answStatic", answStatic);
                         io.to(roomName).emit('staticstics', answStatic);
 
                         setTimeout(() => {
@@ -252,7 +266,7 @@ Io.of('/game').on('connection', (socket) => {
 });
 
 
-Io.of('/profil').use((socket, next) => {
+Io.of('/profile').use((socket, next) => {
     const token = socket.handshake.query.token
     // console.log(token);
     // console.log("attttttttttt");
@@ -303,7 +317,6 @@ Io.of('/profil').use((socket, next) => {
     });
 
     socket.on('getProfilInfo', () => {
-        console.log(socket.decoded.userId);
         User.findById(socket.decoded.userId, (err, user) => {
             if (err)
                 throw err
@@ -342,6 +355,65 @@ Io.of('/profil').use((socket, next) => {
             })
         });
     });
+
+    socket.on('getProfileEditInfo', () => {
+        User.findById(socket.decoded.userId, (err, user) => {
+            if (err)
+                throw err
+            socket.emit('setProfileEditInfo', user)
+        })
+
+    })
+
+    socket.on('profilUpdate', (user) => {
+        User.findById(socket.decoded.userId, (err, UserProfil) => {
+            if (err)
+                throw err
+            bcrypt.compare(user.password, UserProfil.password).then((result) => {
+                if (!result) {
+                    //yanlış giriş
+                    socket.emit('message', { message: " Password incorrect " });
+                } else {
+                    if (typeof (user.newPassword) !== 'undefined') {
+                        if (user.newPassword.length >= 6) {
+                            bcrypt.hash(user.newPassword, 10).then((hash) => {
+                                User.findByIdAndUpdate(socket.decoded.userId, {
+                                    email: user.email,
+                                    username: user.username,
+                                    firstname: user.firstname,
+                                    lastname: user.lastname,
+                                    password: hash
+                                }, (err, result) => {
+                                    if (err)
+                                        throw err
+                                    socket.emit('file', { userId: socket.decoded.userId });
+                                    socket.emit('message', { message: " Successfully updated " });
+                                })
+
+                            })
+                        } else {
+                            socket.emit('message', { message: " Length must be at least 6 characters " });
+                        }
+                    } else {
+                        User.findByIdAndUpdate(socket.decoded.userId, {
+                            email: user.email,
+                            username: user.username,
+                            firstname: user.firstname,
+                            lastname: user.lastname,
+                        }, (err, result) => {
+                            if (err)
+                                throw err
+                            socket.emit('file', { userId: socket.decoded.userId });
+                            socket.emit('message', { message: " Successfully updated " });
+                        })
+                    }
+
+                }
+            });
+        })
+    })
+
+
 
     socket.on('addingQuestions', (question) => {
         let boolean = true;
@@ -437,7 +509,6 @@ Io.of('/profil').use((socket, next) => {
 //login test için hazır
 Io.of('/user').on('connection', (socket) => {
     socket.on('userLogin', (user) => {
-        console.log(user);
         if (user.email !== null && user.password !== null) {
             User.findOne({
                 email: user.email
@@ -445,7 +516,6 @@ Io.of('/user').on('connection', (socket) => {
                 if (err)
                     throw err
                 if (!User) {
-                    console.log("at");
                     socket.emit('loginErr', { message: "Email and Password incorrect" });
                 } else {
                     bcrypt.compare(user.password, User.password).then((result) => {

@@ -24,6 +24,10 @@ const userShema = new Schema ({
         type: String,
         maxlength: 50
     },
+    img:{
+        type: String,
+        maxlength: 255
+    }
 })
 
 module.exports = mongoose.model('user', userShema);

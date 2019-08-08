@@ -27,9 +27,9 @@ class Profile extends Component {
         this.resetVariable()
         if (localStorage.getItem('token')) {
             this.setState({
-              token:localStorage.getItem('token')
+                token: localStorage.getItem('token')
             })
-            io = Io.connectionsRoom('profil', localStorage.getItem('token'));
+            io = Io.connectionsRoom('profile', localStorage.getItem('token'));
             io.emit('getProfilInfo');
             io.on('error', () => {
                 this.setState({
@@ -159,7 +159,9 @@ class Profile extends Component {
                         <div className="content">
 
                             <div className="content-profil" id="profil">
-
+                                <Link to='#' className="profil-close">
+                                    <img src={require('../images/quiz/cancel.png')} alt="" />
+                                </Link>
                                 <div className="profil-top">
                                     <div className="profil-img">
                                         <img src={require('../images/quiz/quiz.png')} className="img-profil" alt="" />

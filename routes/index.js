@@ -122,6 +122,16 @@ router.post('/upload', (req, res) => {
                     throw err
                 console.log(result);
             })
+    } else if (req.body.whereToIns === 'user') {
+        User.findByIdAndUpdate(req.body.userId,
+            {
+                img: req.files.theFile.file
+            }
+            , (err, result) => {
+                if (err)
+                    throw err
+                console.log("img",result);
+            })
     }
 })
 

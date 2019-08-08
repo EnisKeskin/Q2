@@ -12,11 +12,11 @@ class Header extends Component {
 
     }
 
-    onClickEvent = (e) => { 
-    localStorage.removeItem('token'); 
-    this.setState({ loginVisible: true }); 
-    Io.connectionsRoomDelete();
-}
+    onClickEvent = (e) => {
+        localStorage.removeItem('token');
+        this.setState({ loginVisible: true });
+        Io.connectionsRoomDelete();
+    }
     render() {
         return (
             <div>
@@ -27,26 +27,29 @@ class Header extends Component {
                     <header>
 
                         <div className="logo">
-                        <Link to='/profil' >   <img src={require('../../images/logo/logo-v.png')} className="img-logo" alt="" /> </Link>  
+                            <Link to='/profile' >   <img src={require('../../images/logo/logo-v.png')} className="img-logo" alt="" /> </Link>
                         </div>
 
                         <div className="menu">
 
                             <ul>
                                 <li>
-                                    <div className="icon"> <img src={require('../../images/menu-icon/enter-pin.png')} className="img-icon" alt="" /> </div>
-                                    <Link to="/"> Enter Pin </Link>
+                                    <Link to="/">
+                                        <div className="icon"> <img src={require('../../images/menu-icon/enter-pin.png')} className="img-icon" alt="" /> </div>
+                                        Enter Pin </Link>
                                 </li>
                                 <li>
-                                    <div className="icon"><img src={require('../../images/menu-icon/discover.png')} className="img-icon" alt="" /> </div>
-                                    <Link to="/Discover"> Discover </Link>
+                                    <Link to="/Discover">
+                                        <div className="icon"><img src={require('../../images/menu-icon/discover.png')} className="img-icon" alt="" /> </div>
+                                        Discover </Link>
                                 </li>
                                 <li>
-                                    <div className="icon"> <img src={require('../../images/menu-icon/create.png')} className="img-icon" alt="" /> </div>
-                                    <Link to="/Quiz"> Create </Link>
+                                    <Link to="/Quiz">
+                                        <div className="icon"> <img src={require('../../images/menu-icon/create.png')} className="img-icon" alt="" /> </div>
+                                        Create </Link>
                                 </li>
 
-                                <li className="li-icon"> <Link to="/profil"><img src={require('../../images/menu-icon/profil.png')} className="img-icon" alt="" /> </Link> </li>
+                                <li className="li-icon"> <Link to="/profile"><img src={require('../../images/menu-icon/profil.png')} className="img-icon" alt="" /> </Link> </li>
 
                                 <li> <img src={require('../../images/menu-icon/logout.png')} className="img-icon" alt="" onClick={this.onClickEvent} /> </li>
 

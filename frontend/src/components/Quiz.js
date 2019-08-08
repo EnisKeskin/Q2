@@ -32,7 +32,7 @@ class Quiz extends Component {
     componentDidMount() {
         if (localStorage.getItem('token')) {
             this.resetVarible();
-            io = Io.connectionsRoom('profil', localStorage.getItem('token'));
+            io = Io.connectionsRoom('profile', localStorage.getItem('token'));
             io.on('error', () => {
                 this.setState({
                     loginVisible: true
@@ -129,7 +129,7 @@ class Quiz extends Component {
                                     <img src={require('../images/logo/logo-w.png')} className="img-quiz-logo" alt="" />
                                 </div>
                                 <div className="close">
-                                    <Link to='/profil'><img src={require('../images/quiz/cancel.png')} alt="" /></Link>
+                                    <Link to='/profile'><img src={require('../images/quiz/cancel.png')} alt="" /></Link>
                                 </div>
                             </header>
                             <form action="." method="POST">

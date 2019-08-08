@@ -31,7 +31,7 @@ class Question extends Component {
 
     componentDidMount() {
         if (localStorage.getItem('token')) {
-            io = Io.connectionsRoom('profil', localStorage.getItem('token'));
+            io = Io.connectionsRoom('profile', localStorage.getItem('token'));
             io.on('error', () => {
                 this.setState({
                     loginVisible: true
@@ -129,7 +129,7 @@ class Question extends Component {
                             </div>
 
                             <div className="close">
-                                <Link to='/profil'><img src={require('../images/quiz/cancel.png')} alt='' /></Link>
+                                <Link to='/profile'><img src={require('../images/quiz/cancel.png')} alt='' /></Link>
 
                             </div>
 

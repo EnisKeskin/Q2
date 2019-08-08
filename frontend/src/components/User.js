@@ -82,7 +82,7 @@ class User extends Component {
     return (
       <div>
         {this.state.profilVisible ?
-          <Redirect to='/Profil' />
+          <Redirect to='/Profile' />
           :
           <div>
 

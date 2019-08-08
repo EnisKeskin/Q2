@@ -16,6 +16,7 @@ class Answer extends Component {
             answers: "",
             answer: 0,
             progress: 100,
+            img: "",
             isVisible: true,
             statistics: false,
             a: 0, b: 0, c: 0, d: 0,
@@ -26,12 +27,13 @@ class Answer extends Component {
         io = Io.connectionsRoom('game');
         io.on('newQuestion', (question) => {
             if (isNaN(question)) {
-
+                console.log(question)
                 this.setState({
                     questionTitle: question.questionTitle,
                     time: question.time,
                     answers: question.answers,
                     answer: question.answer,
+                    img: question.img,
                     progress: 100,
                     isVisible: true,
                     statistics: false,
@@ -55,34 +57,37 @@ class Answer extends Component {
         });
 
         io.on('staticstics', (statistics) => {
+            console.log("Statisctics kendisi", statistics);
             if (isNaN(statistics)) {
                 statistics.forEach((statisticsInfo) => {
-                    switch (statisticsInfo.answer) {
-                        case 0:
-                            this.setState({
-                                a: this.state.a + 1
-                            })
-                            break;
-                        case 1:
-                            this.setState({
-                                b: this.state.b + 1
-                            })
-                            break;
-                        case 2:
-                            this.setState({
-                                c: this.state.c + 1
-                            })
-                            break;
-                        case 3:
-                            this.setState({
-                                d: this.state.d + 1
-                            })
-                            break;
+                    if (statisticsInfo) {
+                        switch (statisticsInfo.answer) {
+                            case 0:
+                                this.setState({
+                                    a: this.state.a + 1
+                                })
+                                break;
+                            case 1:
+                                this.setState({
+                                    b: this.state.b + 1
+                                })
+                                break;
+                            case 2:
+                                this.setState({
+                                    c: this.state.c + 1
+                                })
+                                break;
+                            case 3:
+                                this.setState({
+                                    d: this.state.d + 1
+                                })
+                                break;
 
-                        default:
-                            break;
+                            default:
+                                break;
+                        }
                     }
-                })
+                });
             }
             this.setState({
                 isVisible: false,
@@ -132,7 +137,6 @@ class Answer extends Component {
 
         });
         io.emit('sendAnswer', { answer });
-
     }
 
     render() {
@@ -143,7 +147,7 @@ class Answer extends Component {
                     <div className="answer-top">
                         <div className="answer-top-in">
                             <div className="answer-image">
-                                <img src={require('../images/quiz/quiz.png')} alt="" srcSet="" />
+                                <img src={`http://192.168.1.101:3000/${this.state.img}`} alt="" srcSet="" />
                             </div>
                             <div className="answer-question">
                                 {this.state.questionTitle}
