@@ -31,7 +31,7 @@ class Question extends Component {
 
     componentDidMount() {
         if (localStorage.getItem('token')) {
-            io = Io('profil', localStorage.getItem('token'));
+            io = Io.connectionsRoom('profil', localStorage.getItem('token'));
             io.on('error', () => {
                 this.setState({
                     loginVisible: true

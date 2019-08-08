@@ -1,55 +1,63 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Redirect } from 'react-router'
+import Io from '../../connection';
 
 class Header extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
-        this.state= {
+        this.state = {
             loginVisible: false
         }
+
     }
+
+    onClickEvent = (e) => { 
+    localStorage.removeItem('token'); 
+    this.setState({ loginVisible: true }); 
+    Io.connectionsRoomDelete();
+}
     render() {
         return (
             <div>
-                {this.state.loginVisible?
-                <Redirect to="/User" /> 
-                :
-               
-            <header>
+                {this.state.loginVisible ?
+                    <Redirect to="/User" />
+                    :
 
-                <div className="logo">
-                    <img src={require('../../images/logo/logo-v.png')} className="img-logo" alt="" />
-                </div>
+                    <header>
 
-                <div className="menu">
+                        <div className="logo">
+                        <Link to='/profil' >   <img src={require('../../images/logo/logo-v.png')} className="img-logo" alt="" /> </Link>  
+                        </div>
 
-                    <ul>
-                        <li>
-                            <div className="icon"> <img src={require('../../images/menu-icon/enter-pin.png')} className="img-icon" alt="" /> </div>
-                            <Link to="/"> Enter Pin </Link>
-                        </li>
-                        <li>
-                            <div className="icon"><img src={require('../../images/menu-icon/discover.png')} className="img-icon" alt="" /> </div>
-                            <Link to="/Discover"> Discover </Link>
-                        </li>
-                        <li>
-                            <div className="icon"> <img src={require('../../images/menu-icon/create.png')} className="img-icon" alt="" /> </div>
-                            <Link to="/Quiz"> Create </Link>
-                        </li>
+                        <div className="menu">
 
-                        <li className="li-icon"> <Link to="/profil"><img src={require('../../images/menu-icon/profil.png')} className="img-icon" alt="" /> </Link> </li>
+                            <ul>
+                                <li>
+                                    <div className="icon"> <img src={require('../../images/menu-icon/enter-pin.png')} className="img-icon" alt="" /> </div>
+                                    <Link to="/"> Enter Pin </Link>
+                                </li>
+                                <li>
+                                    <div className="icon"><img src={require('../../images/menu-icon/discover.png')} className="img-icon" alt="" /> </div>
+                                    <Link to="/Discover"> Discover </Link>
+                                </li>
+                                <li>
+                                    <div className="icon"> <img src={require('../../images/menu-icon/create.png')} className="img-icon" alt="" /> </div>
+                                    <Link to="/Quiz"> Create </Link>
+                                </li>
 
-                        <li> <img src={require('../../images/menu-icon/logout.png')} className="img-icon" alt="" onClick={(e) => {localStorage.removeItem('token'); this.setState({loginVisible: true}) }  } /> </li>
+                                <li className="li-icon"> <Link to="/profil"><img src={require('../../images/menu-icon/profil.png')} className="img-icon" alt="" /> </Link> </li>
 
-                    </ul>
+                                <li> <img src={require('../../images/menu-icon/logout.png')} className="img-icon" alt="" onClick={this.onClickEvent} /> </li>
 
-                </div>
+                            </ul>
 
-            </header>
-        }
-        </div>
-       )
+                        </div>
+
+                    </header>
+                }
+            </div>
+        )
     }
 }
 

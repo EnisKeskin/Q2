@@ -30,7 +30,8 @@ class User extends Component {
 
   componentDidMount() {
     //io çıktığı için sıkıntı
-    io = Io('user')
+    io = Io.connectionsRoom('user');
+
     if (localStorage.getItem('token')) {
       this.setState({
         profilVisible: true

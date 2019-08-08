@@ -15,7 +15,7 @@ class Username extends Component {
   }
 
   componentDidMount() {
-    io = Io('game');
+    io = Io.connectionsRoom('game');
   }
 
   onClickEvent = () => {

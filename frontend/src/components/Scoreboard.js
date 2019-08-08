@@ -13,7 +13,7 @@ class scoreboard extends Component {
     }
 
     componentDidMount() {
-        io = Io('game');
+        io = Io.connectionsRoom('game');
         io.on('Scoreboard', (users) => {
             this.setState({
                 users: users,

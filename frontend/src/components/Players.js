@@ -21,14 +21,16 @@ class Players extends Component {
         if (document.querySelector('.modal-backdrop')) {
             document.querySelector('.modal-backdrop').remove();
         }
-        io = Io('game');
+        io = Io.connectionsRoom('game');
         if (this.props.location.state.pin !== 0) {
             // io.emit('sendAdmin', this.props.location.state.pin)
             const pin = this.props.location.state.pin
-
+            this.setState({
+                pin: pin
+            })
             io.emit('sendAdmin', pin);
 
-            io.on('startButton', (pin) => {
+            io.on('startButton', () => {
                 this.setState({
                     startButton:
                         <div className="button-start" >
@@ -37,8 +39,8 @@ class Players extends Component {
                                 type="button" > Start </button>
                         </div>,
                 })
+
             });
-            console.log(pin);
         }
         io.on('quizPin', (quiz) => {
             this.setState({
@@ -47,14 +49,20 @@ class Players extends Component {
         })
         io.on('newUser', (players) => {
             let userCount = 0;
-            players.length ? userCount = players.length : userCount = 0;
+            if (players) {
+                players.length ? userCount = players.length : userCount = 0;
+            }
+
             if (isNaN(players)) {
                 this.setState({
                     players: players,
                     userCount: userCount
                 });
             } else {
-                console.log("at");
+                this.setState({
+                    players: [],
+                    userCount: 0
+                });
             }
         });
 
@@ -63,7 +71,7 @@ class Players extends Component {
                 isVisible: true
             })
         });
-
+        
     };
     componentWillUnmount() {
         io.removeListener('startButton');
@@ -71,6 +79,11 @@ class Players extends Component {
         io.removeListener('newUser');
         io.removeListener('gameStart');
     }
+
+    componentDidUpdate() {
+        
+    }
+
     onClickEvent = (e) => {
         io.emit('startGame')
     }

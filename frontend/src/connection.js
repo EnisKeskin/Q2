@@ -1,13 +1,25 @@
 import io from 'socket.io-client';
-const connections = {};
-export default (room, token, del) => {
-    connections[room] = connections[room] ? connections[room] : io('http://localhost:3000/' + room, token ? {
-        query: { token: token }
-    } : null);
-    // if(del === connections[room].nsp){
-    //     connections[room] = connections.filter((value) => {
-    //         return value.nsp === del; 
-    //     });
-    // }
-    return connections[room];
-};
+
+class socketConnect{
+    constructor(){
+        this.connections= []
+        this.room2= []
+    }
+
+    connectionsRoom(room, token){
+        this.room2 = this.connections[room];
+        if (this.room2 && this.room2.query) {
+            this.room2.query.token = token ? token : null;
+        }
+        this.connections[room] = this.room2 ? this.room2 : io('http://localhost:3000/' + room, token ? { query: { token: token } } : null);
+        return this.connections[room]
+    }
+    
+    connectionsRoomDelete(){
+        return this.connections = [];
+    }
+
+}
+const socket = new socketConnect();
+
+export default socket

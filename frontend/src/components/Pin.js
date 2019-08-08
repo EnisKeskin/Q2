@@ -9,22 +9,24 @@ class Pin extends Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      value: "",
-      isVisible: false,
-      err:""
-    }
+    this.pin = 0;
+      this.state = {
+        isVisible: false,
+        err: ""
+      }
   }
 
   componentDidMount() {
-    io = Io('game');
+    io = Io.connectionsRoom('game');
     io.on('join', (req) => {
       if (req.status) {
         this.setState({ isVisible: true });
       } else {
         this.setState({
-          err: <div className="alert alert-danger">Pin bulunamadı</div>
+          err: <div class="pin-error">
+            <img src={require('../images/quiz/cancel-2.png')} className="img-cancel-2" alt="" />
+            Pin Not Found
+        </div>
         })
       }
     });
@@ -35,11 +37,22 @@ class Pin extends Component {
   }
 
   onClickEvent = (e) => {
-    io.emit("sendPin", this.state.value);
+    console.log(this.pin)
+    if (this.pin > 0) {
+      io.emit("sendPin", this.pin);
+     
+    } else {
+      this.setState({
+        err: <div className="pin-error">
+          <img src={require('../images/quiz/cancel-2.png')} className="img-cancel-2" alt="" />
+          Pin Cannot Be Left Blanke
+      </div>
+      })
+    }
   };
 
   onChangeEvent = (e) => {
-    this.setState({ value: e.target.value });
+    this.pin = e.target.value
   };
 
   render() {
@@ -64,9 +77,9 @@ class Pin extends Component {
                   <button onClick={this.onClickEvent} type="submit" className="btn-pin">Enter</button>
                 </div>
               </div>
-                <div className="a-pin">
-                  <Link to="/user">Login or Register</Link>
-                </div>
+              <div className="a-pin">
+                <Link to="/user">Login or Register</Link>
+              </div>
             </div>
           </div>
         }

@@ -23,7 +23,7 @@ class Answer extends Component {
     }
 
     componentDidMount() {
-        io = Io('game');
+        io = Io.connectionsRoom('game');
         io.on('newQuestion', (question) => {
             if (isNaN(question)) {
 

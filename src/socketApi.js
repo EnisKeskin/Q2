@@ -254,6 +254,8 @@ Io.of('/game').on('connection', (socket) => {
 
 Io.of('/profil').use((socket, next) => {
     const token = socket.handshake.query.token
+    // console.log(token);
+    // console.log("attttttttttt");
     if (token) {
         jwt.verify(token, key, (err, decoded) => {
             if (err) {
@@ -267,6 +269,21 @@ Io.of('/profil').use((socket, next) => {
         next(new Error('Authentication error'));
     }
 }).on('connection', (socket) => {
+    socket.use((packet, next) => {
+        const token = socket.handshake.query.token
+        if (token) {
+            jwt.verify(token, key, (err, decoded) => {
+                if (err) {
+                    next(new Error('Authentication error'));
+                } else {
+                    socket.decoded = decoded
+                    return next();
+                }
+            });
+        } else {
+            next(new Error('Authentication error'));
+        }
+    })
     socket.on('quizCreate', (quiz) => {
         console.log(quiz);
         if ((quiz.title !== '') && (quiz.location !== '') && (quiz.language !== '')) {
@@ -286,6 +303,7 @@ Io.of('/profil').use((socket, next) => {
     });
 
     socket.on('getProfilInfo', () => {
+        console.log(socket.decoded.userId);
         User.findById(socket.decoded.userId, (err, user) => {
             if (err)
                 throw err
@@ -414,14 +432,7 @@ Io.of('/profil').use((socket, next) => {
             socket.emit('setDiscoverMyQuiz', result);
         })
     })
-
-    socket.on('disconnect', () => {
-        console.log("at");
-    })
 });
-
-
-
 
 //login test için hazır
 Io.of('/user').on('connection', (socket) => {

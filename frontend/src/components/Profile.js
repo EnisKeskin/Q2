@@ -19,15 +19,17 @@ class Profile extends Component {
             loginVisible: false,
             quizCount: 0,
             file: "",
+            token: "",
         }
     }
 
     componentDidMount() {
         this.resetVariable()
         if (localStorage.getItem('token')) {
-            io = Io('profil', localStorage.getItem('token'));
-
-            console.log(io);
+            this.setState({
+              token:localStorage.getItem('token')
+            })
+            io = Io.connectionsRoom('profil', localStorage.getItem('token'));
             io.emit('getProfilInfo');
             io.on('error', () => {
                 this.setState({
@@ -55,7 +57,7 @@ class Profile extends Component {
         }
     }
     componentWillUnmount() {
-        if (localStorage.getItem('token')) {
+        if (this.state.token) {
             io.removeListener('error');
             io.removeListener('setProfilInfo');
             io.removeListener('profilQuiz');
