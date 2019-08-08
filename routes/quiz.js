@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const Quiz = require('../models/Quiz');
 var multer = require('multer');
 var upload = multer({ dest: './uploads' });
 
-const Quiz = require('../models/Quiz');
 
 router.get('/', (req, res, next) => {
   res.render('quiz',

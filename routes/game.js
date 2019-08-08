@@ -199,7 +199,7 @@ module.exports = (io) => {
           if (result.length != 0) {
             var theQuiz = result[0];
             var question = theQuiz.question[index];
-            var answer = new Answer(Room.time, Date.now(), question.time, data.answer, data.answer == question.answer);
+            var answer = new Answer(Room.time, Date.now(), question.time * SECOND, data.answer, data.answer == question.answer);
             thePlayer.answers[index] = answer;
             Room.answers[data.answer]++;
             Room.playersAnswered++;

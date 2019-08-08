@@ -1,0 +1,41 @@
+<div class="figure">
+</div>
+<div class="figure-2">
+</div>
+<div class="capsule">
+    <div class="container p-edit">
+        <div class="col-lg-6 p-edit-capsule">
+            <div class="user-logo p-edit-logo">
+                <img src="images/logo/logo-w.png" class="img-user-logo" alt="Quiz">
+            </div>
+            <div class="signup-text">
+                Profile Edit
+            </div>
+            <div class="p-edit-in">
+                <form action="/edit" method="POST">
+                    <div class="profil-avatar">
+                        <label class="lbl-file-profil" for="profil"> Tap to add cover profil images <img src="" alt="">
+                        </label>
+                        <input class="fileupload-profil" type="file" name="fileToUpload" id="profil">
+                    </div>
+                    <div class="user-name">
+                        <input name="firstname" type="text" class="txt-username" placeholder="First Name">
+                        <input name="lastname" type="text" class="txt-username" placeholder="Last Name">
+                    </div>
+                    <input name="username" type="text" class="txt-signup" placeholder="Username">
+                    <input name="email" type="email" class="txt-signup" placeholder="E-Mail">
+                    <input name="password1" type="password" class="txt-signup" placeholder="Password">
+                    <input name="password2" type="password" class="txt-signup" placeholder="Confirm Password">
+                    {{#each Errors}}
+                    <div class="login-error sign-err">
+                        {{this.msg}}
+                    </div>
+                    {{/each}}
+                    <div class="sign-button">
+                        <button type="submit" class="btn-sign save">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

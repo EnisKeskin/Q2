@@ -29,6 +29,8 @@ const quizRouter = require('./routes/quiz');
 const answerRouter = require('./routes/answer');
 const homeRouter = require('./routes/home');
 const discoverRouter = require('./routes/discover');
+const error404Router = require('./routes/error404');
+const editRouter = require('./routes/edit');
 
 
 
@@ -86,6 +88,8 @@ app.use('/quiz', quizRouter);
 app.use('/answer', answerRouter);
 app.use('/home', homeRouter);
 app.use('/discover', discoverRouter);
+app.use('/404', error404Router);
+app.use('/edit', editRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -100,6 +104,9 @@ app.use(function (err, req, res, next) {
   console.log('\n\nerror:::' + err + '\n\n');
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  if (err.status == 404)
+    res.redirect('/404');
+  else
+    res.render('error');
 });
 module.exports = app;

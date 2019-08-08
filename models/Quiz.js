@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const quizShema = new Schema({
+const quizSchema = new Schema({
     title: {
         type: String,
         required: true,
@@ -30,7 +30,10 @@ const quizShema = new Schema({
     img: {
         type: String
     },
-
+    userId: {
+        type: Schema.Types.ObjectId,
+        require: true,
+    },
     question: [{
         questionTitle: {
             type: String,
@@ -60,9 +63,12 @@ const quizShema = new Schema({
     active: {
         type: Boolean,
         default: false
+    },
+    date: {
+        type: Date, default: Date.now    
     }
 })
 
 
 
-module.exports = mongoose.model('quiz', quizShema);
+module.exports = mongoose.model('quiz', quizSchema);

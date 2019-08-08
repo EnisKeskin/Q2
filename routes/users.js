@@ -9,7 +9,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
 router.post('/register', (req, res, next) => {
-  const { email, password1, password2, firstname, lastname, username } = req.body;
+  const { email, password1, firstname, lastname, username } = req.body;
 
   req.checkBody("firstname", "First name is required").notEmpty();
   req.checkBody("lastname", "Last name is required").notEmpty();
