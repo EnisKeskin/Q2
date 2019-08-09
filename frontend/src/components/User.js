@@ -21,7 +21,7 @@ class User extends Component {
     this.state = {
       profilVisible: false,
       loginErrMessage: "",
-      registerErrMessage: "",
+      registerMessage: "",
     }
 
     this.onClickLoginEvent = this.onClickLoginEvent.bind(this);
@@ -56,7 +56,13 @@ class User extends Component {
 
     io.on('registerError', (err) => {
       this.setState({
-        registerErrMessage: <div className="login-error sign-err">{err.message}</div>
+        registerMessage: <div className="login-error sign-err">{err.message}</div>
+      })
+    })
+
+    io.on('registerSuccessful', (msg) => {
+      this.setState({
+        registerMessage: <div className="login-succes sign-err">{msg}</div>
       })
     })
 

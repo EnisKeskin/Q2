@@ -167,6 +167,7 @@ Io.of('/game').on('connection', (socket) => {
                     socket.emit('join', { status: true });
                     //username girdiğininde bu kontroller çalışacak otomatik.
                     socket.on('sendUsername', (username) => {
+                        console.log(username);
                         if (typeof (username) !== 'undefined' && username.trim() !== '') {
                             socket.emit('start')
                             // gelen kullanıcıyı id ve hangi roomName sahip olduğunu ve kullanıcı adı ile kaydediyor.
@@ -550,20 +551,21 @@ Io.of('/user').on('connection', (socket) => {
     //register test için hazırlanacak
     socket.on('userRegister', (userRegister) => {
         console.log(userRegister);
-        if ((userRegister.email !== '') && (userRegister.password !== '') && (userRegister.username !== '') && (userRegister.firstname !== '') && (userRegister.lastname !== '')) {
+        if ((userRegister.email.trim() !== '') && (userRegister.password !== '') && (userRegister.username.trim() !== '') && (userRegister.firstname.trim() !== '') && (userRegister.lastname.trim() !== '')) {
             bcrypt.hash(userRegister.password, 10).then((hash) => {
                 const user = new User({
-                    email: userRegister.email,
-                    username: userRegister.username,
-                    firstname: userRegister.firstname,
-                    lastname: userRegister.lastname,
+                    email: userRegister.email.trim(),
+                    username: userRegister.username.trim(),
+                    firstname: userRegister.firstname.trim(),
+                    lastname: userRegister.lastname.trim(),
                     password: hash
                 });
                 user.save().then((data) => {
-
+                    socket.emit('registerError', { message: 'Successfully registered' })
                 }).catch((err) => {
-
-                    console.log(err);
+                    if(err.code === 11000){
+                        socket.emit('registerError', { message: 'This mail has already been saved' })
+                    }
                 });
             })
         } else {
