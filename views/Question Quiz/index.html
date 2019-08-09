@@ -10,6 +10,17 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/user.css">
+
+    <script type="text/javascript" language="javascript">
+      function number(evt) {
+         evt = (evt) ? evt : window.event
+         var charCode = (evt.which) ? evt.which : evt.keyCode
+         if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+         return false
+      }
+      return true
+   }
+   </script>
   </head>
   <body>
 
@@ -35,7 +46,7 @@
       </div>
 
       <div class="pin-text">
-              <input required type="text" class="txt-pin" placeholder="Game Pin">
+              <input  onKeyPress="return number(event)" type="text" class="txt-pin" placeholder="Game Pin">
       </div>
 
       <div class="pin-button">
