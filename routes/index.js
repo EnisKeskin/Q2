@@ -130,7 +130,7 @@ router.post('/upload', (req, res) => {
             , (err, result) => {
                 if (err)
                     throw err
-                console.log("img",result);
+                console.log("img", result);
             })
     }
 })

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Redirect } from 'react-router'
 import Io from '../connection';
 import Header from './static/Header'
+import Ip from '../Ip'
 
 let io = null;
 
@@ -42,7 +43,6 @@ class Profile extends Component {
                     username: user.username,
                     fullname: user.firstname + " " + user.lastname
                 });
-
             });
             io.on('profilQuiz', (quizs) => {
                 this.setState({
@@ -56,6 +56,7 @@ class Profile extends Component {
             })
         }
     }
+
     componentWillUnmount() {
         if (this.state.token) {
             io.removeListener('error');
@@ -63,6 +64,7 @@ class Profile extends Component {
             io.removeListener('profilQuiz');
         }
     }
+
     resetVariable = () => {
         this.setState({
             profilImg: "",
@@ -74,6 +76,12 @@ class Profile extends Component {
             file: "",
         })
     }
+
+    onClickEvent = (quizId, e) => {
+        io.emit('quizDel', quizId);
+        io.emit('getProfilInfo');
+    }
+
     quizModel() {
         const stateQuizs = this.state.quizs;
         const quizs = [];
@@ -83,12 +91,14 @@ class Profile extends Component {
                     <div data-toggle="modal" data-target={"#quiz-item-modal" + key} className="my-quiz">
 
                         <div className="my-quiz-img">
-                            <img src={`http://localhost:3000/${quiz.img}`} className="img-quiz" alt="" />
+                            <img src={`${Ip}${quiz.img}`} className="img-quiz" alt="" />
                         </div>
 
                         <div className="my-quiz-name">
                             {quiz.title}
                         </div>
+
+                        <div className="my-quiz-question">{quiz.questionCount} Question</div>
 
                     </div>
 
@@ -102,7 +112,7 @@ class Profile extends Component {
                                     <div className="row">
 
                                         <div className="col-lg-6 modal-left">
-                                            <img src={`http://localhost:3000/${quiz.img}`} className="img-modal" alt="" />
+                                            <img src={`${Ip}${quiz.img}`} className="img-modal" alt="" />
                                         </div>
 
                                         <div className="col-lg-6 modal-right">
@@ -111,13 +121,12 @@ class Profile extends Component {
 
                                             <div className="modal-user">
 
-                                                <img src={`http://localhost:3000/${quiz.img}`} className="img-user-modal" alt="" />
+                                                <img src={`${Ip}${quiz.img}`} className="img-user-modal" alt="" />
 
                                                 <div className="modal-name">{quiz.username}</div>
 
                                                 <div className="modal-star">
-
-                                                    <img src={require('../images/quiz/delete.png')} className="img-delete" alt="" />
+                                                    <img src={require('../images/quiz/delete.png')} className="img-delete" alt="" data-dismiss="modal" onClick={this.onClickEvent.bind(this, quiz._id)} />
                                                 </div>
 
                                             </div>
@@ -164,12 +173,12 @@ class Profile extends Component {
                                 </Link>
                                 <div className="profil-top">
                                     <div className="profil-img">
-                                        <img src={require('../images/quiz/quiz.png')} className="img-profil" alt="" />
+                                        <img src={`${Ip}${this.state.user.img}`} className="img-profil" alt="" />
                                     </div>
 
                                     <div className="profil-name">
                                         {/* isim soy isim */}
-                                        <h6 className="h6">{this.state.fullname} <Link to="#"><img src={require('../images/user-icon/edit.png')} className="img-edit"
+                                        <h6 className="h6">{this.state.fullname} <Link to="/Profile/Edit"><img src={require('../images/user-icon/edit.png')} className="img-edit"
                                             alt="Edit" /> </Link> </h6>
                                         {/* kullanıcıadı */}
                                         <h6 className="h6-mail"> {this.state.username} </h6>

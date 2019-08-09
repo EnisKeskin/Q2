@@ -5,6 +5,7 @@ import { Redirect } from 'react-router';
 import Io from '../connection'
 import Slider from "react-slick";
 import "../javascripts/main";
+import Ip from '../Ip';
 
 let io = null;
 
@@ -58,12 +59,12 @@ class Discover extends Component {
         stateQuizs.forEach((element, key) => {
             quizs.push(
                 <div className="discover-trend-block" key={key}>
-                    <img src={`http://localhost:3000/${element.img}`} alt="" />
+                    <img src={`${Ip}${element.img}`} alt="" />
 
                     <div className="discover-block-text">
                         <span className="spn-discover">{element.title} </span>
                         <span className="spn-discover-2"> {element.questionCount} Questions</span>
-                        <div className="discover-owner">{element.username} <img src="images/sago.jpg" alt="" /></div>
+                        <div className="discover-owner">{element.username} <img src={`${Ip}${element.userImg}`} alt="" /></div>
                     </div>
 
                 </div>
@@ -79,14 +80,14 @@ class Discover extends Component {
             quizs.push(
                 <div className="discover-quizs-block" key={key}>
 
-                    <img src={`http://localhost:3000/${element.img}`} alt="" />
+                    <img src={`${Ip}${element.img}`} alt="" />
 
                     <div className="discover-quizs-text">
                         <span className="spn-discover-quizs">{element.title}</span>
                         <span className="spn-discover-2-quizs"> {element.questionCount}  Questions</span>
 
                         <div className="discover-owner-quizs">
-                            {element.username} <img src={`http://localhost:3000/${element.userImg}`} alt="" />
+                            {element.username} <img src={`${Ip}${element.userImg}`} alt="" />
                         </div>
 
                     </div>
@@ -165,7 +166,7 @@ class Discover extends Component {
 
                             <ul>
                                 <li><Link className="active" to="#"> History </Link></li>
-                               
+
 
                             </ul>
 

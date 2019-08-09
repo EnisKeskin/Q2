@@ -33,21 +33,24 @@ class Header extends Component {
                         <div className="menu">
 
                             <ul>
-                                <li>
-                                    <Link to="/">
+                                <Link to="/">
+                                    <li>
                                         <div className="icon"> <img src={require('../../images/menu-icon/enter-pin.png')} className="img-icon" alt="" /> </div>
-                                        Enter Pin </Link>
+                                        Enter Pin
                                 </li>
-                                <li>
-                                    <Link to="/Discover">
+                                </Link>
+                                <Link to="/Discover">
+                                    <li>
                                         <div className="icon"><img src={require('../../images/menu-icon/discover.png')} className="img-icon" alt="" /> </div>
-                                        Discover </Link>
+                                        Discover
                                 </li>
-                                <li>
-                                    <Link to="/Quiz">
+                                </Link>
+                                <Link to="/Quiz">
+                                    <li>
                                         <div className="icon"> <img src={require('../../images/menu-icon/create.png')} className="img-icon" alt="" /> </div>
-                                        Create </Link>
+                                        Create
                                 </li>
+                                </Link>
 
                                 <li className="li-icon"> <Link to="/profile"><img src={require('../../images/menu-icon/profil.png')} className="img-icon" alt="" /> </Link> </li>
 

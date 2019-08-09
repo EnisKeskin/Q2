@@ -3,6 +3,7 @@ import Io from '../connection';
 import { Redirect } from "react-router-dom";
 import Ip from "../Ip";
 import Superagent from 'superagent';
+import { Link } from 'react-router-dom'
 
 let io = null;
 
@@ -39,7 +40,6 @@ class ProfilEdit extends Component {
                 })
             })
             io.on('file', (user) => {
-                console.log(user)
                 if (this.file) {
                     Superagent
                         .post('http://localhost:3000/api/upload')
@@ -57,6 +57,11 @@ class ProfilEdit extends Component {
                 console.log(msg);
                 this.setState({
                     message: <div className="login-error sign-err">{msg.message}</div>
+                })
+            })
+            io.on('successfulUpdate', (msg) => {
+                this.setState({
+                    message: <div className="login-succes sign-err">{msg.message}</div>
                 })
             })
         } else {
@@ -98,7 +103,11 @@ class ProfilEdit extends Component {
                     <div className="capsule">
                         <div className="figure"></div>
                         <div className="figure-2"></div>
-
+                        <div className="profile-edit-close">
+                            <Link to='/Profile'>
+                                <img src={require('../images/quiz/cancel.png')} alt="" />
+                            </Link>
+                        </div>
                         <div className="container p-edit">
 
                             <div className="col-lg-6 p-edit-capsule">

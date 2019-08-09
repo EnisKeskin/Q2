@@ -167,34 +167,38 @@ Io.of('/game').on('connection', (socket) => {
                     socket.emit('join', { status: true });
                     //username girdiğininde bu kontroller çalışacak otomatik.
                     socket.on('sendUsername', (username) => {
-                        // gelen kullanıcıyı id ve hangi roomName sahip olduğunu ve kullanıcı adı ile kaydediyor.
-                        roomControl.addUser(userId, roomName, username);
-                        //player ekranında tüm kullanıcılar görünüyor
-                        io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
-
-                        socket.emit('quizPin', { pin });
-                        //soruya cevap verildiğinde ekleniyor
-                        socket.on('sendAnswer', (user) => {
-                            //soru geri gönderilirken currentQuestion.time işe yarayacak.
-                            let questionScore = 0
-                            console.log("user.answeraaaaaaaaaaaaaaaaaaaaaaaaaa:", user.answer);
-                            if (user.answer === null) {
-                                console.log("at");
-                                user.answer = -1;
-                            }
-                            if (user.answer === roomControl.rooms[roomName].currentQuestion.answer) {
-                                questionScore = (1000 - ((Date.now() - roomControl.rooms[roomName].startTime) / 10));
-                                questionScore = Math.max(100, questionScore);
-                            }
-                            roomControl.addAnswer(roomName, userId, user.answer, questionScore, roomControl.rooms[roomName].currentQuestion.answer);
-                            console.log("roomControl", roomControl);
-                        });
-
-                        socket.on('disconnect', () => {
-                            roomControl.roomUserDelete(roomName, userId);
+                        if (typeof (username) !== 'undefined' && username.trim() !== '') {
+                            socket.emit('start')
+                            // gelen kullanıcıyı id ve hangi roomName sahip olduğunu ve kullanıcı adı ile kaydediyor.
+                            roomControl.addUser(userId, roomName, username);
+                            //player ekranında tüm kullanıcılar görünüyor
                             io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
-                        });
 
+                            socket.emit('quizPin', { pin });
+                            //soruya cevap verildiğinde ekleniyor
+                            socket.on('sendAnswer', (user) => {
+                                //soru geri gönderilirken currentQuestion.time işe yarayacak.
+                                let questionScore = 0
+                                if (user.answer === null) {
+                                    console.log("at");
+                                    user.answer = -1;
+                                }
+                                if (user.answer === roomControl.rooms[roomName].currentQuestion.answer) {
+                                    questionScore = (1000 - ((Date.now() - roomControl.rooms[roomName].startTime) / 10));
+                                    questionScore = Math.max(100, questionScore);
+                                }
+                                roomControl.addAnswer(roomName, userId, user.answer, questionScore, roomControl.rooms[roomName].currentQuestion.answer);
+                                console.log("roomControl", roomControl);
+                            });
+
+                            socket.on('disconnect', () => {
+                                roomControl.roomUserDelete(roomName, userId);
+                                io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
+                            });
+
+                        }else {
+                            socket.emit('usernameErr', message='The username field cannot be left blank')
+                        }
                     });
                     // soruları tek tke gönder ve herkese socket.io şeklinde gönder.
                 });
@@ -297,7 +301,7 @@ Io.of('/profile').use((socket, next) => {
         } else {
             next(new Error('Authentication error'));
         }
-    })
+    });
     socket.on('quizCreate', (quiz) => {
         console.log(quiz);
         if ((quiz.title !== '') && (quiz.location !== '') && (quiz.language !== '')) {
@@ -320,7 +324,7 @@ Io.of('/profile').use((socket, next) => {
         User.findById(socket.decoded.userId, (err, user) => {
             if (err)
                 throw err
-            socket.emit('setProfilInfo', { username: user.username, userId: user._id, firstname: user.firstname, lastname: user.lastname });
+            socket.emit('setProfilInfo', { username: user.username, userId: user._id, firstname: user.firstname, lastname: user.lastname, img: user.img });
             Quiz.aggregate([
                 {
                     $match: {
@@ -345,6 +349,7 @@ Io.of('/profile').use((socket, next) => {
                         img: 1,
                         username: '$user.username',
                         pin: 1,
+                        questionCount: { $size: '$question' }
                     }
                 },
                 { $sort: { date: -1 } },
@@ -363,7 +368,7 @@ Io.of('/profile').use((socket, next) => {
             socket.emit('setProfileEditInfo', user)
         })
 
-    })
+    });
 
     socket.on('profilUpdate', (user) => {
         User.findById(socket.decoded.userId, (err, UserProfil) => {
@@ -387,7 +392,7 @@ Io.of('/profile').use((socket, next) => {
                                     if (err)
                                         throw err
                                     socket.emit('file', { userId: socket.decoded.userId });
-                                    socket.emit('message', { message: " Successfully updated " });
+                                    socket.emit('successfulUpdate', { message: " Successfully updated " });
                                 })
 
                             })
@@ -404,16 +409,14 @@ Io.of('/profile').use((socket, next) => {
                             if (err)
                                 throw err
                             socket.emit('file', { userId: socket.decoded.userId });
-                            socket.emit('message', { message: " Successfully updated " });
+                            socket.emit('successfulUpdate', { message: " Successfully updated " });
                         })
                     }
 
                 }
             });
         })
-    })
-
-
+    });
 
     socket.on('addingQuestions', (question) => {
         let boolean = true;
@@ -439,7 +442,7 @@ Io.of('/profile').use((socket, next) => {
         }
     });
 
-    socket.on('getDiscover', (userId) => {
+    socket.on('getDiscover', () => {
         Quiz.aggregate([
             {
                 $lookup: {
@@ -503,7 +506,15 @@ Io.of('/profile').use((socket, next) => {
                 throw err
             socket.emit('setDiscoverMyQuiz', result);
         })
+    });
+
+    socket.on('quizDel', (quizId) => {
+        Quiz.findByIdAndDelete(quizId, (err, result) => {
+            if (err)
+                throw err
+        })
     })
+
 });
 
 //login test için hazır
@@ -561,16 +572,5 @@ Io.of('/user').on('connection', (socket) => {
     });
 
 })
-
-// {
-//   "title": "Ankara",
-//   "description": "Sorularla Ankarayı tanıyalım",
-//   "location": "Turkey",
-//   "language": "Turkish",
-//   "pin": 765221,
-//   "img": "img1.jpg",
-//   "question": []
-// }
-
 
 module.exports = socketApi;
