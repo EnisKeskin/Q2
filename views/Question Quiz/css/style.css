@@ -64,7 +64,7 @@ ul {
     cursor: pointer;
 }
 
-.menu ul li a {
+.menu ul  a {
     color: #333;
     margin-right: 15px;
     position: relative;
@@ -76,7 +76,7 @@ ul {
     transition: 0.1s;
 
 }
-.menu ul li a:hover{
+.menu ul  a:hover{
     color: gray;
     opacity: 0.8;
 }
@@ -500,7 +500,7 @@ transform: scale(1.02);
     }
 }
 @media only screen and (max-width: 670px) {
-    .menu ul li a {
+    .menu ul a {
         font-size: 0;
         margin-right: 5px;
     }
@@ -1444,8 +1444,7 @@ select::-ms-expand {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-top-right-radius: 30px;
-    border-bottom-right-radius: 30px;
+    border-radius: 30px;
     position: relative;
 }
 .lbl-file{
@@ -1937,7 +1936,7 @@ select::-ms-expand {
     width: 100%;
     margin: 0 auto 20px;
     min-height: 350px;
-    display: none;
+    display: flex;
     justify-content: space-between;
 }
 
