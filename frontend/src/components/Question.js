@@ -3,6 +3,7 @@ import Io from '../connection'
 import { Link } from 'react-router-dom'
 import Superagent from 'superagent';
 import { Redirect } from 'react-router'
+import Ip from '../Ip'
 
 let io = null
 
@@ -40,7 +41,7 @@ class Question extends Component {
             io.on('newQuestionCreate', (quiz) => {
                 if (this.file) {
                     Superagent
-                        .post('http://localhost:3000/api/upload')
+                        .post(`${Ip}api/upload`)
                         .field('questionId', quiz.questionId)
                         .field('whereToIns', 'question')
                         .attach("theFile", this.file)

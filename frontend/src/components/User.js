@@ -160,7 +160,7 @@ class User extends Component {
                         <input type="email" className="txt-signup" placeholder="E-Mail" autoComplete="username" required onChange={(e) => { this.register.email = e.target.value }} />
 
                         <input type="password" className="txt-signup" placeholder="Password" autoComplete="current-password" required onChange={(e) => { this.register.password = e.target.value }} />
-                        <div>{this.state.registerErrMessage}</div>
+                        <div>{this.state.registerMessage}</div>
 
                         <div className="sign-button">
                           <button type="submit" className="btn-sign" onClick={this.onClickRegisterEvent} >Sign Up</button>

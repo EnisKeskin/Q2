@@ -42,7 +42,7 @@ class ProfilEdit extends Component {
             io.on('file', (user) => {
                 if (this.file) {
                     Superagent
-                        .post('http://localhost:3000/api/upload')
+                        .post(`${Ip}api/upload`)
                         .field('userId', user.userId)
                         .field('whereToIns', 'user')
                         .attach("theFile", this.file)

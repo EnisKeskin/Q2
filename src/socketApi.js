@@ -548,7 +548,7 @@ Io.of('/user').on('connection', (socket) => {
             socket.emit('loginErr', { message: "Email or Password field cannot be left blank" });
         }
     });
-    //register test için hazırlanacak
+    //regex için kontrol sağla
     socket.on('userRegister', (userRegister) => {
         console.log(userRegister);
         if ((userRegister.email.trim() !== '') && (userRegister.password !== '') && (userRegister.username.trim() !== '') && (userRegister.firstname.trim() !== '') && (userRegister.lastname.trim() !== '')) {
@@ -561,7 +561,7 @@ Io.of('/user').on('connection', (socket) => {
                     password: hash
                 });
                 user.save().then((data) => {
-                    socket.emit('registerError', { message: 'Successfully registered' })
+                    socket.emit('registerSuccessful',  message= 'Successfully registered' )
                 }).catch((err) => {
                     if(err.code === 11000){
                         socket.emit('registerError', { message: 'This mail has already been saved' })
