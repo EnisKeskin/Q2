@@ -590,8 +590,8 @@ module.exports = socketApi;
 //sayfalar boşsa ana ekrana atacak düzeltilmesi
 //sadece resim ekleyebilmeli
 //profil ekranında sil veya silme diye göstersin quiz için
-
 //admin olarak tek başına başlatılamaması lazım
+
 //soruların update işlemi
 //quiz silindiğinde tüm img silinmesi gerekli
 

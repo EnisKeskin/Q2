@@ -96,7 +96,8 @@ class Players extends Component {
     }
 
     onClickEvent = (e) => {
-        io.emit('startGame')
+        if (this.state.userCount > 0)
+            io.emit('startGame')
     }
 
     render() {
