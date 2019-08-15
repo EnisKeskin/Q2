@@ -78,8 +78,11 @@ class Profile extends Component {
     }
 
     onClickEvent = (quizId, e) => {
-        io.emit('quizDel', quizId);
-        io.emit('getProfilInfo');
+       const confirm = window.confirm('Are you sure you want to delete');
+       if(confirm){
+           io.emit('quizDel', quizId);
+           io.emit('getProfilInfo');
+       }
     }
 
     quizModel() {
@@ -135,7 +138,7 @@ class Profile extends Component {
 
                                             <p> {quiz.description} </p>
                                             <div className="modal-start">
-                                                <Link to={{ pathname: '/Players', state: { pin: quiz.pin } }} className="btn-play">Play</Link>
+                                                <Link to={{ pathname: '/Players', state: { pin: quiz.pin, visible: true } }} className="btn-play">Play</Link>
                                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                                             </div>
                                         </div>

@@ -13,7 +13,20 @@ class Players extends Component {
             userCount: 0,
             isVisible: false,
             startButton: "",
+            visible: false,
             pin: 0,
+        }
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (typeof (props.location.state) !== 'undefined') {
+            if (props.location.state.visible) {
+                return state.visible = false;
+            } else {
+                return state.visible = true;
+            }
+        } else {
+            return state.visible = true;
         }
     }
 
@@ -22,25 +35,26 @@ class Players extends Component {
             document.querySelector('.modal-backdrop').remove();
         }
         io = Io.connectionsRoom('game');
-        if (this.props.location.state.pin !== 0) {
-            // io.emit('sendAdmin', this.props.location.state.pin)
-            const pin = this.props.location.state.pin
-            this.setState({
-                pin: pin
-            })
-            io.emit('sendAdmin', pin);
-
-            io.on('startButton', () => {
+        if (typeof (this.props.location.state) !== 'undefined') {
+            if (this.props.location.state.pin !== 0) {
+                const pin = this.props.location.state.pin
                 this.setState({
-                    startButton:
-                        <div className="button-start" >
-                            <button onClick={this.onClickEvent}
-                                className="btn-start"
-                                type="button" > Start </button>
-                        </div>,
+                    pin: pin
                 })
+                io.emit('sendAdmin', pin);
 
-            });
+                io.on('startButton', () => {
+                    this.setState({
+                        startButton:
+                            <div className="button-start" >
+                                <button onClick={this.onClickEvent}
+                                    className="btn-start"
+                                    type="button" > Start </button>
+                            </div>,
+                    })
+
+                });
+            }
         }
         io.on('quizPin', (quiz) => {
             this.setState({
@@ -71,17 +85,14 @@ class Players extends Component {
                 isVisible: true
             })
         });
-        
+
     };
+
     componentWillUnmount() {
         io.removeListener('startButton');
         io.removeListener('quizPin');
         io.removeListener('newUser');
         io.removeListener('gameStart');
-    }
-
-    componentDidUpdate() {
-        
     }
 
     onClickEvent = (e) => {
@@ -92,21 +103,32 @@ class Players extends Component {
         return (
             <div>
                 {this.state.isVisible ?
-                    <Redirect to='/Answer' />
+                    <Redirect to={
+                        {
+                            pathname: '/Answer',
+                            state: { visible: true }
+                        }
+                    } />
                     :
                     <div>
-                        <div className="container players-content" >
-                            <div className="players-top" > {this.state.pin}  </div>
-                            <div className="players-bottom" > {
-                                this.state.players.map((player, i) => {
-                                    return (< div key={i} > {player} </div>)
-                                })
-                            } </div>
-                        </div>
-                        <div className="container-fluid players-start" >
-                            <div className="players-number" > {this.state.userCount} Players </div>
-                            {this.state.startButton}
-                        </div>
+                        {this.state.visible ?
+                            <Redirect to='/' />
+                            :
+                            <div>
+                                <div className="container players-content" >
+                                    <div className="players-top" > {this.state.pin}  </div>
+                                    <div className="players-bottom" > {
+                                        this.state.players.map((player, i) => {
+                                            return (< div key={i} > {player} </div>)
+                                        })
+                                    } </div>
+                                </div>
+                                <div className="container-fluid players-start" >
+                                    <div className="players-number" > {this.state.userCount} Players </div>
+                                    {this.state.startButton}
+                                </div>
+                            </div>
+                        }
                     </div>
                 }
             </div>

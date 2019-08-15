@@ -12,9 +12,23 @@ class Username extends Component {
       value: "",
       isVisible: false,
       gameStart: false,
+      visible: false,
       err: "",
     }
   }
+
+  static getDerivedStateFromProps(props, state) {
+    if (typeof (props.location.state) !== 'undefined') {
+      if (props.location.state.visible) {
+        return state.visible = false;
+      } else {
+        return state.visible = true;
+      }
+    } else {
+      return state.visible = true;
+    }
+  }
+
 
   componentDidMount() {
     io = Io.connectionsRoom('game');
@@ -58,26 +72,32 @@ class Username extends Component {
             {this.state.isVisible ?
               <Redirect to={{
                 pathname: '/Players',
-                state: { pin: 0 }
+                state: { pin: 0 , visible: true}
               }} />
               :
               <div>
-                <div className="figure"></div>
-                <div className="figure-2"></div>
-                <div className="capsule">
-                  <div className="container pin">
-                    <div className="pin-logo">
-                      <img src={require('../images/logo/logo-w.png')} className="img-pin-logo" alt="" />
-                    </div>
-                    <div className="pin-text">
-                      <input type="text" className="txt-pin" placeholder="Username" onChange={this.onChangeEvent} />
-                    </div>
-                    {this.state.err}
-                    <div className="pin-button">
-                      <button onClick={this.onClickEvent} type="submit" className="btn-pin">Enter</button>
+                {this.state.visible ?
+                  <Redirect to='/' />
+                  :
+                  <div>
+                    <div className="figure"></div>
+                    <div className="figure-2"></div>
+                    <div className="capsule">
+                      <div className="container pin">
+                        <div className="pin-logo">
+                          <img src={require('../images/logo/logo-w.png')} className="img-pin-logo" alt="" />
+                        </div>
+                        <div className="pin-text">
+                          <input type="text" className="txt-pin" placeholder="Username" onChange={this.onChangeEvent} />
+                        </div>
+                        {this.state.err}
+                        <div className="pin-button">
+                          <button onClick={this.onClickEvent} type="submit" className="btn-pin">Enter</button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                }
               </div>
             }
           </div>

@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import Io from '../connection';
+import { Redirect } from 'react-router';
 
 let io = null;
 
@@ -8,18 +9,37 @@ class scoreboard extends Component {
         super(props);
         this.state = {
             users: {},
-            isVisible: false,
+            isVisible: true,
+            visible: false,
         }
     }
 
     componentDidMount() {
         io = Io.connectionsRoom('game');
+        if (typeof (this.props.location.state) !== 'undefined') {
+            if (this.props.location.state.visible) {
+                this.setState({
+                    visible: false
+                })
+                this.props.history.replace({ state: {} });
+            } else {
+                this.setState({
+                    visible: true
+                })
+                this.props.history.replace({ state: {} });
+            }
+        } else {
+            this.setState({
+                visible: true
+            })
+        }
         io.on('Scoreboard', (users) => {
             this.setState({
                 users: users,
-                isVisible: true
-            })         
-        })
+                isVisible: true,
+            });
+        });
+        console.log("mount");
     }
 
     createUserScore() {
@@ -39,27 +59,34 @@ class scoreboard extends Component {
 
         return (
             <div>
-                {this.state.isVisible?
-                <div className="capsule">
+                {console.log("render")}
+                {this.state.visible ?
+                    <Redirect to='/' />
+                    :
+                    <div>
+                        {this.state.isVisible ?
+                            <div className="capsule">
 
-                    <div className="score-title">
-                        <h1 className="h1 h1-score">Scoreboard</h1>
+                                <div className="score-title">
+                                    <h1 className="h1 h1-score">Scoreboard</h1>
+                                </div>
+
+                                <div className="container score-content">
+
+                                    <div className="score-block-1st">
+                                        <span> {this.state.users[0] ? this.state.users[0].username : null}  </span> <span> {this.state.users[0] ? this.state.users[0].score : null} </span>
+                                        {/* <img src={require('../images/user-icon/create.png')} className="img-medal" alt="" /> */}
+                                        <div className="block-1st"></div>
+                                    </div>
+                                    {this.createUserScore()}
+
+                                </div>
+
+                            </div>
+                            : <Redirect to='/' />
+                        }
                     </div>
-
-                    <div className="container score-content">
-
-                        <div className="score-block-1st">
-                            <span> {this.state.users[0].username}  </span> <span> {this.state.users[0].score} </span>
-                            {/* <img src={require('../images/user-icon/create.png')} className="img-medal" alt="" /> */}
-                            <div className="block-1st"></div>
-                        </div>
-                        {this.createUserScore()}
-
-                    </div>
-
-                </div>
-            : null
-            }
+                }
             </div>
         )
     }

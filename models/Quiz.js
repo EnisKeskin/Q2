@@ -34,6 +34,10 @@ const quizSchema = new Schema({
         type: Schema.Types.ObjectId,
         require: true,
     },
+    visibleTo:{
+        type: Boolean,
+        require: true,
+    },
     question: [{
         questionTitle: {
             type: String,

@@ -197,8 +197,8 @@ Io.of('/game').on('connection', (socket) => {
                                 io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
                             });
 
-                        }else {
-                            socket.emit('usernameErr', message='The username field cannot be left blank')
+                        } else {
+                            socket.emit('usernameErr', message = 'The username field cannot be left blank')
                         }
                     });
                     // soruları tek tke gönder ve herkese socket.io şeklinde gönder.
@@ -305,7 +305,7 @@ Io.of('/profile').use((socket, next) => {
     });
     socket.on('quizCreate', (quiz) => {
         console.log(quiz);
-        if ((quiz.title !== '') && (quiz.location !== '') && (quiz.language !== '')) {
+        if ((quiz.title.trim() !== '') && (quiz.location.trim() !== '') && (quiz.language.trim() !== '')) {
             pinCreate((randomKey) => {
                 quiz.userId = socket.decoded.userId;
                 quiz.pin = randomKey;
@@ -421,14 +421,16 @@ Io.of('/profile').use((socket, next) => {
 
     socket.on('addingQuestions', (question) => {
         let boolean = true;
-        question.answers.forEach((answer) => {
+        question.answers.forEach((answer, key) => {
             if (answer === '') {
                 boolean = false;
                 return;
+            }else {
+                question.answers[key] = answer.trim();
             }
         });
 
-        if ((boolean) && (question.questionTitle !== '') && ((question.answer) !== -1) && (question.time > 0)) {
+        if ((boolean) && (question.questionTitle.trim() !== '') && ((question.answer) !== -1) && (question.time > 0)) {
             //validasyonlar yapılacak
             Quiz.findById(question.quizId, (err, quiz) => {
                 if (err)
@@ -445,6 +447,11 @@ Io.of('/profile').use((socket, next) => {
 
     socket.on('getDiscover', () => {
         Quiz.aggregate([
+            {
+                $match:{
+                    visibleTo: true
+                }
+            },
             {
                 $lookup: {
                     from: 'users',
@@ -521,9 +528,9 @@ Io.of('/profile').use((socket, next) => {
 //login test için hazır
 Io.of('/user').on('connection', (socket) => {
     socket.on('userLogin', (user) => {
-        if (user.email !== null && user.password !== null) {
+        if (user.email.trim() !== null && user.password !== null) {
             User.findOne({
-                email: user.email
+                email: user.email.trim()
             }, (err, User) => {
                 if (err)
                     throw err
@@ -549,6 +556,7 @@ Io.of('/user').on('connection', (socket) => {
         }
     });
     //regex için kontrol sağla
+    //şifre 6 karakter olmalı
     socket.on('userRegister', (userRegister) => {
         console.log(userRegister);
         if ((userRegister.email.trim() !== '') && (userRegister.password !== '') && (userRegister.username.trim() !== '') && (userRegister.firstname.trim() !== '') && (userRegister.lastname.trim() !== '')) {
@@ -561,9 +569,9 @@ Io.of('/user').on('connection', (socket) => {
                     password: hash
                 });
                 user.save().then((data) => {
-                    socket.emit('registerSuccessful',  message= 'Successfully registered' )
+                    socket.emit('registerSuccessful', message = 'Successfully registered')
                 }).catch((err) => {
-                    if(err.code === 11000){
+                    if (err.code === 11000) {
                         socket.emit('registerError', { message: 'This mail has already been saved' })
                     }
                 });
@@ -576,3 +584,16 @@ Io.of('/user').on('connection', (socket) => {
 })
 
 module.exports = socketApi;
+
+//visible to ekle
+//trimler eklenecek
+//sayfalar boşsa ana ekrana atacak düzeltilmesi
+//sadece resim ekleyebilmeli
+//profil ekranında sil veya silme diye göstersin quiz için
+
+//admin olarak tek başına başlatılamaması lazım
+//soruların update işlemi
+//quiz silindiğinde tüm img silinmesi gerekli
+
+
+//herkes cevapladıktan sonra sorunun bitmesi

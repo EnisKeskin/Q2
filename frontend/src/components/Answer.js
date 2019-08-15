@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Io from '../connection';
 import { Redirect } from 'react-router'
+import Ip from '../Ip';
 
 let io = null;
 
@@ -19,7 +20,20 @@ class Answer extends Component {
             img: "",
             isVisible: true,
             statistics: false,
+            visible: false,
             a: 0, b: 0, c: 0, d: 0,
+        }
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (typeof (props.location.state) !== 'undefined') {
+            if (props.location.state.visible) {
+                return state.visible = false;
+            } else {
+                return state.visible = true;
+            }
+        } else {
+            return state.visible = true;
         }
     }
 
@@ -27,7 +41,6 @@ class Answer extends Component {
         io = Io.connectionsRoom('game');
         io.on('newQuestion', (question) => {
             if (isNaN(question)) {
-                console.log(question)
                 this.setState({
                     questionTitle: question.questionTitle,
                     time: question.time,
@@ -37,6 +50,7 @@ class Answer extends Component {
                     progress: 100,
                     isVisible: true,
                     statistics: false,
+                    visible: false,
                     a: 0, b: 0, c: 0, d: 0,
                 });
                 this.interval = 0;
@@ -117,13 +131,13 @@ class Answer extends Component {
         io.removeListener('showScoreboard');
         io.removeListener('staticstics');
         io.removeListener('newQuestion');
-    }
+    };
 
     componentDidUpdate() {
         if (this.state.time === 0) {
             clearInterval(this.interval);
         };
-    }
+    };
 
     onCLickEvent(answer, e) {
         document.querySelectorAll('.col-md-6').forEach((block) => {
@@ -137,137 +151,146 @@ class Answer extends Component {
 
         });
         io.emit('sendAnswer', { answer });
-    }
+    };
 
     render() {
-        const question =
-            <div>
-                <div className="container answer-contet">
-
-                    <div className="answer-top">
-                        <div className="answer-top-in">
-                            <div className="answer-image">
-                                <img src={`http://192.168.1.101:3000/${this.state.img}`} alt="" srcSet="" />
-                            </div>
-                            <div className="answer-question">
-                                {this.state.questionTitle}
-                                <div className="triangle"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="progressbar" style={{ 'width': `${this.state.progress}%` }}>
-                        {this.state.time}
-                    </div>
-
-                </div>
-
-                <div className="answer-bottom">
-
-                    <div className="container answer-bottom-in">
-                        <div className="row">
-
-                            <div className="col-md-6">
-                                <div className="answer-1" onClick={this.onCLickEvent.bind(this, 0)}>
-                                    {this.state.answers[0]}
-                                </div>
-                            </div>
-
-                            <div className="col-md-6">
-                                <div className="answer-2" onClick={this.onCLickEvent.bind(this, 1)}>
-                                    {this.state.answers[1]}
-                                </div>
-                            </div>
-
-                            <div className="col-md-6">
-                                <div className="answer-3" onClick={this.onCLickEvent.bind(this, 2)}>
-                                    {this.state.answers[2]}
-                                </div>
-                            </div>
-
-                            <div className="col-md-6">
-                                <div className="answer-4" onClick={this.onCLickEvent.bind(this, 3)}>
-                                    {this.state.answers[3]}
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>;
-
         return (
+
             <div>
-                {this.state.isVisible ?
-                    question
+                {this.state.visible ?
+                    <Redirect to='/' />
                     :
                     <div>
-                        {this.state.statistics ?
+                        {this.state.isVisible ?
                             <div>
                                 <div className="container answer-contet">
 
                                     <div className="answer-top">
-
-                                        <div className="statistics">
-                                            <div className="statistics-item">
-                                                <span className="statistics-item-label">{this.state.a}</span>
-                                                <div className="statistics-item-fill statistics-item-fill-1" style={{ 'height': `${Math.max(5, Math.min(((this.state.a) * 20), 120))}px` }} ></div>
+                                        <div className="answer-top-in">
+                                            <div className="answer-image">
+                                                <img src={`${Ip}${this.state.img}`} alt="" srcSet="" />
                                             </div>
-
-                                            <div className="statistics-item">
-                                                <span className="statistics-item-label">{this.state.b}</span>
-                                                <div className="statistics-item-fill statistics-item-fill-2" style={{ 'height': `${Math.max(5, Math.min(((this.state.b) * 20), 120))}px` }} ></div>
+                                            <div className="answer-question">
+                                                {this.state.questionTitle}
+                                                <div className="triangle"></div>
                                             </div>
-
-                                            <div className="statistics-item">
-                                                <span className="statistics-item-label">{this.state.c}</span>
-                                                <div className="statistics-item-fill statistics-item-fill-3" style={{ 'height': `${Math.max(5, Math.min(((this.state.c) * 20), 120))}px` }} ></div>
-                                            </div>
-
-                                            <div className="statistics-item">
-                                                <span className="statistics-item-label">{this.state.d}</span>
-                                                <div className="statistics-item-fill statistics-item-fill-4" style={{ 'height': `${Math.max(5, Math.min(((this.state.d) * 20), 120))}px` }} ></div>
-                                            </div>
-
                                         </div>
-
-                                        <div className="progressbar"></div>
                                     </div>
-
-                                    <div className="answer-bottom">
-
-                                        <div className="container answer-bottom-in">
-
-                                            <div className="row">
-
-                                                <div className="col-md-6">
-                                                    <div className="answer-1">{this.state.answers[0]}</div>
-                                                </div>
-
-                                                <div className="col-md-6">
-                                                    <div className="answer-2">{this.state.answers[1]}</div>
-                                                </div>
-
-                                                <div className="col-md-6">
-                                                    <div className="answer-3">{this.state.answers[2]}</div>
-                                                </div>
-
-                                                <div className="col-md-6">
-                                                    <div className="answer-4">{this.state.answers[3]}</div>
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
+                                    <div className="progressbar" style={{ 'width': `${this.state.progress}%` }}>
+                                        {this.state.time}
                                     </div>
 
                                 </div>
+
+                                <div className="answer-bottom">
+
+                                    <div className="container answer-bottom-in">
+                                        <div className="row">
+
+                                            <div className="col-md-6">
+                                                <div className="answer-1" onClick={this.onCLickEvent.bind(this, 0)}>
+                                                    {this.state.answers[0]}
+                                                </div>
+                                            </div>
+
+                                            <div className="col-md-6">
+                                                <div className="answer-2" onClick={this.onCLickEvent.bind(this, 1)}>
+                                                    {this.state.answers[1]}
+                                                </div>
+                                            </div>
+
+                                            <div className="col-md-6">
+                                                <div className="answer-3" onClick={this.onCLickEvent.bind(this, 2)}>
+                                                    {this.state.answers[2]}
+                                                </div>
+                                            </div>
+
+                                            <div className="col-md-6">
+                                                <div className="answer-4" onClick={this.onCLickEvent.bind(this, 3)}>
+                                                    {this.state.answers[3]}
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            : <Redirect to='/Scoreboard' />
+                            :
+                            <div>
+                                {this.state.statistics ?
+                                    <div>
+                                        <div className="container answer-contet">
+
+                                            <div className="answer-top">
+
+                                                <div className="statistics">
+                                                    <div className="statistics-item">
+                                                        <span className="statistics-item-label">{this.state.a}</span>
+                                                        <div className="statistics-item-fill statistics-item-fill-1" style={{ 'height': `${Math.max(5, Math.min(((this.state.a) * 20), 120))}px` }} ></div>
+                                                    </div>
+
+                                                    <div className="statistics-item">
+                                                        <span className="statistics-item-label">{this.state.b}</span>
+                                                        <div className="statistics-item-fill statistics-item-fill-2" style={{ 'height': `${Math.max(5, Math.min(((this.state.b) * 20), 120))}px` }} ></div>
+                                                    </div>
+
+                                                    <div className="statistics-item">
+                                                        <span className="statistics-item-label">{this.state.c}</span>
+                                                        <div className="statistics-item-fill statistics-item-fill-3" style={{ 'height': `${Math.max(5, Math.min(((this.state.c) * 20), 120))}px` }} ></div>
+                                                    </div>
+
+                                                    <div className="statistics-item">
+                                                        <span className="statistics-item-label">{this.state.d}</span>
+                                                        <div className="statistics-item-fill statistics-item-fill-4" style={{ 'height': `${Math.max(5, Math.min(((this.state.d) * 20), 120))}px` }} ></div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div className="progressbar"></div>
+                                            </div>
+
+                                            <div className="answer-bottom">
+
+                                                <div className="container answer-bottom-in">
+
+                                                    <div className="row">
+
+                                                        <div className="col-md-6">
+                                                            <div className="answer-1">{this.state.answers[0]}</div>
+                                                        </div>
+
+                                                        <div className="col-md-6">
+                                                            <div className="answer-2">{this.state.answers[1]}</div>
+                                                        </div>
+
+                                                        <div className="col-md-6">
+                                                            <div className="answer-3">{this.state.answers[2]}</div>
+                                                        </div>
+
+                                                        <div className="col-md-6">
+                                                            <div className="answer-4">{this.state.answers[3]}</div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    : <Redirect to={
+                                        {
+                                            pathname: '/Scoreboard',
+                                            state: { visible: true }
+                                        }
+                                    } />
+                                }
+                            </div>
                         }
+
                     </div>
                 }
-
             </div>
         )
     }

@@ -20,6 +20,7 @@ class Quiz extends Component {
             description: "",
             img: "",
             question: [],
+            visibleTo: false,
         }
         this.state = {
             loginVisible: false,
@@ -28,17 +29,20 @@ class Quiz extends Component {
             quizError: "",
         }
         this.onChangeUploadEvent = this.onChangeUploadEvent.bind(this);
+        this.onChangeVisibleToEvent = this.onChangeVisibleToEvent.bind(this);
     }
 
     componentDidMount() {
         if (localStorage.getItem('token')) {
             this.resetVarible();
             io = Io.connectionsRoom('profile', localStorage.getItem('token'));
+
             io.on('error', () => {
                 this.setState({
                     loginVisible: true
-                })
-            })
+                });
+            });
+
             io.on('quizId', (quizId) => {
                 if (this.file) {
                     Superagent
@@ -57,12 +61,14 @@ class Quiz extends Component {
                     questionVisible: true
                 })
             });
+
             io.on('quizError', (quiz) => {
                 this.setState({
                     quizError:
                         <div className="quiz-error">{quiz.message}</div>
-                })
-            })
+                });
+            });
+
         } else {
             this.setState({
                 loginVisible: true
@@ -79,15 +85,31 @@ class Quiz extends Component {
     }
 
     onChangeUploadEvent = (e) => {
-        this.file = e.target.files[0]
-        this.setState({
-            file: URL.createObjectURL(e.target.files[0])
-        })
+        const splite = e.target.files[0].type.split('/');
+        if (splite[0] === 'image') {
+            this.file = e.target.files[0];
+            this.setState({
+                file: URL.createObjectURL(e.target.files[0])
+            });
+        } else {
+            this.file = null;
+            this.setState({
+                file: null
+            });
+        }
     }
 
     onClickEvent = (e) => {
         e.preventDefault();
         io.emit('quizCreate', this.quiz);
+    }
+
+    onChangeVisibleToEvent = (e) => {
+        if (e.target.value === "1") {
+            this.quiz.visibleTo = true
+        } else {
+            this.quiz.visibleTo = false
+        }
     }
 
     resetVarible = () => {
@@ -100,6 +122,7 @@ class Quiz extends Component {
             description: "",
             img: "",
             question: [],
+            visibleTo: false,
         };
         this.setState(
             {
@@ -139,7 +162,7 @@ class Quiz extends Component {
                                     <div className="quiz-image">
                                         <label className="lbl-file" htmlFor="file">    Tap to add cover images   </label>
 
-                                        <input className="fileupload" type="file" name="fileToUpload" id="file" encType="multipart/form-data" onChange={this.onChangeUploadEvent} />
+                                        <input className="fileupload" type="file" name="fileToUpload" id="file" accept="image/*" encType="multipart/form-data" onChange={this.onChangeUploadEvent} />
                                         <img src={this.state.file} alt="" />
                                     </div>
 
@@ -148,7 +171,7 @@ class Quiz extends Component {
                                         <div className="dropdown">
 
                                             <div className="select-box select-box-1 ">
-                                                <select name="" id="">
+                                                <select name="" id="" onChange={this.onChangeVisibleToEvent}>
                                                     <option value="">Visible to </option>
                                                     <option value="0">Private</option>
                                                     <option value="1">Public</option>

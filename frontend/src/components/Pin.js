@@ -10,10 +10,10 @@ class Pin extends Component {
   constructor(props) {
     super(props);
     this.pin = 0;
-      this.state = {
-        isVisible: false,
-        err: ""
-      }
+    this.state = {
+      isVisible: false,
+      err: ""
+    }
   }
 
   componentDidMount() {
@@ -40,7 +40,7 @@ class Pin extends Component {
     console.log(this.pin)
     if (this.pin > 0) {
       io.emit("sendPin", this.pin);
-     
+
     } else {
       this.setState({
         err: <div className="pin-error">
@@ -59,7 +59,12 @@ class Pin extends Component {
     return (
       <div>
         {this.state.isVisible ?
-          <Redirect to='/username' />
+          <Redirect to={
+            {
+              pathname: '/Username',
+              state: { visible: true }
+            }
+          } />
           :
           <div>
             <div className="figure"></div>

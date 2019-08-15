@@ -125,7 +125,7 @@ class Question extends Component {
 
                         <header className="quiz-header">
                             <div className="quiz-logo">
-                                <img src={require('../images/logo/logo-w.png')} className="img-quiz-logo" alt='' />
+                                <img src={require('../images/logo/logo-w.png')} className="img-quiz-logo" accept="image/*" alt='' />
 
                             </div>
 
@@ -140,7 +140,7 @@ class Question extends Component {
                             <form action="." method="POST" ref={(el) => this.myFormRef = el}>
                                 <div className="question-image">
                                     <label className="lbl-file" htmlFor="file">   Tap to add cover images    </label>
-                                    <input className="fileupload" type="file" name="fileToUpload" id="file" onChange={this.onChangeFileEvent} />
+                                    <input className="fileupload" type="file" name="fileToUpload" id="file" accept="image/*" onChange={this.onChangeFileEvent} />
                                     <img src={this.state.file} alt='' srcSet='' />
                                     <div className="select-box-question" onChange={(e) => { this.question.time = e.target.value }} >
                                         <select name='' id='' required>

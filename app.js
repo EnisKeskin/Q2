@@ -15,6 +15,9 @@ const app = express();
 
 busboy.extend(app, {
   upload: true,
+  limits: {
+    fileSize: 6 * 1024 * 1024 //2MB limit
+  },
   path: './media',
   allowedPath: /./,
 })

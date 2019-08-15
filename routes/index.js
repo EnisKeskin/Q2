@@ -101,8 +101,6 @@ router.post('/user', (req, res) => {
 })
 
 router.post('/upload', (req, res) => {
-    console.log(req.files.theFile.file);
-    console.log(req.body.whereToIns);
     if (req.body.whereToIns === 'quiz') {
         Quiz.findByIdAndUpdate({ _id: req.body.quizId }, { img: req.files.theFile.file }).then((data) => {
             res.json('Başarılıyla Eklendi');
@@ -137,29 +135,3 @@ router.post('/upload', (req, res) => {
 
 
 module.exports = router;
-
-// {
-//   "title": "Ankara",
-//   "description": "Sorularla Ankarayı tanıyalım",
-//   "location": "Turkey",
-//   "language": "Turkish",
-//   "pin": 765221,
-//   "img": "img1.jpg",
-//   "question": []
-//   "active":true  -> oyun şu anda oynanma aşamasında
-// }
-
-
-// question{
-//   "questionTitle": "Ankaranın ilkleri",
-//   "answers": [
-//     "ali",   //answer-1
-//     "veli",  //answer-2
-//     "49",    //answer-3
-//     "50"     //answer-4
-//    ],  
-//   "answer": "2",
-//   "time": 10,
-//   "img": "s-img1.jpg",
-//   "quiz_id": "5d305364629fa117538a58e8"
-// }

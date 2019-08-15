@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Pin from './components/Pin';
 import Players from './components/Players';
 import User from './components/User';
@@ -17,21 +17,23 @@ class App extends Component {
     render() {
         return (
             <Router>
-                <Route exact path='/' component={Pin} />
-                <Route exact path='/Username' component={Username} />
-                <Route exact path='/Players' component={Players} />
-                <Route exact path='/Answer' component={Answer} />
-                <Route exact path='/Scoreboard' component={Scoreboard} />
+                <Switch>
+                    <Route exact path='/' component={Pin} />
+                    <Route exact path='/Username' component={Username} />
+                    <Route exact path='/Players' component={Players} />
+                    <Route exact path='/Answer' component={Answer} />
+                    <Route exact path='/Scoreboard' component={Scoreboard} />
 
-                <Route exact path='/User' component={User} />
-                <Route exact path='/Profile' component={Profile} />
-                <Route exact path='/Profile/Edit' component={ProfileEdit} />
-                <Route exact path='/Quiz' component={Quiz} />
-                <Route exact path='/Question' component={Question} />
+                    <Route exact path='/User' component={User} />
+                    <Route exact path='/Profile' component={Profile} />
+                    <Route exact path='/Profile/Edit' component={ProfileEdit} />
+                    <Route exact path='/Quiz' component={Quiz} />
+                    <Route exact path='/Question' component={Question} />
 
-                <Route exact path='/Discover' component={Discover} />
+                    <Route exact path='/Discover' component={Discover} />
 
-                {/* <Route component = {}/> farklı linklere gidildiğinde */}
+                    <Route component={Pin} />
+                </Switch>
             </Router>
         )
     };
