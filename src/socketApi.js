@@ -333,6 +333,7 @@ Io.of('/profile').use((socket, next) => {
                         userId: mongoose.Types.ObjectId(user._id)
                     }
                 },
+                { $sort: { date: -1 } },
                 {
                     $lookup: {
                         from: 'users',
@@ -354,7 +355,6 @@ Io.of('/profile').use((socket, next) => {
                         questionCount: { $size: '$question' }
                     }
                 },
-                { $sort: { date: -1 } },
             ], (err, result) => {
                 if (err)
                     throw err
@@ -632,8 +632,4 @@ Io.of('/user').on('connection', (socket) => {
 })
 
 module.exports = socketApi;
-//trimler eklenecek
-//sayfalar boşsa ana ekrana atacak düzeltilmesi
-//sadece resim ekleyebilmeli
-//profil ekranında sil veya silme diye göstersin quiz için
-//admin olarak tek başına başlatılamaması lazım
+
