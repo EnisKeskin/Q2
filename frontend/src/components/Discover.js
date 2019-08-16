@@ -56,17 +56,16 @@ class Discover extends Component {
     trendShow() {
         const stateQuizs = this.state.trendQuizzes;
         let quizs = [];
-        stateQuizs.forEach((element, key) => {
+        stateQuizs.forEach((quiz, key) => {
             quizs.push(
                 <div className="discover-trend-block" key={key}>
-                    <img src={`${Ip}${element.img}`} alt="" />
+                    <img src={`${Ip}${quiz.img}`} alt="" />
 
                     <div className="discover-block-text">
-                        <span className="spn-discover">{element.title} </span>
-                        <span className="spn-discover-2"> {element.questionCount} Questions</span>
-                        <div className="discover-owner">{element.username} <img src={`${Ip}${element.userImg}`} alt="" /></div>
+                        <span className="spn-discover">{quiz.title} </span>
+                        <span className="spn-discover-2"> {quiz.questionCount} Questions</span>
+                        <div className="discover-owner">{quiz.username} <img src={`${Ip}${quiz.userImg}`} alt="" /></div>
                     </div>
-
                 </div>
             )
         });
@@ -76,22 +75,22 @@ class Discover extends Component {
     quizsShow() {
         const stateQuizs = this.state.myQuiz;
         let quizs = [];
-        stateQuizs.forEach((element, key) => {
+        stateQuizs.forEach((quiz, key) => {
             quizs.push(
                 <div className="discover-quizs-block" key={key}>
-
-                    <img src={`${Ip}${element.img}`} alt="" />
+                    <img src={`${Ip}${quiz.img}`} alt="" />
 
                     <div className="discover-quizs-text">
-                        <span className="spn-discover-quizs">{element.title}</span>
-                        <span className="spn-discover-2-quizs"> {element.questionCount}  Questions</span>
+                        <span className="spn-discover-quizs">{quiz.title}</span>
+                        <span className="spn-discover-2-quizs"> {quiz.questionCount}  Questions</span>
 
                         <div className="discover-owner-quizs">
-                            {element.username} <img src={`${Ip}${element.userImg}`} alt="" />
+                            {quiz.username} <img src={`${Ip}${quiz.userImg}`} alt="" />
                         </div>
 
                     </div>
                 </div>
+
             )
         });
         return quizs;

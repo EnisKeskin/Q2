@@ -152,7 +152,6 @@ const pinCreate = (callback) => {
 let roomControl = new RoomControl();
 let room = {};
 Io.of('/game').on('connection', (socket) => {
-
     socket.emit('connected');
     const io = Io.of('/game');
     socket.on('sendPin', (pin) => {
@@ -270,11 +269,8 @@ Io.of('/game').on('connection', (socket) => {
     })
 });
 
-
 Io.of('/profile').use((socket, next) => {
     const token = socket.handshake.query.token
-    // console.log(token);
-    // console.log("attttttttttt");
     if (token) {
         jwt.verify(token, key, (err, decoded) => {
             if (err) {
@@ -303,6 +299,7 @@ Io.of('/profile').use((socket, next) => {
             next(new Error('Authentication error'));
         }
     });
+
     socket.on('quizCreate', (quiz) => {
         console.log(quiz);
         if ((quiz.title.trim() !== '') && (quiz.location.trim() !== '') && (quiz.language.trim() !== '')) {
@@ -419,8 +416,8 @@ Io.of('/profile').use((socket, next) => {
                     }
                 });
             })
-        }else {
-            socket.emit('message', {message: 'Email, username and firstname cannot be left empty!!'})
+        } else {
+            socket.emit('message', { message: 'Email, username and firstname cannot be left empty!!' })
         }
     });
 

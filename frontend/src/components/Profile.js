@@ -38,6 +38,7 @@ class Profile extends Component {
                 })
             })
             io.on('setProfilInfo', (user) => {
+
                 this.setState({
                     user,
                     username: user.username,
@@ -85,6 +86,11 @@ class Profile extends Component {
         }
     }
 
+    quizDelete = (quizId) => {
+        io.emit('quizDel', quizId);
+        io.emit('getProfilInfo');
+    }
+
     quizModel() {
         const stateQuizs = this.state.quizs;
         const quizs = [];
@@ -101,7 +107,7 @@ class Profile extends Component {
                             {quiz.title}
                         </div>
 
-                        <div className="my-quiz-question">{quiz.questionCount} Question</div>
+                        <div className="my-quiz-question">{quiz.questionCount > 0 ? quiz.questionCount : this.quizDelete(quiz._id)} Question</div>
 
                     </div>
 
@@ -150,6 +156,7 @@ class Profile extends Component {
 
                         </div>
                     </div>
+
                 </div>
 
             )
