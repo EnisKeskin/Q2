@@ -78,11 +78,11 @@ class Profile extends Component {
     }
 
     onClickEvent = (quizId, e) => {
-       const confirm = window.confirm('Are you sure you want to delete');
-       if(confirm){
-           io.emit('quizDel', quizId);
-           io.emit('getProfilInfo');
-       }
+        const confirm = window.confirm('Are you sure you want to delete');
+        if (confirm) {
+            io.emit('quizDel', quizId);
+            io.emit('getProfilInfo');
+        }
     }
 
     quizModel() {

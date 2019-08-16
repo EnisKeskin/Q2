@@ -121,9 +121,8 @@ class ProfilEdit extends Component {
 
                                     <form action="." method="POST">
                                         <div className="profil-avatar">
-
                                             <label className="lbl-file-profil" htmlFor="profil"> Tap to add cover profil images <img src={this.state.file || `${Ip}${user.img}`} alt="" /> </label>
-                                            <input className="fileupload-profil" type="file" name="fileToUpload" id="profil" onChange={(e) => { this.file = e.target.files[0]; this.setState({ file: URL.createObjectURL(e.target.files[0]) }) }} />
+                                            <input className="fileupload-profil" type="file" name="fileToUpload" accept="image/*" id="profil" onChange={(e) => { this.file = e.target.files[0]; this.setState({ file: URL.createObjectURL(e.target.files[0]) }) }} />
                                         </div>
                                         <div className="user-name">
 

@@ -372,51 +372,56 @@ Io.of('/profile').use((socket, next) => {
     });
 
     socket.on('profilUpdate', (user) => {
-        User.findById(socket.decoded.userId, (err, UserProfil) => {
-            if (err)
-                throw err
-            bcrypt.compare(user.password, UserProfil.password).then((result) => {
-                if (!result) {
-                    //yanlış giriş
-                    socket.emit('message', { message: " Password incorrect " });
-                } else {
-                    if (typeof (user.newPassword) !== 'undefined') {
-                        if (user.newPassword.length >= 6) {
-                            bcrypt.hash(user.newPassword, 10).then((hash) => {
-                                User.findByIdAndUpdate(socket.decoded.userId, {
-                                    email: user.email,
-                                    username: user.username,
-                                    firstname: user.firstname,
-                                    lastname: user.lastname,
-                                    password: hash
-                                }, (err, result) => {
-                                    if (err)
-                                        throw err
-                                    socket.emit('file', { userId: socket.decoded.userId });
-                                    socket.emit('successfulUpdate', { message: " Successfully updated " });
-                                })
+        if (user.email !== '' && user.username !== '' && user.firstname !== '') {
 
-                            })
-                        } else {
-                            socket.emit('message', { message: " Length must be at least 6 characters " });
-                        }
+            User.findById(socket.decoded.userId, (err, UserProfil) => {
+                if (err)
+                    throw err
+                bcrypt.compare(user.password, UserProfil.password).then((result) => {
+                    if (!result) {
+                        //yanlış giriş
+                        socket.emit('message', { message: " Password incorrect " });
                     } else {
-                        User.findByIdAndUpdate(socket.decoded.userId, {
-                            email: user.email,
-                            username: user.username,
-                            firstname: user.firstname,
-                            lastname: user.lastname,
-                        }, (err, result) => {
-                            if (err)
-                                throw err
-                            socket.emit('file', { userId: socket.decoded.userId });
-                            socket.emit('successfulUpdate', { message: " Successfully updated " });
-                        })
-                    }
+                        if (typeof (user.newPassword) !== 'undefined') {
+                            if (user.newPassword.length >= 6) {
+                                bcrypt.hash(user.newPassword, 10).then((hash) => {
+                                    User.findByIdAndUpdate(socket.decoded.userId, {
+                                        email: user.email.trim(),
+                                        username: user.username.trim(),
+                                        firstname: user.firstname.trim(),
+                                        lastname: user.lastname.trim(),
+                                        password: hash
+                                    }, (err, result) => {
+                                        if (err)
+                                            throw err
+                                        socket.emit('file', { userId: socket.decoded.userId });
+                                        socket.emit('successfulUpdate', { message: " Successfully updated " });
+                                    })
 
-                }
-            });
-        })
+                                })
+                            } else {
+                                socket.emit('message', { message: " Length must be at least 6 characters " });
+                            }
+                        } else {
+                            User.findByIdAndUpdate(socket.decoded.userId, {
+                                email: user.email.trim(),
+                                username: user.username.trim(),
+                                firstname: user.firstname.trim(),
+                                lastname: user.lastname.trim(),
+                            }, (err, result) => {
+                                if (err)
+                                    throw err
+                                socket.emit('file', { userId: socket.decoded.userId });
+                                socket.emit('successfulUpdate', { message: " Successfully updated " });
+                            })
+                        }
+
+                    }
+                });
+            })
+        }else {
+            socket.emit('message', {message: 'Email, username and firstname cannot be left empty!!'})
+        }
     });
 
     socket.on('addingQuestions', (question) => {
