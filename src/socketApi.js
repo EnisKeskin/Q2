@@ -632,7 +632,6 @@ Io.of('/user').on('connection', (socket) => {
 })
 
 module.exports = socketApi;
-//trimler eklenecek
 //sayfalar boşsa ana ekrana atacak düzeltilmesi
 //sadece resim ekleyebilmeli
 //profil ekranında sil veya silme diye göstersin quiz için
