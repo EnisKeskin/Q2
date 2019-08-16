@@ -7,7 +7,11 @@ const Quiz = require('../models/Quiz');
 const jwt = require('jsonwebtoken');
 const key = require('../config').api_top_secret_key;
 const Io = socketio();
+const path = require('path');
+const fs = require('fs');
+const rimraf = require('rimraf');
 socketApi.io = Io;
+
 
 // yeni class yapılacak question room için
 class RoomControl {
@@ -519,9 +523,24 @@ Io.of('/profile').use((socket, next) => {
     });
 
     socket.on('quizDel', (quizId) => {
-        Quiz.findByIdAndDelete(quizId, (err, result) => {
+        // rimraf.sync('media' + path.join('/ffb6deaf-7cb7-4077-a196-f99e1b03a9b2'));
+        Quiz.findById(quizId, (err, quiz) => {
             if (err)
                 throw err
+            const img = quiz.img.split('/');
+            if (typeof (img[1]) !== 'undefined') {
+                rimraf.sync('media' + path.join(`/${img[1]}`));
+            }
+            quiz.question.forEach((question) => {
+                const img = question.img.split('/');
+                if (typeof (img[1]) !== 'undefined') {
+                    rimraf.sync('media' + path.join(`/${img[1]}`));
+                }
+            })
+            Quiz.findByIdAndDelete(quizId, (err, result) => {
+                if (err)
+                    throw err
+            })
         })
     })
 
