@@ -425,7 +425,7 @@ Io.of('/profile').use((socket, next) => {
             if (answer === '') {
                 boolean = false;
                 return;
-            }else {
+            } else {
                 question.answers[key] = answer.trim();
             }
         });
@@ -448,7 +448,7 @@ Io.of('/profile').use((socket, next) => {
     socket.on('getDiscover', () => {
         Quiz.aggregate([
             {
-                $match:{
+                $match: {
                     visibleTo: true
                 }
             },
@@ -527,6 +527,7 @@ Io.of('/profile').use((socket, next) => {
 
 //login test için hazır
 Io.of('/user').on('connection', (socket) => {
+
     socket.on('userLogin', (user) => {
         if (user.email.trim() !== null && user.password !== null) {
             User.findOne({
@@ -557,23 +558,51 @@ Io.of('/user').on('connection', (socket) => {
     });
     //regex için kontrol sağla
     //şifre 6 karakter olmalı
-    socket.on('userRegister', (userRegister) => {
-        console.log(userRegister);
-        if ((userRegister.email.trim() !== '') && (userRegister.password !== '') && (userRegister.username.trim() !== '') && (userRegister.firstname.trim() !== '') && (userRegister.lastname.trim() !== '')) {
-            bcrypt.hash(userRegister.password, 10).then((hash) => {
-                const user = new User({
-                    email: userRegister.email.trim(),
-                    username: userRegister.username.trim(),
-                    firstname: userRegister.firstname.trim(),
-                    lastname: userRegister.lastname.trim(),
+    socket.on('userRegister', (user) => {
+        console.log(user);
+        if ((user.email.trim() !== '') && (user.password !== '') && (user.username.trim() !== '') && (user.firstname.trim() !== '') && (user.lastname.trim() !== '')) {
+            bcrypt.hash(user.password, 10).then((hash) => {
+                const userRegister = new User({
+                    email: user.email.trim(),
+                    username: user.username.trim(),
+                    firstname: user.firstname.trim(),
+                    lastname: user.lastname.trim(),
                     password: hash
                 });
-                user.save().then((data) => {
-                    socket.emit('registerSuccessful', message = 'Successfully registered')
+                userRegister.save().then((userLogin) => {
+                    console.log(userLogin);
+                    socket.emit('registerSuccessful', message = 'Successfully registered \n You will be redirected in 1 second');
+                    setTimeout(() => {
+                        if (userLogin.email.trim() !== null && userLogin.password !== null) {
+                            User.findOne({
+                                email: userLogin.email.trim()
+                            }, (err, User) => {
+                                if (err)
+                                    throw err
+                                if (!User) {
+                                    socket.emit('loginErr', { message: "Email and Password incorrect" });
+                                } else {
+                                    bcrypt.compare(user.password, User.password).then((result) => {
+                                        if (!result) {
+                                            //yanlış giriş
+                                            socket.emit('loginErr', { message: " Email or Password incorrect " });
+                                        } else {
+                                            const payload = {
+                                                userId: User._id,
+                                            }
+                                            const token = jwt.sign(payload, key);
+                                            socket.emit('succLogin', token);
+                                        }
+                                    });
+                                };
+                            });
+                        }
+                    }, 1000);
                 }).catch((err) => {
                     if (err.code === 11000) {
                         socket.emit('registerError', { message: 'This mail has already been saved' })
                     }
+                    console.log(err);
                 });
             })
         } else {

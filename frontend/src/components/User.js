@@ -118,7 +118,7 @@ class User extends Component {
                           </div>
 
                           <div className="login-textarea">
-                            <input type="text" placeholder="User Name" className="txt-user" autoComplete="username" onChange={(e) => { this.userLogin.email = e.target.value }} />
+                            <input type="email" placeholder="E-mail" className="txt-user" autoComplete="username" onChange={(e) => { this.userLogin.email = e.target.value }} />
                           </div>
 
                         </div>
@@ -184,23 +184,3 @@ class User extends Component {
 }
 
 export default User
-
-
-                        // let email = this.state.lemail;
-                        // let password = this.state.lpassword;
-                        // superagent
-                        //   .post('http://127.0.0.1:3000/api/login')
-//   .send({email, password })
-//   .end((err, res) => {
-//     if (err) {
-
-//     } else {
-//       if (isNaN(res.body.token)) {
-//         localStorage.removeItem('token');
-//         localStorage.setItem('token', res.body.token);
-//         this.setState({
-//           profilVisible: true
-//         });
-//       }
-//     }
-//   });
