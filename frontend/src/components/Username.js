@@ -72,7 +72,7 @@ class Username extends Component {
             {this.state.isVisible ?
               <Redirect to={{
                 pathname: '/Players',
-                state: { pin: 0 , visible: true}
+                state: { pin: 0, visible: true }
               }} />
               :
               <div>

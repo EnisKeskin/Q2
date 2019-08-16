@@ -13,9 +13,11 @@ class Header extends Component {
     }
 
     onClickEvent = (e) => {
-        localStorage.removeItem('token');
-        this.setState({ loginVisible: true });
-        Io.connectionsRoomDelete();
+        if (window.confirm('Are you sure you want to log out')) {
+            localStorage.removeItem('token');
+            this.setState({ loginVisible: true });
+            Io.connectionsRoomDelete();
+        }
     }
     render() {
         return (

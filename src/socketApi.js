@@ -185,7 +185,7 @@ Io.of('/game').on('connection', (socket) => {
                                     user.answer = -1;
                                 }
                                 if (user.answer === roomControl.rooms[roomName].currentQuestion.answer) {
-                                    questionScore = (1000 - ((Date.now() - roomControl.rooms[roomName].startTime) / 10));
+                                    questionScore = Math.floor((1000 - ((Date.now() - roomControl.rooms[roomName].startTime) / 10)));
                                     questionScore = Math.max(100, questionScore);
                                 }
                                 roomControl.addAnswer(roomName, userId, user.answer, questionScore, roomControl.rooms[roomName].currentQuestion.answer);
@@ -591,9 +591,3 @@ module.exports = socketApi;
 //sadece resim ekleyebilmeli
 //profil ekranında sil veya silme diye göstersin quiz için
 //admin olarak tek başına başlatılamaması lazım
-
-//soruların update işlemi
-//quiz silindiğinde tüm img silinmesi gerekli
-
-
-//herkes cevapladıktan sonra sorunun bitmesi
