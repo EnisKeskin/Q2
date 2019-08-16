@@ -545,7 +545,6 @@ Io.of('/profile').use((socket, next) => {
 
 });
 
-//login test için hazır
 Io.of('/user').on('connection', (socket) => {
 
     socket.on('userLogin', (user) => {
@@ -633,8 +632,6 @@ Io.of('/user').on('connection', (socket) => {
 })
 
 module.exports = socketApi;
-
-//visible to ekle
 //trimler eklenecek
 //sayfalar boşsa ana ekrana atacak düzeltilmesi
 //sadece resim ekleyebilmeli
