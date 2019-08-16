@@ -523,7 +523,6 @@ Io.of('/profile').use((socket, next) => {
     });
 
     socket.on('quizDel', (quizId) => {
-        // rimraf.sync('media' + path.join('/ffb6deaf-7cb7-4077-a196-f99e1b03a9b2'));
         Quiz.findById(quizId, (err, quiz) => {
             if (err)
                 throw err
