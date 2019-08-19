@@ -140,7 +140,7 @@ const pinDeactivate = (data) => {
     Quiz.updateOne({ pin: data }, { active: false }).then((data) => {
     })
 }
-
+//sıkıntı var emmi callback gelmesi lazım
 const pinCreate = (callback) => {
     let randomKey = 0;
     randomKey = Math.floor(Math.random() * 1000000) + 100000;
@@ -244,20 +244,14 @@ Io.of('/game').on('connection', (socket) => {
 
                     setTimeout(() => {
                         let answStatic = []
-                        console.log("answernumber:", answernumber);
-                        console.log("room.user:", room.users);
 
                         Object.keys(room.users).forEach((userId) => {
                             if (typeof (room.users[userId].answers[answernumber]) === 'undefined') {
-                                console.log("attttttttttttttttttttttt");
                                 room.users[userId].answers[answernumber] = { answer: -1, score: 0 }
                             }
-                            console.log("room.users[userId].answers:", room.users[userId].answers);
                             answStatic.push(room.users[userId].answers[answernumber]);
-                            console.log("room.users[userId].answers[answernumber]:", room.users[userId].answers[answernumber]);
                         });
                         answernumber++;
-                        console.log("answStatic", answStatic);
                         io.to(roomName).emit('staticstics', answStatic);
 
                         setTimeout(() => {
@@ -526,21 +520,62 @@ Io.of('/profile').use((socket, next) => {
         Quiz.findById(quizId, (err, quiz) => {
             if (err)
                 throw err
-            const img = quiz.img.split('/');
-            if (typeof (img[1]) !== 'undefined') {
-                rimraf.sync('media' + path.join(`/${img[1]}`));
-            }
-            quiz.question.forEach((question) => {
-                const img = question.img.split('/');
+            if (quiz.img !== '') {
+                const img = quiz.img.split('/');
                 if (typeof (img[1]) !== 'undefined') {
                     rimraf.sync('media' + path.join(`/${img[1]}`));
                 }
+                quiz.question.forEach((question) => {
+                    const img = question.img.split('/');
+                    if (typeof (img[1]) !== 'undefined') {
+                        rimraf.sync('media' + path.join(`/${img[1]}`));
+                    }
+                })
+                Quiz.findByIdAndDelete(quizId, (err, result) => {
+                    if (err)
+                        throw err
+                })
+            }
+        });
+    });
+
+    socket.on('reqQuizInfo', (quizId) => {
+        Quiz.findById(quizId, (err, quiz) => {
+            if (err)
+                throw err
+            socket.emit('sendQuizInfo', quiz);
+        });
+    });
+
+    socket.on('quizUpdate', (quiz) => {
+        if (quiz.title.trim() !== '' && quiz.description.trim() !== '' && quiz.location !== '' && quiz.language !== '') {
+            Quiz.findByIdAndUpdate(quiz._id, {
+                title: quiz.title.trim(),
+                description: quiz.description.trim(),
+                location: quiz.location,
+                language: quiz.language,
+                visibleTo: quiz.visibleTo,
+            }, (err, result) => {
+                if (err)
+                    throw err;
+                socket.emit('quizUpdateFile');
             })
-            Quiz.findByIdAndDelete(quizId, (err, result) => {
+        } else {
+            socket.emit('quizError', {message:'Title, Location, language Cannot Be Left Blank'})
+        }
+    });
+
+    socket.on('questionDelete', (questionId) => {
+        Quiz.updateOne(
+            { 'question._id': mongoose.Types.ObjectId(questionId) },
+            {
+                '$pull': { question: { _id: mongoose.Types.ObjectId(questionId) } },
+            },
+            (err, result) => {
                 if (err)
                     throw err
+                console.log(result);
             })
-        })
     })
 
 });

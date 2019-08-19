@@ -95,6 +95,7 @@ class Profile extends Component {
         const stateQuizs = this.state.quizs;
         const quizs = [];
         stateQuizs.forEach((quiz, key) => {
+            console.log(quiz);
             quizs.push(
                 <div key={key}>
                     <div data-toggle="modal" data-target={"#quiz-item-modal" + key} className="my-quiz">
@@ -135,6 +136,9 @@ class Profile extends Component {
                                                 <div className="modal-name">{quiz.username}</div>
 
                                                 <div className="modal-star">
+                                                    <Link to={{ pathname: '/QuizEdit', state: { quizId: quiz._id } }}>
+                                                        <img src={require('../images/quiz/refresh.png')} alt="" className="img-delete" />
+                                                    </Link>
                                                     <img src={require('../images/quiz/delete.png')} className="img-delete" alt="" data-dismiss="modal" onClick={this.onClickEvent.bind(this, quiz._id)} />
                                                 </div>
 
@@ -157,7 +161,7 @@ class Profile extends Component {
                         </div>
                     </div>
 
-                </div>
+                </div >
 
             )
         });

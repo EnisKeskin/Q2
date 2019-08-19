@@ -547,7 +547,7 @@ transform: scale(1.02);
 .pin {
     position: relative;
     z-index: 1;
-    min-height: calc(100vh - 25px);
+    min-height: calc(100vh - 35px);
     display: flex;
     align-items: center;
     align-content: center;
@@ -662,7 +662,7 @@ transform: scale(1.02);
 
 .a-pin a {
     color: #FFFFFF;
-    font-size: 15px;
+    font-size: 20px;
     font-weight: 500;
 }
 
@@ -1087,6 +1087,8 @@ transform: scale(1.02);
     width: calc(100% - 900px);
     padding-right: 50px;
     position: relative;
+    font-size: 20px;
+
 }
 
 .txt-title {
@@ -2672,3 +2674,50 @@ select::-ms-expand {
 
 
 /* 404 error Page*/
+
+/*New stye*/
+.player-error{
+    width: auto;
+    background-color: white;
+    min-height: 50px;
+    color: #f05227;
+    background-image: url(../images/quiz/cancel-2.png);
+    background-size: 18px;
+    background-repeat: no-repeat;
+    background-position: 15px center;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 40px;
+    padding-right: 40px;    border-radius: 8px;
+    animation-name: example;
+    animation-duration: 0.5s;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.question-delete{
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background-color: #f42;
+    border-radius: 5px;
+}
+.question-delete img{
+    width: 20px;
+    height: 20px;
+}
+
+@media only screen and (max-width: 700px) {
+    .player-error{
+        font-size: 13px;
+    }
+    .btn-start{
+        width: 100px;
+    }
+    .players-number{
+        font-size: 20px;
+    }
+}
+
+/*New stye*/
