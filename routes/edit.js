@@ -15,22 +15,11 @@ function ensureAuthenticated(req, res, next) {
 
 router.post('/', (req, res, next) => {
     const { email, password1, password2, firstname, lastname, username } = req.body;
-    User.find({ username: req.user.username }, (err, datas) => {
-        if (err)
-            throw err;
-        if (datas.length > 0) {
-            var data = datas[0];
-            var iserror = false;
-            if (email != "") {
-                User.find({ email: email }, (err, d) => {
-                    if (d.length <= 0)
-                        data.email = email;
-                    else {
-                        iserror = true;
-                        res.render('edit', { Errors: [{ msg: "Given email is already used!" }] });
-                    }
-                });
-            }
+    var Errors = [];
+    if (req.user && req.user.username) {
+        User.findOne({ username: req.user.username }, (err, data) => {
+            if (err)
+                throw err;
             if (username != "")
                 data.username = username;
             if (firstname != "")
@@ -43,23 +32,39 @@ router.post('/', (req, res, next) => {
                         bcrypt.hash(password1, 10).then((hash) => {
                             data.password = hash;
                         });
-                    else {
-                        iserror = true;
-                        res.render('edit', { Errors: [{ msg: "Given passwords do not match!" }] });
+                    else
+                        Errors.push({ msg: "Given passwords do not match!" });
+                else
+                    Errors.push({ msg: "Please provide a password with minimum lenght of 8!" });
+            }
+            if (email != "") {
+                User.find({ email: email }, (err, d) => {
+                    if (err)
+                        console.log(err);
+                    if (d.length <= 0) {
+                        data.email = email;
+                        console.log('email:' + email);
                     }
-                else {
-                    iserror = true;
-                    res.render('edit', { Errors: [{ msg: "Please provide a password with minimum lenght of 8!" }] });
-                }
+                    else {
+                        console.log('exist');
+                        Errors.push({ msg: "Given email is already used!" });
+                    }
+                    if (Errors.length == 0)
+                        data.save();
+                    console.log("Errors:" + Errors);
+                    res.render('edit', { "Errors": Errors });
+                });
             }
-            if (!iserror) {
-                data.save();
-                res.render('edit');
+            else {
+                if (Errors.length == 0)
+                    data.save();
+                console.log("Errors:" + Errors);
+                res.render('edit', { "Errors": Errors });
             }
-        }
-        else
-            res.render('edit');
-    });
+        });
+    }
+    else
+        res.redirect('/');
 });
 
 module.exports = router;

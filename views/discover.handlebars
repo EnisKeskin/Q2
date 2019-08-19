@@ -5,56 +5,63 @@
         </div>
         <div class="menu">
             <ul>
-                <a href="index.html">
+                <a href="/">
                     <li>
                         <div class="icon"><img src="images/menu-icon/enter-pin.png" class="img-icon" alt=""> </div>
                         Enter Pin
-                </a></li>
-                <a href="discover.html">
+                    </li>
+                </a>
+                <a href="/discover">
                     <li>
                         <div class="icon"><img src="images/menu-icon/discover.png" class="img-icon" alt=""> </div>
                         Discover
-                </a></li>
-                <a href="quiz.html">
+                    </li>
+                </a>
+                <a href="/quiz">
                     <li>
-                        <div class="icon"> <img src="images/menu-icon/create.png" class="img-icon" alt=""> </div> Create
-                </a></li>
-                <li class="li-icon"> <a href="home.html"><img src="images/menu-icon/profil.png" class="img-icon" alt="">
-                    </a> </li>
-                <li> <a href="#"><img src="images/menu-icon/settings.png" class="img-icon" alt=""> </a> </li>
+                        <div class="icon"> <img src="images/menu-icon/create.png" class="img-icon" alt=""> </div>
+                        Create
+                    </li>
+                </a>
+                <a href="home.html">
+                    <li class="li-icon"> <img src="images/menu-icon/profil.png" class="img-icon" alt="">
+                    </li>
+                </a>
+                <a href="#">
+                    <li> <img src="images/menu-icon/logout.png" class="img-icon" alt="">
+                    </li>
+                </a>
             </ul>
         </div>
     </header>
     <div class="discover-menu">
         <ul>
-            <li><a class="active" href="#"> History </a></li>
-            <li><a href="#"> Match </a></li>
-            <li><a href="#"> Science </a></li>
-            <li><a href="#"> Art </a></li>
-            <li><a href="#"> Literature </a></li>
-            <li><a href="#"> Trivia </a></li>
+            <li>
+                <a class="active" href="#"> History </a>
+            </li>
         </ul>
     </div>
     <div class="discover-trend">
         <div class="discover-trend-in">
             <div class="discover-title">
                 <span class="spn-discover-title">Trending</span>
-                <span> <a href="#"> See All </a></span>
+                <span>
+                    <a href="#"> See All </a>
+                </span>
             </div>
-            <div class="discover-trend-bottom" style="overflow:hidden; border-right: solid 40px rgba(0, 0, 0, 0);">
-                    {{#each Trending}}
-                    <div class="discover-trend-block">
-                        <img src="{{this.quizImage}}" alt="quiz image">
-                        <div class="discover-block-text">
-                            <span class="spn-discover">{{this.quizTitle}} </span>
-                            <span class="spn-discover-2"> {{this.questionCount}} Questions</span>
-                            <div class="discover-owner">
-                                {{this.ownerName}} <img src="{{this.ownerImage}}" alt="owner image">
-                            </div>
+            <div class="discover-trend-bottom"style="overflow:hidden; ">
+                {{#each Trending}}
+                <div class="discover-trend-block">
+                    <img src="{{this.quizImage}}" alt="quiz image">
+                    <div class="discover-block-text">
+                        <span class="spn-discover">{{this.quizTitle}} </span>
+                        <span class="spn-discover-2"> {{this.questionCount}} Questions</span>
+                        <div class="discover-owner">
+                            {{this.ownerName}} <img src="{{this.ownerImage}}" alt="owner image">
                         </div>
                     </div>
-                    {{/each}}
                 </div>
+                {{/each}}
             </div>
         </div>
     </div>
@@ -62,7 +69,7 @@
         <div class="discover-quizs-title">
             <h3>Quizs</h3>
         </div>
-        <div class="discover-quizs-bottom" style="overflow:hidden;">
+        <div class="discover-quizs-bottom">
             {{#each Discover}}
             <div class="discover-quizs-block">
                 <img src="{{this.quizImage}}" alt="quiz image">

@@ -6,7 +6,7 @@ var multer = require('multer');
 var upload = multer({ dest: './uploads' });
 
 
-router.get('/', (req, res, next) => {
+router.get('/', ensureAuthenticated, (req, res, next) => {
   res.render('quiz',
     {
       visibility: [
@@ -40,7 +40,7 @@ router.get('/', (req, res, next) => {
   );
 });
 
-router.get('/question', (req, res, next) => {
+router.get('/question', ensureAuthenticated, (req, res, next) => {
   res.render('question');
 });
 
@@ -69,4 +69,9 @@ router.post('/question', (req, res) => {
     data.save();
   });
 })*/
+
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  res.redirect('/');
+}
 module.exports = router;

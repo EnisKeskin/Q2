@@ -349,7 +349,7 @@ ul {
 }
 
 .modal-start {
-    display: flex;
+    display: none;
     justify-content: space-between;
 }
 
@@ -2208,6 +2208,8 @@ select::-ms-expand {
 .discover-trend-in {
     height: 400px;
     width: 65%;
+    position: relative;
+    padding-right: 40px;
     background-color: #9b3adb;
     border-top-right-radius: 50px;
     border-bottom-right-radius: 50px;
@@ -2237,7 +2239,8 @@ select::-ms-expand {
     padding-left: 10px;
     display: flex;
     justify-content: flex-start;
-    padding-right: 15px;
+    margin-left: 40px;
+    padding-right: 25px;
     color: #494444;
 }
 
@@ -2245,8 +2248,8 @@ select::-ms-expand {
     width: 230px;
     min-height: 230px;
     background-color: white;
-    margin-left: 15px;
-    margin-right: 15px;
+    margin-left: 10px;
+    margin-right: 10px;
     position: relative;
     box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.21);
     border-radius: 10px;

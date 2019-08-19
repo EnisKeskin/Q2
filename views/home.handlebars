@@ -24,12 +24,12 @@
                         Create
                     </a>
                 </li>
-                <li class="li-icon">
-                    <a href="/home"><img src="images/menu-icon/profil.png" class="img-icon" alt="">
+                <li class="li-icon"><img src="images/menu-icon/profil.png" class="img-icon" alt="">
+                    <a href="/home">
                     </a>
                 </li>
-                <li>
-                    <a href="/edit"><img src="images/menu-icon/settings.png" class="img-icon" alt="">
+                <li> <img src="images/menu-icon/logout.png" class="img-icon" alt="">
+                    <a href="/users/logout">
                     </a>
                 </li>
             </ul>
@@ -42,38 +42,36 @@
             </a>
             <div class="profil-top">
                 <div class="profil-img">
-                    <img src="images/user/Oval.png" class="img-profil" alt="">
+                    <img src="{{img}}" class="img-profil" alt="">
                 </div>
                 <div class="profil-name">
-                    <h6 class="h6">Yüsra Topçuoğlu <a href="#"><img src="images/user-icon/edit.png" class="img-edit"
-                                alt="Edit"> </a> </h6>
-                    <h6 class="h6-mail"> Ytopcu </h6>
+                    <h6 class="h6">
+                        {{firstname}} {{lastname}}
+                        <a href="/edit">
+                            <img src="images/user-icon/edit.png" class="img-edit" alt="Edit">
+                        </a>
+                    </h6>
+                    <h6 class="h6-mail">
+                        {{username}}
+                    </h6>
                 </div>
             </div>
             <div class="profil-bottom">
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
                         <div class="profil-information-left">
-                            <div>Quiz Created </div>
-                            <div> 1 </div>
+                            <div>Quiz Created</div>
+                            <div>
+                                {{quizCreated}}
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
                         <div class=" profil-information-right">
-                            <div> Hosted Games </div>
-                            <div> 1 </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="profil-capsule">
-                            <div>Challenges Played </div>
-                            <div>1</div>
-                        </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="profil-capsule">
-                            <div>Live Games Played </div>
-                            <div>1</div>
+                            <div>Game Played</div>
+                            <div>
+                                {{gamePlayed}}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -82,71 +80,58 @@
         <div class="content-right">
             <div class="content-menu">
                 <ul>
-                    <li><a class="active" href="#">My Quiz</a></li>
-                    <li><a href="#">Favorite</a></li>
-                    <li><a href="#">Latest</a></li>
+                    <li>
+                        <a class="active" href="#">My Quiz</a>
+                    </li>
                 </ul>
             </div>
-            <div data-toggle="modal" data-target=".bd-example-modal-lg" class="my-quiz">
+            {{#each myQuizzes}}
+            <div data-toggle="modal" data-target=".bd-example-modal-lg{{this.index}}" class="my-quiz">
                 <div class="my-quiz-img">
-                    <img src="images/quiz/quiz.png" class="img-quiz" alt="">
+                    <img src="{{this.img}}" class="img-quiz" alt="quiz image">
                 </div>
                 <div class="my-quiz-name">
-                    Gerunds
+                    {{this.title}}
                 </div>
             </div>
-            <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-                aria-hidden="true">
+            <div class="modal fade bd-example-modal-lg{{this.index}}" tabindex="-1" role="dialog"
+                aria-labelledby="myLargeModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                     <div class="modal-content">
                         <div class="container-fluid">
                             <div class="row">
-                                <div class="col-lg-6 modal-left">
-                                    <img src="images/thumb-1920-943148.jpg" class="img-modal" alt="">
+                                <div class="col-xl-6 modal-left">
+                                    <img src="{{this.img}}" class="img-modal" alt="quiz image">
                                 </div>
-                                <div class="col-lg-6 modal-right">
-                                    <h4 class="h4 modal-h4">Gerunds</h4>
+                                <div class="col-xl-6 modal-right">
+                                    <h4 class="h4 modal-h4">{{this.title}}</h4>
                                     <div class="modal-user">
-                                        <img src="images/user/Oval2.png" class="img-user-modal" alt="">
+                                        <img src="{{img}}" class="img-user-modal" alt="">
                                         <div class="modal-name">
-                                            sytopcu
+                                            {{username}}
                                         </div>
                                         <div class="modal-star">
                                             <img src="images/quiz/star.png" alt="" class="img-star">
-                                            <img src="images/quiz/dot.png" class="img-dot" alt="">
+                                            <img src="images/quiz/delete.png" class="img-delete" alt="Delete">
                                         </div>
                                     </div>
                                     <h5 class="h5-subtitle">Description</h5>
                                     <p>
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nisl
-                                        metus, sagittis vitae luctus malesuada, tincidunt ac ligula. Integer mattis
-                                        volutpat lacinia. Nunc at dui auctor, Nunc ac nunc venenatis, pulvinar quam et,
-                                        aliquam mauris.
+                                        {{this.desc}}
                                     </p>
-                                    <button type="button" class="btn-play">Play</button>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <div class="modal-start">
+                                        <a href="/game?pin={{this.pin}}" class="btn-play">Play</a>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                            Close
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="my-quiz">
-                <div class="my-quiz-img">
-                    <img src="images/quiz/quiz.png" class="img-quiz" alt="">
-                </div>
-                <div class="my-quiz-name">
-                    Gerunds
-                </div>
-            </div>
-            <div class="my-quiz">
-                <div class="my-quiz-img">
-                    <img src="images/quiz/quiz.png" class="img-quiz" alt="">
-                </div>
-                <div class="my-quiz-name">
-                    Gerunds
-                </div>
-            </div>
+            {{/each}}
         </div>
     </div>
 </div>
