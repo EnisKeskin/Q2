@@ -58,7 +58,7 @@ class Discover extends Component {
         let quizs = [];
         stateQuizs.forEach((quiz, key) => {
             quizs.push(
-                <div className="discover-trend-block" key={key}>
+                <div data-toggle="modal" data-target={"#quiz-item-modal" + key} className="discover-trend-block" key={key}>
                     <img src={`${Ip}${quiz.img}`} alt="" />
 
                     <div className="discover-block-text">
@@ -72,12 +72,64 @@ class Discover extends Component {
         return quizs;
     }
 
+    trendModalShow() {
+        const stateQuizs = this.state.trendQuizzes;
+        let quizs = [];
+        stateQuizs.forEach((quiz, key) => {
+            quizs.push(
+                <div className="modal fade bd-example-modal-lg" id={"quiz-item-modal" + key} key={key} tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+                    <div className="modal-dialog modal-dialog-centered modal-xl" role="document">
+
+                        <div className="modal-content">
+
+                            <div className="container-fluid">
+                                <div className="row">
+
+                                    <div className="col-lg-6 modal-left">
+                                        <img src={`${Ip}${quiz.img}`} className="img-modal" alt="" />
+                                    </div>
+
+                                    <div className="col-lg-6 modal-right">
+
+                                        <h4 className="h4 modal-h4">{quiz.title}</h4>
+
+                                        <div className="modal-user">
+
+                                            <img src={`${Ip}${quiz.img}`} className="img-user-modal" alt="" />
+
+                                            <div className="modal-name">{quiz.username}</div>
+
+                                        </div>
+
+                                        <h5 className="h5-subtitle">Description</h5>
+
+                                        <p> {quiz.description} </p>
+                                        <div className="modal-start">
+                                            <Link to={{ pathname: '/Players', state: { pin: quiz.pin, visible: true } }} className="btn-play">Play</Link>
+                                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            )
+        });
+        return quizs;
+    }
+
     quizsShow() {
         const stateQuizs = this.state.myQuiz;
         let quizs = [];
         stateQuizs.forEach((quiz, key) => {
             quizs.push(
-                <div className="discover-quizs-block" key={key}>
+                <div data-toggle="modal" data-target={"#my-quiz-item-modal" + key} className="discover-quizs-block" key={key}>
                     <img src={`${Ip}${quiz.img}`} alt="" />
 
                     <div className="discover-quizs-text">
@@ -96,6 +148,72 @@ class Discover extends Component {
         return quizs;
     }
 
+    quizsModalShow() {
+        const stateQuizs = this.state.myQuiz;
+        let quizs = [];
+        stateQuizs.forEach((quiz, key) => {
+            quizs.push(
+                <div className="modal fade bd-example-modal-lg" id={"my-quiz-item-modal" + key} key={key} tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+                    <div className="modal-dialog modal-dialog-centered modal-xl" role="document">
+
+                        <div className="modal-content">
+
+                            <div className="container-fluid">
+                                <div className="row">
+
+                                    <div className="col-lg-6 modal-left">
+                                        <img src={`${Ip}${quiz.img}`} className="img-modal" alt="" />
+                                    </div>
+
+                                    <div className="col-lg-6 modal-right">
+
+                                        <h4 className="h4 modal-h4">{quiz.title}</h4>
+
+                                        <div className="modal-user">
+
+                                            <img src={`${Ip}${quiz.img}`} className="img-user-modal" alt="" />
+
+                                            <div className="modal-name">{quiz.username}</div>
+
+                                            <div className="modal-star">
+                                                <Link to={{ pathname: '/QuizEdit', state: { quizId: quiz._id } }}>
+                                                    <img src={require('../images/quiz/refresh.png')} alt="" className="img-delete" />
+                                                </Link>
+                                                <img src={require('../images/quiz/delete.png')} className="img-delete" alt="" data-dismiss="modal" onClick={this.onClickEvent.bind(this, quiz._id)} />
+                                            </div>
+
+                                        </div>
+
+                                        <h5 className="h5-subtitle">Description</h5>
+
+                                        <p> {quiz.description} </p>
+                                        <div className="modal-start">
+                                            <Link to={{ pathname: '/Players', state: { pin: quiz.pin, visible: true } }} className="btn-play">Play</Link>
+                                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            )
+        });
+        return quizs;
+    }
+
+    onClickEvent = (quizId, e) => {
+        const confirm = window.confirm('Are you sure you want to delete');
+        if (confirm) {
+            io.emit('quizDel', quizId);
+            io.emit('getDiscover');
+        }
+    }
     render() {
         const settings = {
             arrows: true,
@@ -166,7 +284,6 @@ class Discover extends Component {
                             <ul>
                                 <li><Link className="active" to="#"> History </Link></li>
 
-
                             </ul>
 
                         </div>
@@ -185,6 +302,8 @@ class Discover extends Component {
 
                                 </Slider>
 
+                                {this.trendModalShow()}
+
                             </div>
                         </div>
 
@@ -196,7 +315,10 @@ class Discover extends Component {
                             <Slider className="discover-quizs-bottom" {...discoverBottom}>
                                 {this.quizsShow()}
                             </Slider>
+                            {this.quizsModalShow()}
                         </div>
+
+
 
                     </div>
                 }

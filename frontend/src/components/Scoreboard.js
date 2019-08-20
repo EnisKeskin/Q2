@@ -39,7 +39,6 @@ class scoreboard extends Component {
                 isVisible: true,
             });
         });
-        console.log("mount");
     }
 
     createUserScore() {

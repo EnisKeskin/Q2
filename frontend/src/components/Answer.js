@@ -165,7 +165,7 @@ class Answer extends Component {
                             <div>
                                 <div className="container answer-contet">
 
-                                    <div className="answer-top">
+                                    
                                         <div className="answer-top-in">
                                             <div className="answer-image">
                                                 <img src={`${Ip}${this.state.img}`} alt="" srcSet="" />
@@ -175,7 +175,7 @@ class Answer extends Component {
                                                 <div className="triangle"></div>
                                             </div>
                                         </div>
-                                    </div>
+                                  
                                     <div className="progressbar" style={{ 'width': `${this.state.progress}%` }}>
                                         {this.state.time}
                                     </div>

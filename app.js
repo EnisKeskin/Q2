@@ -21,7 +21,7 @@ busboy.extend(app, {
     'image/jpeg',
     'image/png',
     'image/jpg',
-
+    'image/gif',
   ]
 })
 
