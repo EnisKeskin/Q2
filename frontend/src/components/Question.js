@@ -142,8 +142,8 @@ class Question extends Component {
                                     <label className="lbl-file" htmlFor="file">   Tap to add cover images    </label>
                                     <input className="fileupload" type="file" name="fileToUpload" id="file" accept="image/*" onChange={this.onChangeFileEvent} />
                                     <img src={this.state.file} alt='' srcSet='' />
-                                    <div className="select-box-question" onChange={(e) => { this.question.time = e.target.value }} >
-                                        <select name='' id='' required>
+                                    <div className="select-box-question" >
+                                        <select name='' id='' required onChange={(e) => { this.question.time = e.target.value }}>
                                             <option value="-1">Select Time</option>
                                             <option value="10">10 sec </option>
                                             <option value="20">20 sec </option>

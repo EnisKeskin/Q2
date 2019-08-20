@@ -328,7 +328,7 @@ Io.of('/profile').use((socket, next) => {
         Quiz.findById(quizId, (err, quiz) => {
             if (err)
                 throw err
-            if (quiz.img !== '') {
+            if (quiz !== null) {
                 const img = quiz.img.split('/');
                 if (typeof (img[1]) !== 'undefined') {
                     rimraf.sync('media' + path.join(`/${img[1]}`));
@@ -496,16 +496,28 @@ Io.of('/profile').use((socket, next) => {
     });
 
     socket.on('questionDelete', (questionId) => {
-        Quiz.updateOne(
-            { 'question._id': mongoose.Types.ObjectId(questionId) },
-            {
-                '$pull': { question: { _id: mongoose.Types.ObjectId(questionId) } },
-            },
-            (err, result) => {
-                if (err)
-                    throw err
-                console.log(result);
+        Quiz.findOne({ 'question._id': questionId }, (err, res) => {
+            if (err)
+                throw err
+            res.question.forEach((quest) => {
+                if (quest._id == questionId) {
+                    const img = quest.img.split('/');
+                    if (typeof (img[1]) !== 'undefined') {
+                        rimraf.sync('media' + path.join(`/${img[1]}`));
+                    }
+                }
             })
+            Quiz.updateOne(
+                { 'question._id': mongoose.Types.ObjectId(questionId) },
+                {
+                    '$pull': { question: { _id: mongoose.Types.ObjectId(questionId) } },
+                },
+                (err, result) => {
+                    if (err)
+                        throw err
+                    console.log(result);
+                })
+        });
     });
 
     socket.on('reqQuestionInfo', (questionId) => {
@@ -548,7 +560,7 @@ Io.of('/profile').use((socket, next) => {
                     socket.emit('questUpdateSuccess', msg = 'Question Update Successful');
                 })
         } else {
-            socket.emit('quizError', { message: 'Question Update Failed' })
+            socket.emit('questionErr', { message: 'Please Type The Question And Answer, Select The Correct Option ' })
         }
     });
 
