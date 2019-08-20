@@ -316,6 +316,56 @@ Io.of('/profile').use((socket, next) => {
         }
     });
 
+    socket.on('reqQuizInfo', (quizId) => {
+        Quiz.findById(quizId, (err, quiz) => {
+            if (err)
+                throw err
+            socket.emit('sendQuizInfo', quiz);
+        });
+    });
+
+    socket.on('quizDel', (quizId) => {
+        Quiz.findById(quizId, (err, quiz) => {
+            if (err)
+                throw err
+            if (quiz.img !== '') {
+                const img = quiz.img.split('/');
+                if (typeof (img[1]) !== 'undefined') {
+                    rimraf.sync('media' + path.join(`/${img[1]}`));
+                }
+                quiz.question.forEach((question) => {
+                    const img = question.img.split('/');
+                    if (typeof (img[1]) !== 'undefined') {
+                        rimraf.sync('media' + path.join(`/${img[1]}`));
+                    }
+                })
+                Quiz.findByIdAndDelete(quizId, (err, result) => {
+                    if (err)
+                        throw err
+                })
+            }
+        });
+    });
+
+    socket.on('quizUpdate', (quiz) => {
+        if (quiz.title.trim() !== '' && quiz.description.trim() !== '' && quiz.location !== '' && quiz.language !== '') {
+            Quiz.findByIdAndUpdate(quiz._id, {
+                title: quiz.title.trim(),
+                description: quiz.description.trim(),
+                location: quiz.location,
+                language: quiz.language,
+                visibleTo: quiz.visibleTo,
+            }, (err, result) => {
+                if (err)
+                    throw err;
+                socket.emit('quizUpdateFile');
+                socket.emit('quizUpdateSuccess', "Quiz Update Successful");
+            })
+        } else {
+            socket.emit('quizError', { message: 'Title, Location, language Cannot Be Left Blank' })
+        }
+    });
+
     socket.on('getProfilInfo', () => {
         User.findById(socket.decoded.userId, (err, user) => {
             if (err)
@@ -445,6 +495,63 @@ Io.of('/profile').use((socket, next) => {
         }
     });
 
+    socket.on('questionDelete', (questionId) => {
+        Quiz.updateOne(
+            { 'question._id': mongoose.Types.ObjectId(questionId) },
+            {
+                '$pull': { question: { _id: mongoose.Types.ObjectId(questionId) } },
+            },
+            (err, result) => {
+                if (err)
+                    throw err
+                console.log(result);
+            })
+    });
+
+    socket.on('reqQuestionInfo', (questionId) => {
+        Quiz.findOne({ 'question._id': questionId }, (err, res) => {
+            if (err)
+                throw err
+            res.question.forEach((quest) => {
+                if (quest._id == questionId) {
+                    socket.emit('sendQuestionInfo', quest);
+                }
+            })
+        })
+    })
+
+    socket.on('questionUpdate', (question) => {
+        let boolean = true;
+        question.answers.forEach((answer, key) => {
+            if (answer === '') {
+                boolean = false;
+                return;
+            } else {
+                question.answers[key] = answer.trim();
+            }
+        });
+        if ((boolean) && (question.questionTitle.trim() !== '') && ((question.answer) !== -1) && (question.time > 0)) {
+            Quiz.update(
+                { 'question._id': question._id },
+                {
+                    '$set': {
+                        'question.$.answers': question.answers,
+                        'question.$.time': question.time,
+                        'question.$.questionTitle': question.questionTitle,
+                        'question.$.answer': question.answer,
+                    },
+                },
+                (err, result) => {
+                    if (err)
+                        throw err
+                    socket.emit('questionUpdateImg', { questionId: question._id });
+                    socket.emit('questUpdateSuccess', msg = 'Question Update Successful');
+                })
+        } else {
+            socket.emit('quizError', { message: 'Question Update Failed' })
+        }
+    });
+
     socket.on('getDiscover', () => {
         Quiz.aggregate([
             {
@@ -515,68 +622,6 @@ Io.of('/profile').use((socket, next) => {
             socket.emit('setDiscoverMyQuiz', result);
         })
     });
-
-    socket.on('quizDel', (quizId) => {
-        Quiz.findById(quizId, (err, quiz) => {
-            if (err)
-                throw err
-            if (quiz.img !== '') {
-                const img = quiz.img.split('/');
-                if (typeof (img[1]) !== 'undefined') {
-                    rimraf.sync('media' + path.join(`/${img[1]}`));
-                }
-                quiz.question.forEach((question) => {
-                    const img = question.img.split('/');
-                    if (typeof (img[1]) !== 'undefined') {
-                        rimraf.sync('media' + path.join(`/${img[1]}`));
-                    }
-                })
-                Quiz.findByIdAndDelete(quizId, (err, result) => {
-                    if (err)
-                        throw err
-                })
-            }
-        });
-    });
-
-    socket.on('reqQuizInfo', (quizId) => {
-        Quiz.findById(quizId, (err, quiz) => {
-            if (err)
-                throw err
-            socket.emit('sendQuizInfo', quiz);
-        });
-    });
-
-    socket.on('quizUpdate', (quiz) => {
-        if (quiz.title.trim() !== '' && quiz.description.trim() !== '' && quiz.location !== '' && quiz.language !== '') {
-            Quiz.findByIdAndUpdate(quiz._id, {
-                title: quiz.title.trim(),
-                description: quiz.description.trim(),
-                location: quiz.location,
-                language: quiz.language,
-                visibleTo: quiz.visibleTo,
-            }, (err, result) => {
-                if (err)
-                    throw err;
-                socket.emit('quizUpdateFile');
-            })
-        } else {
-            socket.emit('quizError', {message:'Title, Location, language Cannot Be Left Blank'})
-        }
-    });
-
-    socket.on('questionDelete', (questionId) => {
-        Quiz.updateOne(
-            { 'question._id': mongoose.Types.ObjectId(questionId) },
-            {
-                '$pull': { question: { _id: mongoose.Types.ObjectId(questionId) } },
-            },
-            (err, result) => {
-                if (err)
-                    throw err
-                console.log(result);
-            })
-    })
 
 });
 
