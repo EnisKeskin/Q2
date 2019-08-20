@@ -4,9 +4,13 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Quiz = require('../models/Quiz');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
 
-router.get('/', (req, res, next) => {
-    res.json({ status: 1 });
+router.get('/*', (req, res, next) => {
+    console.log(path.join(process.cwd(), 'views', '/index.html'));
+    // comspşe.log(path.resolve(__dirname,'..'))
+    res.sendFile(path.join(process.cwd(), 'views', 'index.html'));
 });
 
 //soruyu bulmak için
