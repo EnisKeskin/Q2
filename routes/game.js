@@ -10,20 +10,32 @@ module.exports = (io) => {
   const STATISTICS_TIMEOUT = 4 * SECOND;
 
   router.get('/', (req, res, next) => {
+
     const pin = req.query.pin;
     var Room = Rooms[pin];
-    if (Room != null || Room != undefined)
+    if (Room != null || Room != undefined) {
       res.render('game');
+    }
     else {
       quiz.find({ pin: pin }).then((data) => {
         if (data.length != 0) {
+          Rooms[pin] = {
+            players: {},
+            started: false,
+            questionIndex: 0,
+            questionCount: data[0].question.length,
+            playersAnswered: 0,
+            answers: [0, 0, 0, 0],
+            time: 0
+          };
           res.render('game');
         } else {
-          res.redirect("http://localhost:3000/");
+          alert("There is no game with given pin");
+          res.redirect("/");
         }
       }).catch((err) => {
-        console.log('error: ' + err);
-        res.json(err);
+        alert('error: ' + err);
+        res.redirect("/");
       });
     }
   });
@@ -45,12 +57,14 @@ module.exports = (io) => {
 
             gameNamespace.to(socket.id).emit('render-content',
               {
-                question: question.questionTitle,
-                answer1: question.answers[0],
-                answer2: question.answers[1],
-                answer3: question.answers[2],
-                answer4: question.answers[3],
-                command: "QH"
+                source: handleBarsSources["QH"],
+                templatedata: {
+                  question: question.questionTitle,
+                  answer1: question.answers[0],
+                  answer2: question.answers[1],
+                  answer3: question.answers[2],
+                  answer4: question.answers[3]
+                }
               });
           }
           else {
@@ -65,10 +79,12 @@ module.exports = (io) => {
             players.forEach((player) => {
               gameNamespace.to(player.socket.id).emit('render-content',
                 {
-                  pin: pin,
-                  players: playersInLobby,
-                  num: playersInLobby.length,
-                  command: "GH"
+                  source: handleBarsSources["GH"],
+                  templatedata: {
+                    pin: pin,
+                    players: playersInLobby,
+                    num: playersInLobby.length
+                  }
                 });
             });
           }
@@ -89,12 +105,14 @@ module.exports = (io) => {
           Object.values(Room.players).forEach((player) => {
             gameNamespace.to(player.socket.id).emit('render-content',
               {
-                question: question.questionTitle,
-                answer1: question.answers[0],
-                answer2: question.answers[1],
-                answer3: question.answers[2],
-                answer4: question.answers[3],
-                command: "QH"
+                source: handleBarsSources["QH"],
+                templatedata: {
+                  question: question.questionTitle,
+                  answer1: question.answers[0],
+                  answer2: question.answers[1],
+                  answer3: question.answers[2],
+                  answer4: question.answers[3]
+                }
               });
           });
           setTimeout(() => { statistics(pin); }, question.time * SECOND);
@@ -120,9 +138,11 @@ module.exports = (io) => {
         players.forEach((player) => {
           gameNamespace.to(player.socket.id).emit('render-content',
             {
-              first: firstPlace,
-              results: results,
-              command: "SBH"
+              source: handleBarsSources["SBH"],
+              templatedata: {
+                first: firstPlace,
+                results: results
+              }
             });
         });
         delete Rooms[pin];
@@ -134,12 +154,14 @@ module.exports = (io) => {
             players.forEach((player) => {
               gameNamespace.to(player.socket.id).emit('render-content',
                 {
-                  question: question.questionTitle,
-                  answer1: question.answers[0],
-                  answer2: question.answers[1],
-                  answer3: question.answers[2],
-                  answer4: question.answers[3],
-                  command: "QH"
+                  source: handleBarsSources["QH"],
+                  templatedata: {
+                    question: question.questionTitle,
+                    answer1: question.answers[0],
+                    answer2: question.answers[1],
+                    answer3: question.answers[2],
+                    answer4: question.answers[3]
+                  }
                 });
             });
             setTimeout(() => { statistics(pin); }, question.time * SECOND);
@@ -174,11 +196,14 @@ module.exports = (io) => {
           players.forEach((player) => {
             gameNamespace.to(player.socket.id).emit('render-content',
               {
-                count: Room.answers,
-                percent: percentages,
-                color: colors,
-                answer: question.answers,
-                command: "SH"
+                source: handleBarsSources["SH"],
+                templatedata: {
+                  count: Room.answers,
+                  percent: percentages,
+                  color: colors,
+                  answer: question.answers
+                }
+
               });
           });
           Room.answers = [0, 0, 0, 0];

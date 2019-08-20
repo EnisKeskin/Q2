@@ -26,6 +26,9 @@ const userShema = new Schema ({
         type: String,
         maxlength: 50
     },
+    imgURL: {
+        type: String
+    }
 })
 
 var User = module.exports = mongoose.model('user', userShema);

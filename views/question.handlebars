@@ -8,12 +8,13 @@
         </div>
     </header>
     <div class="container question-content">
-        <form action="." method="POST">
+        <form action="question" method="POST" enctype="multipart/form-data">
+            <input name="quizID" style="display:none;" value="{{quizID}}">
             <div class="question-image">
                 <label class="lbl-file" for="file"> Tap to add cover images </label>
                 <input class="fileupload" type="file" name="fileToUpload" id="file">
                 <div class="select-box-question">
-                    <select name="" id="" required="">
+                    <select name="time" id="" required="">
                         <option value="">Select time</option>
                         <option value="1">10 second</option>
                         <option value="2">20 second </option>
@@ -33,7 +34,7 @@
                         <div class="a1">
                             <input name="answer1" required="" type="text" class="txt-answer1" placeholder="Answer 1">
                             <div class="checkbox">
-                                <input name="answer1radio" required="" type="radio" name="option" value="1">
+                                <input required="" type="radio" name="option" value="0">
                                 <label>Option 1</label>
                             </div>
                         </div>
@@ -42,7 +43,7 @@
                         <div class="a2">
                             <input name="answer2" required="" type="text" class="txt-answer2" placeholder="Answer 2">
                             <div class="checkbox">
-                                <input name="answer2radio" required="" type="radio" name="option" value="1">
+                                <input required="" type="radio" name="option" value="1">
                                 <label>Option 1</label>
                             </div>
                         </div>
@@ -51,7 +52,7 @@
                         <div class="a3">
                             <input name="answer3" required="" type="text" class="txt-answer3" placeholder="Answer 3">
                             <div class="checkbox">
-                                <input name="answer3radio" required="" type="radio" name="option" value="1">
+                                <input required="" type="radio" name="option" value="2">
                                 <label>Option 1</label>
                             </div>
                         </div>
@@ -60,7 +61,7 @@
                         <div class="a4">
                             <input name="answer4" required="" type="text" class="txt-answer4" placeholder="Answer 4">
                             <div class="checkbox">
-                                <input name="answer4radio" required="" type="radio" name="option" value="1">
+                                <input required="" type="radio" name="option" value="3">
                                 <label>Option 1</label>
                             </div>
                         </div>
@@ -71,70 +72,5 @@
                 <button class="btn-add" type="submit" value=""></button>
             </div>
         </form>
-    </div>
-</div>
-
-<header class="quiz-header">
-    <div class="quiz-logo">
-        <img src="images/logo/logo-w.png" class="img-quiz-logo" alt="">
-    </div>
-</header>
-<div class="container question-content">
-    <div class="question-image">
-        <img src="images/thumb-1920-943148.jpg" alt="">
-        <div class="select-box-question">
-            <select name="" id="">
-                <option value="1">20 sec </option>
-                <option value="1">30 sec </option>
-                <option value="1">40 sec </option>
-                <option value="1">50 sec </option>
-            </select>
-        </div>
-    </div>
-    <div class="question-text">
-        <input type="text" class="txt-question" placeholder="Tap to add question">
-    </div>
-    <div class="question-answer">
-        <div class="row">
-            <div class="col-md-6 ">
-                <div class="d">
-                    <input type="text" class="txt-answer1" placeholder="Answer 1">
-                    <div class="checkbox">
-                        <input type="radio" name="option" value="1" />
-                        <label>Option 1</label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="d2">
-                    <input type="text" class="txt-answer2" placeholder="Answer 2">
-                    <div class="checkbox">
-                        <input type="radio" name="option" value="1" />
-                        <label>Option 1</label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 ">
-                <div class="d3">
-                    <input type="text" class="txt-answer3" placeholder="Answer 3">
-                    <div class="checkbox">
-                        <input type="radio" name="option" value="1" />
-                        <label>Option 1</label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="d4">
-                    <input type="text" class="txt-answer4" placeholder="Answer 4">
-                    <div class="checkbox">
-                        <input type="radio" name="option" value="1" />
-                        <label>Option 1</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="add-question">
-        <img src="images/quiz/add.png" class="img-add" alt="">
     </div>
 </div>

@@ -24,7 +24,12 @@
         socket.emit('enter-lobby', pin);
     });
     socket.on('render-content', (data) => {
-        commands[data.command](data);
+        render(data);
     });
+    function render(data) {
+        var source = data.source;
+        var template = Handlebars.compile(source);
+        var html = template(data.templatedata);
+        document.getElementById("Content").innerHTML = html;
+    }
 </script>
-<script src="javascripts/Do.js"></script>

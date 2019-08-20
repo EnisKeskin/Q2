@@ -77,9 +77,14 @@ router.post('/login', passport.authenticate('local', { failureRedirect: "/users"
   res.redirect("/home");
 });
 
-router.get('/', function (req, res, next) {
+router.get('/', ensureNotAuthenticated,function (req, res, next) {
   res.render('users');
 });
+
+function ensureNotAuthenticated(req, res, next) {
+  if (!req.isAuthenticated()) return next();
+  res.redirect('/home');
+}
 
 router.get('/register', function (req, res, next) {
   res.send('users');

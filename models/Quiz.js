@@ -34,6 +34,13 @@ const quizSchema = new Schema({
         type: Schema.Types.ObjectId,
         require: true,
     },
+    visibleTo:{
+        type: Boolean,
+        require: true,
+    },
+    visibility:{
+        type: String
+    },
     question: [{
         questionTitle: {
             type: String,
@@ -68,7 +75,6 @@ const quizSchema = new Schema({
         type: Date, default: Date.now    
     }
 })
-
 
 
 module.exports = mongoose.model('quiz', quizSchema);

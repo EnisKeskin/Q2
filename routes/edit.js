@@ -3,6 +3,16 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const { check, validationResult } = require('express-validator');
+var multer = require('multer');
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/uploads/profile');
+    },
+    filename: function (req, file, cb) {
+        cb(null, 'QuizImage-' + Date.now());
+    }
+});
+var upload = multer({ storage: storage });
 
 router.get('/', ensureAuthenticated, (req, res, next) => {
     res.render('edit');
@@ -49,22 +59,44 @@ router.post('/', (req, res, next) => {
                         console.log('exist');
                         Errors.push({ msg: "Given email is already used!" });
                     }
-                    if (Errors.length == 0)
+                    if (Errors.length == 0) {
                         data.save();
-                    console.log("Errors:" + Errors);
-                    res.render('edit', { "Errors": Errors });
+                        next();
+                    }
+                    else {
+                        console.log("Errors:" + Errors);
+                        res.render('edit', { "Errors": Errors });
+                    }
                 });
             }
             else {
-                if (Errors.length == 0)
+                if (Errors.length == 0) {
                     data.save();
-                console.log("Errors:" + Errors);
-                res.render('edit', { "Errors": Errors });
+                    next();
+                }
+                else {
+                    console.log("Errors:" + Errors);
+                    res.render('edit', { "Errors": Errors });
+                }
             }
         });
     }
     else
         res.redirect('/');
+});
+
+router.post('/', upload.single('uploadToFile'), (req, res, next) => {
+    if (!req.file) {
+        res.render('edit');
+    }
+    else if (req.user && req.user.username) {
+        User.findOne({ username: req.user.username }, (err, data) => {
+
+        });
+    }
+    else {
+        res.render('/');
+    }
 });
 
 module.exports = router;

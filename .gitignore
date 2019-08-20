@@ -5,6 +5,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+#image data
+public/uploads
+
 # Runtime data
 pids
 *.pid
