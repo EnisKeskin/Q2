@@ -53,7 +53,6 @@ class Quiz extends Component {
                         .end((err, result) => {
                             if (err)
                                 throw err
-                            console.log(result);
                         })
                 }
                 this.quizId = quizId
@@ -62,7 +61,7 @@ class Quiz extends Component {
                 })
             });
 
-            io.on('quizError', (quiz) => {
+            io.on('errors', (quiz) => {
                 this.setState({
                     quizError:
                         <div className="quiz-error">{quiz.message}</div>
@@ -80,22 +79,26 @@ class Quiz extends Component {
         if (localStorage.getItem('token')) {
             io.removeListener('error');
             io.removeListener('quizId');
-            io.removeListener('quizError');
+            io.removeListener('errors');
         }
     }
 
     onChangeUploadEvent = (e) => {
-        const splite = e.target.files[0].type.split('/');
-        if (splite[0] === 'image') {
-            this.file = e.target.files[0];
-            this.setState({
-                file: URL.createObjectURL(e.target.files[0])
-            });
-        } else {
-            this.file = null;
-            this.setState({
-                file: null
-            });
+        const file = e.target.files[0];
+
+        if (typeof (file) !== 'undefined') {
+            const splite = file.type.split('/');
+            if (splite[0] === 'image') {
+                this.file = file;
+                this.setState({
+                    file: URL.createObjectURL(file)
+                });
+            } else {
+                this.file = null;
+                this.setState({
+                    file: null
+                });
+            }
         }
     }
 
@@ -109,6 +112,23 @@ class Quiz extends Component {
             this.quiz.visibleTo = true
         } else {
             this.quiz.visibleTo = false
+        }
+    }
+
+    onChangeTitleEvent = (e) => {
+        if (e.target.value.length <= 100) {
+            this.quiz.title = e.target.value;
+            this.setState({
+                title: e.target.value
+            });
+        }
+    }
+    onChangeDescriptionEvent = (e) => {
+        if (e.target.value.length <= 256) {
+            this.quiz.description = e.target.value
+            this.setState({
+                description: e.target.value
+            });
         }
     }
 
@@ -126,6 +146,8 @@ class Quiz extends Component {
         };
         this.setState(
             {
+                title: '',
+                description: '',
                 loginVisible: false,
                 questionVisible: false,
                 file: "",
@@ -197,9 +219,9 @@ class Quiz extends Component {
                                             </div>
                                         </div>
 
-                                        <input type="text" placeholder="Title" className="txt-title" required onChange={(e) => { this.quiz.title = e.target.value }} />
+                                        <input type="text" placeholder="Title" className="txt-title" value={this.state.title || ''} required onChange={this.onChangeTitleEvent.bind(this)} />
 
-                                        <textarea placeholder="Description" className="txt-description" required onChange={(e) => { this.quiz.description = e.target.value }} />
+                                        <textarea placeholder="Description" className="txt-description" value={this.state.description || ''} required onChange={this.onChangeDescriptionEvent.bind(this)} />
                                         {this.state.quizError}
                                     </div>
 

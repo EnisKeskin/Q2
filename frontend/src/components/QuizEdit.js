@@ -107,12 +107,11 @@ class Quiz extends Component {
                         .end((err, result) => {
                             if (err)
                                 throw err
-                            console.log(result);
                         })
                 }
             });
 
-            io.on('quizError', (quiz) => {
+            io.on('errors', (quiz) => {
                 this.setState({
                     quizError:
                         <div className="quiz-error">{quiz.message}</div>
@@ -141,17 +140,21 @@ class Quiz extends Component {
     }
 
     onChangeUploadEvent = (e) => {
-        const splite = e.target.files[0].type.split('/');
-        if (splite[0] === 'image') {
-            this.file = e.target.files[0];
-            this.setState({
-                file: URL.createObjectURL(e.target.files[0])
-            });
-        } else {
-            this.file = null;
-            this.setState({
-                file: null
-            });
+        const file = e.target.files[0];
+
+        if (typeof (file) !== 'undefined') {
+            const splite = file.type.split('/');
+            if (splite[0] === 'image') {
+                this.file = file;
+                this.setState({
+                    file: URL.createObjectURL(file)
+                });
+            } else {
+                this.file = null;
+                this.setState({
+                    file: null
+                });
+            }
         }
     }
 
@@ -191,7 +194,7 @@ class Quiz extends Component {
         if (localStorage.getItem('token')) {
             io.removeListener('error');
             io.removeListener('quizId');
-            io.removeListener('quizError');
+            io.removeListener('errors');
             io.removeListener('sendQuizInfo');
             io.removeListener('quizUpdateSuccess');
             io.removeListener('quizUpdateFile');

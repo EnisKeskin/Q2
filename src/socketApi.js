@@ -13,7 +13,6 @@ const rimraf = require('rimraf');
 socketApi.io = Io;
 
 
-// yeni class yapılacak question room için
 class RoomControl {
     constructor() {
         this.rooms = {};
@@ -77,11 +76,11 @@ class RoomControl {
             return a.score < b.score ? 1 : -1;
         })
         return score;
-    }
+    };
 
     roomUserDelete(roomName, userId) {
         delete this.getRoom(roomName).users[userId];
-    }
+    };
 
     getUserNames(roomName) {
         let usernames = [];
@@ -91,7 +90,7 @@ class RoomControl {
         if (usernames.length > 0)
             return usernames;
         else null
-    }
+    };
 
     nextQuestion(roomName) {
         const room = this.getRoom(roomName);
@@ -100,17 +99,15 @@ class RoomControl {
             return null;
         }
         room.currentQuestion = room.quiz.question[room.currentQuestionIndex];
-        //oyun başladığında sayaçta başlatılıyor.
         room.startTime = Date.now();
         return room.currentQuestion;
-    }
+    };
 
     resetRoom(roomName) {
         const room = this.getRoom(roomName);
         room.currentQuestion = null;
         room.currentQuestionIndex = -1;
-    }
-
+    };
 }
 
 const pinControl = (data, callback) => {
@@ -132,15 +129,15 @@ const pinActive = (data, callback) => {
     Quiz.findOneAndUpdate({ pin: data }, { active: true }).then((quiz) => {
         callback(quiz);
     }).catch((err) => {
-        // callback(err);
+        throw err
     })
 }
 
 const pinDeactivate = (data) => {
     Quiz.updateOne({ pin: data }, { active: false }).then((data) => {
-    })
+    });
 }
-//sıkıntı var emmi callback gelmesi lazım
+
 const pinCreate = (callback) => {
     let randomKey = 0;
     randomKey = Math.floor(Math.random() * 1000000) + 100000;
@@ -153,6 +150,69 @@ const pinCreate = (callback) => {
     });
 }
 
+//mesajlar global yerde duracak..
+const error = (err, socket) => {
+    for (d in err.errors) {
+        //kontroller sağlanmalı
+        console.log(err);
+        let error = err.errors[d]
+        const objectKey = error.path[0].toUpperCase() + error.path.slice(1, (error.path.length));
+        const isValidationError = err.name == 'ValidationError';
+
+        let validationMessage = {};
+
+        if (isValidationError && error.kind == 'required') {
+            validationMessage = { message: objectKey + ' field required' };
+        }
+
+        if (isValidationError && error.kind == 'maxlength') {
+            validationMessage = { message: objectKey + ` longer than the maximum allowed length ${error.properties.maxlength}` };
+
+        } else if (isValidationError && error.kind == 'minlength') {
+            validationMessage = { message: objectKey + ` longer than the min allowed length ${error.properties.minlength} ` };
+        }
+
+        if (isValidationError && error.kind == 'required' && error.path == 'answer') {
+            validationMessage = { message: 'You must choose the right answer' };
+        }
+
+        socket.emit('errors', validationMessage);
+
+    }
+}
+
+const objectTrim = (object) => {
+    Object.keys(object).forEach(item => {
+        if (typeof (object[item]) === 'string') {
+            object[item] = object[item].trim()
+        }
+    });
+}
+
+const login = (user, socket) => {
+    User.findOne({
+        email: user.email.trim()
+    }, (err, User) => {
+        if (err)
+            throw err
+        if (!User) {
+            socket.emit('loginErr', { message: "Email and Password incorrect" });
+        } else {
+            bcrypt.compare(user.password, User.password).then((result) => {
+                if (!result) {
+                    socket.emit('loginErr', { message: " Email or Password incorrect " });
+                } else {
+                    const payload = {
+                        userId: User._id,
+                    }
+                    const token = jwt.sign(payload, key);
+                    socket.emit('succLogin', token);
+                }
+            });
+        };
+    });
+}
+
 let roomControl = new RoomControl();
 let room = {};
 Io.of('/game').on('connection', (socket) => {
@@ -162,29 +222,18 @@ Io.of('/game').on('connection', (socket) => {
         pinControl(pin, (quiz) => {
             if (quiz !== 0) {
                 socket.join(pin, () => {
-                    //roomName alınıyor
                     const roomName = Object.keys(socket.rooms)[0];
-                    //UserId alınıyor
                     const userId = Object.keys(socket.rooms)[1];
-                    //odaya girdiğine dair bilgi
                     socket.emit('join', { status: true });
-                    //username girdiğininde bu kontroller çalışacak otomatik.
                     socket.on('sendUsername', (username) => {
-                        console.log(username);
                         if (typeof (username) !== 'undefined' && username.trim() !== '') {
                             socket.emit('start')
-                            // gelen kullanıcıyı id ve hangi roomName sahip olduğunu ve kullanıcı adı ile kaydediyor.
                             roomControl.addUser(userId, roomName, username);
-                            //player ekranında tüm kullanıcılar görünüyor
                             io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
-
                             socket.emit('quizPin', { pin });
-                            //soruya cevap verildiğinde ekleniyor
                             socket.on('sendAnswer', (user) => {
-                                //soru geri gönderilirken currentQuestion.time işe yarayacak.
                                 let questionScore = 0
                                 if (user.answer === null) {
-                                    console.log("at");
                                     user.answer = -1;
                                 }
                                 if (user.answer === roomControl.rooms[roomName].currentQuestion.answer) {
@@ -192,7 +241,6 @@ Io.of('/game').on('connection', (socket) => {
                                     questionScore = Math.max(100, questionScore);
                                 }
                                 roomControl.addAnswer(roomName, userId, user.answer, questionScore, roomControl.rooms[roomName].currentQuestion.answer);
-                                console.log("roomControl", roomControl);
                             });
 
                             socket.on('disconnect', () => {
@@ -204,7 +252,6 @@ Io.of('/game').on('connection', (socket) => {
                             socket.emit('usernameErr', message = 'The username field cannot be left blank')
                         }
                     });
-                    // soruları tek tke gönder ve herkese socket.io şeklinde gönder.
                 });
             } else {
                 socket.emit('join', { status: false });
@@ -214,22 +261,22 @@ Io.of('/game').on('connection', (socket) => {
 
     });
     socket.on('sendAdmin', (pin) => {
-        //Odayı kontrol edebilmek için roomControl sınıfına atanıyor
         pinActive(pin, (quiz) => {
             socket.join(pin, () => {
                 const roomName = Object.keys(socket.rooms)[0];
                 room = roomControl.getRoom(roomName);
                 socket.emit('startButton', pin);
-                socket.on('startGame', () => {
-                    //ilk soru ekleniyor.
-                    pinDeactivate(pin);
-                    roomControl.setQuiz(roomName, quiz);
-                    io.to(pin).emit('gameStart');
-                    roomControl.resetRoom(roomName);
-                    //soruyu gönderiyor
-                    // room resetlenecek bir fonksiyonlana  cak
-                    room.currentQuestion = null;
-                    nextQuestion();
+                socket.on('startGame', (userCount) => {
+                    if (userCount > 0) {
+                        pinDeactivate(pin);
+                        roomControl.setQuiz(roomName, quiz);
+                        io.to(pin).emit('gameStart');
+                        roomControl.resetRoom(roomName);
+                        room.currentQuestion = null;
+                        nextQuestion();
+                    } else {
+                        socket.emit('gameStartError', 'Cannot start game without player')
+                    }
                 });
                 let answernumber = 0;
                 const nextQuestion = () => {
@@ -299,27 +346,25 @@ Io.of('/profile').use((socket, next) => {
     });
 
     socket.on('quizCreate', (quiz) => {
-        console.log(quiz);
-        if ((quiz.title.trim() !== '') && (quiz.location.trim() !== '') && (quiz.language.trim() !== '')) {
-            pinCreate((randomKey) => {
-                quiz.userId = socket.decoded.userId;
-                quiz.pin = randomKey;
-                new Quiz(quiz).save()
-                    .then((quiz) => {
-                        socket.emit('quizId', quiz._id);
-                    }).catch((err) => {
-                        socket.emit('quizError', { message: "Unknown Error" });
-                    });
-            });
-        } else {
-            socket.emit('quizError', { message: 'Title, Location, language Cannot Be Left Blank' })
-        }
+        pinCreate((randomKey) => {
+            quiz.userId = socket.decoded.userId;
+            quiz.pin = randomKey;
+            objectTrim(quiz);
+            new Quiz(quiz).save()
+                .then((quiz) => {
+                    socket.emit('quizId', quiz._id);
+                }).catch((err) => {
+                    error(err, socket);
+                });
+        });
     });
 
     socket.on('reqQuizInfo', (quizId) => {
         Quiz.findById(quizId, (err, quiz) => {
-            if (err)
-                throw err
+            //kontrol sağlanacak
+            if (err) {
+                console.log(err)
+            }
             socket.emit('sendQuizInfo', quiz);
         });
     });
@@ -348,22 +393,27 @@ Io.of('/profile').use((socket, next) => {
     });
 
     socket.on('quizUpdate', (quiz) => {
-        if (quiz.title.trim() !== '' && quiz.description.trim() !== '' && quiz.location !== '' && quiz.language !== '') {
-            Quiz.findByIdAndUpdate(quiz._id, {
-                title: quiz.title.trim(),
-                description: quiz.description.trim(),
-                location: quiz.location,
-                language: quiz.language,
-                visibleTo: quiz.visibleTo,
-            }, (err, result) => {
-                if (err)
-                    throw err;
-                socket.emit('quizUpdateFile');
-                socket.emit('quizUpdateSuccess', "Quiz Update Successful");
+        Quiz.findByIdAndUpdate(quiz._id,
+            {
+                $set: {
+                    title: quiz.title,
+                    description: quiz.description,
+                    location: quiz.location,
+                    language: quiz.language,
+                    visibleTo: quiz.visibleTo,
+                },
+            },
+            {
+                runValidators: true
+            },
+            (err, result) => {
+                if (err) {
+                    error(err, socket)
+                } else {
+                    socket.emit('quizUpdateFile');
+                    socket.emit('quizUpdateSuccess', "Quiz Update Successful");
+                }
             })
-        } else {
-            socket.emit('quizError', { message: 'Title, Location, language Cannot Be Left Blank' })
-        }
     });
 
     socket.on('getProfilInfo', () => {
@@ -417,88 +467,111 @@ Io.of('/profile').use((socket, next) => {
     });
 
     socket.on('profilUpdate', (user) => {
+        objectTrim(user);
+        const loginEditValidations = (message) => { socket.emit('errors', { message }) }
         if (user.email !== '' && user.username !== '' && user.firstname !== '') {
+            if (user.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
+                if (user.password !== null) {
+                    User.findById(socket.decoded.userId, (err, UserProfil) => {
+                        if (err)
+                            throw err
+                        bcrypt.compare(user.password, UserProfil.password).then((newPassword) => {
+                            if (!newPassword) {
+                                loginEditValidations('Password incorrect');
+                            } else {
+                                if (typeof (user.newPassword) !== 'undefined') {
+                                    if (user.newPassword.length >= 6) {
+                                        bcrypt.hash(user.newPassword, 10).then((hash) => {
+                                            User.findByIdAndUpdate(socket.decoded.userId, {
+                                                email: user.email,
+                                                username: user.username,
+                                                firstname: user.firstname,
+                                                lastname: user.lastname,
+                                                password: hash
+                                            }, (err, result) => {
+                                                if (err)
+                                                    throw err
+                                                socket.emit('file', { userId: socket.decoded.userId });
+                                                socket.emit('successfulUpdate', { message: " Successfully updated " });
+                                            })
 
-            User.findById(socket.decoded.userId, (err, UserProfil) => {
-                if (err)
-                    throw err
-                bcrypt.compare(user.password, UserProfil.password).then((result) => {
-                    if (!result) {
-                        //yanlış giriş
-                        socket.emit('message', { message: " Password incorrect " });
-                    } else {
-                        if (typeof (user.newPassword) !== 'undefined') {
-                            if (user.newPassword.length >= 6) {
-                                bcrypt.hash(user.newPassword, 10).then((hash) => {
+                                        })
+                                    } else {
+                                        loginEditValidations('Password length must be at least 6 characters');
+                                    }
+                                } else {
                                     User.findByIdAndUpdate(socket.decoded.userId, {
-                                        email: user.email.trim(),
-                                        username: user.username.trim(),
-                                        firstname: user.firstname.trim(),
-                                        lastname: user.lastname.trim(),
-                                        password: hash
+                                        email: user.email,
+                                        username: user.username,
+                                        firstname: user.firstname,
+                                        lastname: user.lastname,
                                     }, (err, result) => {
                                         if (err)
                                             throw err
                                         socket.emit('file', { userId: socket.decoded.userId });
                                         socket.emit('successfulUpdate', { message: " Successfully updated " });
                                     })
+                                }
 
-                                })
-                            } else {
-                                socket.emit('message', { message: " Length must be at least 6 characters " });
                             }
-                        } else {
-                            User.findByIdAndUpdate(socket.decoded.userId, {
-                                email: user.email.trim(),
-                                username: user.username.trim(),
-                                firstname: user.firstname.trim(),
-                                lastname: user.lastname.trim(),
-                            }, (err, result) => {
-                                if (err)
-                                    throw err
-                                socket.emit('file', { userId: socket.decoded.userId });
-                                socket.emit('successfulUpdate', { message: " Successfully updated " });
-                            })
-                        }
-
-                    }
-                });
-            })
+                        });
+                    });
+                } else {
+                    loginEditValidations('Password field cannot be left blank');
+                }
+            } else {
+                loginEditValidations('Please enter a valid email address');
+            }
         } else {
-            socket.emit('message', { message: 'Email, username and firstname cannot be left empty!!' })
+            loginEditValidations('Email, Username and Firstname cannot be left empty');
         }
     });
 
     socket.on('addingQuestions', (question) => {
-        let boolean = true;
+        let validationMessage = (message) => { socket.emit('errors', { message }) };
+        let checkAnswers = true;
+        objectTrim(question);
         question.answers.forEach((answer, key) => {
-            if (answer === '') {
-                boolean = false;
-                return;
+            if (answer.length > 100) {
+                validationMessage(`Answer ${key + 1} longer than the max allowed length 100`);
+                checkAnswers = false;
             } else {
-                question.answers[key] = answer.trim();
+                if (answer.trim() === '' && checkAnswers) {
+                    validationMessage(`Answer ${key + 1} field cannot be left blank`);
+                    checkAnswers = false;
+                } else {
+                    question.answers[key] = answer.trim();
+                }
             }
         });
+        if ((checkAnswers)) {
 
-        if ((boolean) && (question.questionTitle.trim() !== '') && ((question.answer) !== -1) && (question.time > 0)) {
-            //validasyonlar yapılacak
-            Quiz.findById(question.quizId, (err, quiz) => {
-                if (err)
-                    throw err
-                delete question.quizId
-                quiz.question.push(question);
-                quiz.save();
-                socket.emit('newQuestionCreate', { questionId: quiz.question[quiz.question.length - 1]._id });
-            });
-        } else {
-            socket.emit('questionErr', { message: ' Please Type The Question And Answer, Select The Correct Option' })
+            if (question.time >= 10) {
+
+                Quiz.findById(question.quizId, (err, quiz) => {
+                    if (err)
+                        throw err
+                    delete question.quizId;
+                    quiz.question.push(question);
+                    quiz.save((err, res) => {
+                        if (err) {
+                            error(err, socket)
+                        } else {
+                            socket.emit('newQuestionCreate', { questionId: quiz.question[quiz.question.length - 1]._id });
+                        }
+                    });
+                });
+
+            } else {
+                validationMessage('You should choose a time');
+            }
         }
     });
 
     socket.on('questionDelete', (questionId) => {
         Quiz.findOne({ 'question._id': questionId }, (err, res) => {
             if (err)
-                throw err
+                console.log(err)
             res.question.forEach((quest) => {
                 if (quest._id == questionId) {
                     const img = quest.img.split('/');
@@ -514,8 +587,7 @@ Io.of('/profile').use((socket, next) => {
                 },
                 (err, result) => {
                     if (err)
-                        throw err
-                    console.log(result);
+                        console.log(err)
                 })
         });
     });
@@ -523,7 +595,7 @@ Io.of('/profile').use((socket, next) => {
     socket.on('reqQuestionInfo', (questionId) => {
         Quiz.findOne({ 'question._id': questionId }, (err, res) => {
             if (err)
-                throw err
+                console.log(err)
             res.question.forEach((quest) => {
                 if (quest._id == questionId) {
                     socket.emit('sendQuestionInfo', quest);
@@ -533,35 +605,42 @@ Io.of('/profile').use((socket, next) => {
     })
 
     socket.on('questionUpdate', (question) => {
-        let boolean = true;
+        let validationMessage = (message) => { socket.emit('errors', { message }) };
+        let checkAnswers = true;
+        objectTrim(question);
         question.answers.forEach((answer, key) => {
-            if (answer === '') {
-                boolean = false;
-                return;
+            if (answer.trim() === '' && checkAnswers) {
+                validationMessage(`Answer ${key + 1} field cannot be left blank`);
+                checkAnswers = false;
             } else {
                 question.answers[key] = answer.trim();
             }
         });
-        if ((boolean) && (question.questionTitle.trim() !== '') && ((question.answer) !== -1) && (question.time > 0)) {
-            Quiz.update(
-                { 'question._id': question._id },
-                {
-                    '$set': {
-                        'question.$.answers': question.answers,
-                        'question.$.time': question.time,
-                        'question.$.questionTitle': question.questionTitle,
-                        'question.$.answer': question.answer,
+        if (checkAnswers) {
+            if ((question.time >= 10)) {
+                Quiz.update(
+                    { 'question._id': question._id },
+                    {
+                        '$set': {
+                            'question.$.answers': question.answers,
+                            'question.$.time': question.time,
+                            'question.$.questionTitle': question.questionTitle,
+                            'question.$.answer': question.answer,
+                        },
                     },
-                },
-                (err, result) => {
-                    if (err)
-                        throw err
-                    socket.emit('questionUpdateImg', { questionId: question._id });
-                    socket.emit('questUpdateSuccess', msg = 'Question Update Successful');
-                })
-        } else {
-            socket.emit('questionErr', { message: 'Please Type The Question And Answer, Select The Correct Option ' })
-        }
+                    {
+                        runValidators: true
+                    },
+                    (err, result) => {
+                        if (err)
+                            error(err, socket);
+                        socket.emit('questionUpdateImg', { questionId: question._id });
+                        socket.emit('questUpdateSuccess', msg = 'Question Update Successful');
+                    })
+            } else {
+                validationMessage('You should choose a time');
+            }
+        };
     });
 
     socket.on('getDiscover', () => {
@@ -638,89 +717,57 @@ Io.of('/profile').use((socket, next) => {
 });
 
 Io.of('/user').on('connection', (socket) => {
-
     socket.on('userLogin', (user) => {
-        if (user.email.trim() !== null && user.password !== null) {
-            User.findOne({
-                email: user.email.trim()
-            }, (err, User) => {
-                if (err)
-                    throw err
-                if (!User) {
-                    socket.emit('loginErr', { message: "Email and Password incorrect" });
-                } else {
-                    bcrypt.compare(user.password, User.password).then((result) => {
-                        if (!result) {
-                            //yanlış giriş
-                            socket.emit('loginErr', { message: " Email or Password incorrect " });
-                        } else {
-                            const payload = {
-                                userId: User._id,
-                            }
-                            const token = jwt.sign(payload, key);
-                            socket.emit('succLogin', token);
-                        }
-                    });
-                };
-            });
-        } else {
+
+        if (user.email.trim() !== '' && user.password !== '') {
+            if (user.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
+                login(user, socket)
+            } else {
+                socket.emit('loginErr', { message: "Please enter a valid email address" });
+            }
+        }
+        else {
             socket.emit('loginErr', { message: "Email or Password field cannot be left blank" });
         }
     });
-    //regex için kontrol sağla
-    //şifre 6 karakter olmalı
     socket.on('userRegister', (user) => {
-        console.log(user);
-        if ((user.email.trim() !== '') && (user.password !== '') && (user.username.trim() !== '') && (user.firstname.trim() !== '') && (user.lastname.trim() !== '')) {
-            bcrypt.hash(user.password, 10).then((hash) => {
-                const userRegister = new User({
-                    email: user.email.trim(),
-                    username: user.username.trim(),
-                    firstname: user.firstname.trim(),
-                    lastname: user.lastname.trim(),
-                    password: hash
-                });
-                userRegister.save().then((userLogin) => {
-                    console.log(userLogin);
-                    socket.emit('registerSuccessful', message = 'Successfully registered \n You will be redirected in 1 second');
-                    setTimeout(() => {
-                        if (userLogin.email.trim() !== null && userLogin.password !== null) {
-                            User.findOne({
-                                email: userLogin.email.trim()
-                            }, (err, User) => {
-                                if (err)
-                                    throw err
-                                if (!User) {
-                                    socket.emit('loginErr', { message: "Email and Password incorrect" });
-                                } else {
-                                    bcrypt.compare(user.password, User.password).then((result) => {
-                                        if (!result) {
-                                            //yanlış giriş
-                                            socket.emit('loginErr', { message: " Email or Password incorrect " });
-                                        } else {
-                                            const payload = {
-                                                userId: User._id,
-                                            }
-                                            const token = jwt.sign(payload, key);
-                                            socket.emit('succLogin', token);
-                                        }
-                                    });
-                                };
-                            });
-                        }
-                    }, 1000);
-                }).catch((err) => {
-                    if (err.code === 11000) {
-                        socket.emit('registerError', { message: 'This mail has already been saved' })
-                    }
-                    console.log(err);
-                });
-            })
-        } else {
-            socket.emit('registerError', { message: 'Fields Cannot Be Left Blank' })
+        objectTrim(user)
+        const registerValidations = (message) => { socket.emit('registerError', { message }) }
+        if ((user.email !== '') && (user.password !== '') && (user.username !== '') && (user.firstname !== '') && (user.lastname !== '')) {
+            if (user.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
+                if (user.password.length >= 6) {
+                    bcrypt.hash(user.password, 10).then((hash) => {
+                        const userRegister = new User({
+                            email: user.email,
+                            username: user.username,
+                            firstname: user.firstname,
+                            lastname: user.lastname,
+                            password: hash
+                        });
+                        userRegister.save().then((userLogin) => {
+                            socket.emit('registerSuccessful', message = 'Successfully registered \n You will be redirected in 1 second');
+                            setTimeout(() => {
+                                login(user, socket)
+                            }, 1000);
+                        }).catch((err) => {
+                            if (err.code === 11000) {
+                                registerValidations('This mail has already been saved')
+                            } else {
+                                error(err, socket)
+                            }
+                        });
+                    })
+                } else {
+                    registerValidations('Password length must be at least 6 characters')
+                }
+            } else {
+                registerValidations('Please enter a valid email address')
+            }
+        }
+        else {
+            registerValidations('All fields are mandatory')
         }
     });
-
 })
 
 module.exports = socketApi;

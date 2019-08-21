@@ -37,7 +37,6 @@ class Pin extends Component {
   }
 
   onClickEvent = (e) => {
-    console.log(this.pin)
     if (this.pin > 0) {
       io.emit("sendPin", this.pin);
 
@@ -52,7 +51,11 @@ class Pin extends Component {
   };
 
   onChangeEvent = (e) => {
-    this.pin = e.target.value
+    const re = /^[0-9\b]+$/;
+    if ((e.target.value === '' || re.test(e.target.value)) && e.target.value.length <= 6) {
+      this.setState({ pin: e.target.value })
+      this.pin = e.target.value
+    }
   };
 
   render() {
@@ -76,7 +79,7 @@ class Pin extends Component {
                 </div>
                 {this.state.err}
                 <div className="pin-text">
-                  <input type="text" className="txt-pin" placeholder="Game Pin" onChange={this.onChangeEvent} />
+                  <input type="text" className="txt-pin" value={this.state.pin || ''} placeholder="Game Pin" onChange={this.onChangeEvent} />
                 </div>
                 <div className="pin-button">
                   <button onClick={this.onClickEvent} type="submit" className="btn-pin">Enter</button>

@@ -16,27 +16,30 @@ class Username extends Component {
       err: "",
     }
   }
-
-  static getDerivedStateFromProps(props, state) {
-    if (typeof (props.location.state) !== 'undefined') {
-      if (props.location.state.visible) {
-        return state.visible = false;
-      } else {
-        return state.visible = true;
-      }
-    } else {
-      return state.visible = true;
-    }
-  }
-
-
   componentDidMount() {
     io = Io.connectionsRoom('game');
+    if (typeof (this.props.location.state) !== 'undefined') {
+      if (this.props.location.state.visible) {
+        this.setState({
+          visible: false
+        })
+        this.props.history.replace({ state: {} });
+      } else {
+        this.setState({
+          visible: true
+        })
+        this.props.history.replace({ state: {} });
+      }
+    } else {
+      this.setState({
+        visible: true
+      });
+    }
     io.on('gameStart', () => {
       this.setState({
         gameStart: true
-      })
-    })
+      });
+    });
     io.on('usernameErr', (msg) => {
       this.setState({
         err: <div className="pin-error">
@@ -46,12 +49,14 @@ class Username extends Component {
       })
     });
     io.on('start', () => {
-      this.setState({ isVisible: true });
+      this.setState({ isVisible: true })
     })
   }
 
   componentWillUnmount() {
     io.removeListener('gameStart');
+    io.removeListener('start');
+    io.removeListener('usernameErr');
   }
 
   onClickEvent = () => {
@@ -59,7 +64,9 @@ class Username extends Component {
   }
 
   onChangeEvent = (e) => {
-    this.setState({ value: e.target.value });
+    if (e.target.value.length <= 20) {
+      this.setState({ value: e.target.value });
+    }
   }
 
   render() {
@@ -88,7 +95,7 @@ class Username extends Component {
                           <img src={require('../images/logo/logo-w.png')} className="img-pin-logo" alt="" />
                         </div>
                         <div className="pin-text">
-                          <input type="text" className="txt-pin" placeholder="Username" onChange={this.onChangeEvent} />
+                          <input type="text" className="txt-pin" placeholder="Username" value={this.state.value || ''} onChange={this.onChangeEvent} />
                         </div>
                         {this.state.err}
                         <div className="pin-button">

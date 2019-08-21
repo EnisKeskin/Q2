@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Io from '../connection';
 import { Redirect } from 'react-router';
+import { Link } from 'react-router-dom'
 
 let io = null;
 
@@ -58,14 +59,15 @@ class scoreboard extends Component {
 
         return (
             <div>
-                {console.log("render")}
                 {this.state.visible ?
                     <Redirect to='/' />
                     :
                     <div>
                         {this.state.isVisible ?
                             <div className="capsule">
-
+                                <div class="profile-edit-close">
+                                    <Link to='/profile'> <img src="images/quiz/cancel.png" alt="" /> </Link>
+                                </div>
                                 <div className="score-title">
                                     <h1 className="h1 h1-score">Scoreboard</h1>
                                 </div>

@@ -54,7 +54,7 @@ class Header extends Component {
                                 </li>
                                 </Link>
 
-                                <li className="li-icon"> <Link to="/profile"><img src={require('../../images/menu-icon/profil.png')} className="img-icon" alt="" /> </Link> </li>
+                                <li className="li-icon"> <Link to="/Profile/Edit"><img src={require('../../images/menu-icon/profil.png')} className="img-icon" alt="" /> </Link> </li>
 
                                 <li> <img src={require('../../images/menu-icon/logout.png')} className="img-icon" alt="" onClick={this.onClickEvent} /> </li>
 

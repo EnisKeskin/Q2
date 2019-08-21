@@ -15,6 +15,7 @@ class Players extends Component {
             startButton: "",
             visible: false,
             pin: 0,
+            error: '',
         }
     }
 
@@ -37,10 +38,12 @@ class Players extends Component {
         io = Io.connectionsRoom('game');
         if (typeof (this.props.location.state) !== 'undefined') {
             if (this.props.location.state.pin !== 0) {
-                const pin = this.props.location.state.pin
+                const pin = this.props.location.state.pin;
+
                 this.setState({
                     pin: pin
-                })
+                });
+
                 io.emit('sendAdmin', pin);
 
                 io.on('startButton', () => {
@@ -51,16 +54,16 @@ class Players extends Component {
                                     className="btn-start"
                                     type="button" > Start </button>
                             </div>,
-                    })
-
+                    });
                 });
-            }
-        }
+                io.on('gameStartError', (msg) => { this.setState({ error: <div class="player-error">{msg}</div> }) });
+            };
+        };
         io.on('quizPin', (quiz) => {
             this.setState({
                 pin: quiz.pin,
             })
-        })
+        });
         io.on('newUser', (players) => {
             let userCount = 0;
             if (players) {
@@ -83,7 +86,7 @@ class Players extends Component {
         io.on('gameStart', () => {
             this.setState({
                 isVisible: true
-            })
+            });
         });
 
     };
@@ -93,11 +96,11 @@ class Players extends Component {
         io.removeListener('quizPin');
         io.removeListener('newUser');
         io.removeListener('gameStart');
+        io.removeListener('gameStartError');
     }
 
     onClickEvent = (e) => {
-        if (this.state.userCount > 0)
-            io.emit('startGame')
+        io.emit('startGame', this.state.userCount)
     }
 
     render() {
@@ -126,7 +129,8 @@ class Players extends Component {
                                 </div>
                                 <div className="container-fluid players-start" >
                                     <div className="players-number" > {this.state.userCount} Players </div>
-                                    {this.state.startButton}
+                                    {this.state.error} {this.state.startButton}
+
                                 </div>
                             </div>
                         }

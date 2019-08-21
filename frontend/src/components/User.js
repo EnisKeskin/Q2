@@ -63,9 +63,8 @@ class User extends Component {
     io.on('registerSuccessful', (msg) => {
       this.setState({
         registerMessage: <div className="login-succes sign-err">{msg}</div>
-      })
-    })
-
+      });
+    });
   }
 
   componentWillUnmount() {

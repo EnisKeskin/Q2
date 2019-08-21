@@ -8,8 +8,6 @@ const fs = require('fs');
 const path = require('path');
 
 router.get('/*', (req, res, next) => {
-    console.log(path.join(process.cwd(), 'views', '/index.html'));
-    // comspşe.log(path.resolve(__dirname,'..'))
     res.sendFile(path.join(process.cwd(), 'views', 'index.html'));
 });
 
@@ -122,7 +120,6 @@ router.post('/upload', (req, res) => {
             (err, result) => {
                 if (err)
                     throw err
-                console.log(result);
             })
     } else if (req.body.whereToIns === 'user') {
         User.findByIdAndUpdate(req.body.userId,
@@ -132,7 +129,6 @@ router.post('/upload', (req, res) => {
             , (err, result) => {
                 if (err)
                     throw err
-                console.log("img", result);
             })
     }
 })

@@ -71,7 +71,6 @@ class Answer extends Component {
         });
 
         io.on('staticstics', (statistics) => {
-            console.log("Statisctics kendisi", statistics);
             if (isNaN(statistics)) {
                 statistics.forEach((statisticsInfo) => {
                     if (statisticsInfo) {

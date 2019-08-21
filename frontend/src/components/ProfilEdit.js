@@ -36,9 +36,15 @@ class ProfilEdit extends Component {
                     firstname: user.firstname,
                     lastname: user.lastname,
                     img: user.img,
-                    password: user.password,
                 })
             })
+
+            io.on('error', () => {
+                this.setState({
+                    loginVisible: true
+                })
+            });
+
             io.on('file', (user) => {
                 if (this.file) {
                     Superagent
@@ -49,27 +55,34 @@ class ProfilEdit extends Component {
                         .end((err, result) => {
                             if (err)
                                 throw err
-                            console.log(result);
-                        })
+                        });
                 }
-            })
-            io.on('message', (msg) => {
-                console.log(msg);
+            });
+            io.on('errors', (msg) => {
                 this.setState({
                     message: <div className="login-error sign-err">{msg.message}</div>
-                })
-            })
+                });
+            });
             io.on('successfulUpdate', (msg) => {
                 this.setState({
                     message: <div className="login-succes sign-err">{msg.message}</div>
-                })
-            })
+                });
+            });
         } else {
             this.setState({
                 loginVisible: true
             })
         }
     }
+
+    componentWillUnmount() {
+        if (localStorage.getItem('token')) {
+            io.removeListener('file');
+            io.removeListener('successfulUpdate');
+            io.removeListener('errors');
+        }
+    }
+
     onClickEvent = (e) => {
         e.preventDefault();
         const user = this.state
@@ -89,7 +102,7 @@ class ProfilEdit extends Component {
                 username: user.username,
                 firstname: user.firstname,
                 lastname: user.lastname,
-                password: this.state.password,
+                password: user.password,
             })
         }
     }
@@ -137,7 +150,7 @@ class ProfilEdit extends Component {
 
                                         <input type="password" className="txt-signup" autoComplete="password" placeholder="Password" onChange={(e) => { this.setState({ password: e.target.value }) }} />
 
-                                        <input type="password" className="txt-signup" autoComplete="password" placeholder="New Password" onChange={(e) => { this.setState({ newPassword: e.target.value }) }} />
+                                        <input type="password" className="txt-signup" autoComplete="password" placeholder="New Password" ref='If you want to change the password, fill in the new password field.' onChange={(e) => { this.setState({ newPassword: e.target.value }) }} />
 
                                         {this.state.message}
 

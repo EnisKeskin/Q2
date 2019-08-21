@@ -57,7 +57,6 @@ const quizSchema = new Schema({
         },
         time: {
             type: Number,
-            default: 20,
             require: true,
         },
         img: {
