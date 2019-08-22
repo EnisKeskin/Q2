@@ -25,18 +25,6 @@ class Answer extends Component {
         }
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (typeof (props.location.state) !== 'undefined') {
-            if (props.location.state.visible) {
-                return state.visible = false;
-            } else {
-                return state.visible = true;
-            }
-        } else {
-            return state.visible = true;
-        }
-    }
-
     componentDidMount() {
         let props = this.props;
         let propsLocation = props.location;
