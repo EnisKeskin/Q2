@@ -237,7 +237,6 @@ ul {
     border-radius: 41px;
     transition: 0.2s;
     position: relative;
-    
 }
 
 .my-quiz:hover {
@@ -302,8 +301,8 @@ ul {
     height: auto;
     padding-top: 100px;
     padding-bottom: 30px;
+    word-break: break-all;
 }
-
 .modal-h4 {
     color: #57188E;
     font-size: 35px;
@@ -1209,6 +1208,9 @@ ul {
     display: flex;
     align-items: center;
     justify-content: center;
+    word-break: break-all;
+    padding-left: 10px;
+    padding-right: 10px;as
 }
 
 .slick-track {
@@ -1441,6 +1443,7 @@ select::-ms-expand {
 
 .question-content {
     height: auto;
+    padding-bottom: 30px;
 }
 
 .question-image {
@@ -1711,6 +1714,33 @@ select::-ms-expand {
     border:1px solid #d5d5d5;
     font-size: 16px;
 }
+
+.question-succes{
+    width:100%;
+    min-height: 40px;
+    background-image: url("../images/quiz/succes.png");
+    background-size: 23px;
+    background-repeat: no-repeat;
+    background-position: 1%;
+    padding:10px;
+    padding-left: 50px;
+    padding-right: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    border:1px solid #d5d5d5;
+    font-size: 16px;
+}
+.question-number{
+    text-align: center;
+    font-size: 19px;
+    color: #333;
+    margin-bottom: 20px;
+}
 .custom-control {
     height: 100px;
 }
@@ -1943,6 +1973,7 @@ select::-ms-expand {
     padding-right: 40px;
     display: flex;
     align-items: center;
+    word-break: break-all;
     }
 
 .statistics {
@@ -2044,11 +2075,12 @@ select::-ms-expand {
     height: 165px;
     border-radius: 20px;
     color: white;
-    line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
     transition: 0.2s;
     border:none;
+    word-break: break-all;
+
 }
 
 .answer-2 {
@@ -2057,11 +2089,12 @@ select::-ms-expand {
     width: 100%;
     border-radius: 20px;
     color: white;
-    line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
     border:none;
     transition: 0.2s;
+    word-break: break-all;
+
 }
 
 .answer-3 {
@@ -2070,11 +2103,12 @@ select::-ms-expand {
     width: 100%;
     border-radius: 20px;
     color: white;
-    line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
     border:none;
     transition: 0.2s;
+    word-break: break-all;
+
 }
 
 .answer-4 {
@@ -2084,11 +2118,11 @@ select::-ms-expand {
     border-radius: 20px;
     color: white;
     text-align: center;
-    line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
     border:none;
     transition: 0.2s;
+    word-break: break-all;
 }
 
 .answer-1:hover {
@@ -2386,6 +2420,7 @@ select::-ms-expand {
     border-radius: 10px;
     padding-right: 20px;
     padding-top: 10px;
+    word-break: break-all;
 }
 
 .spn-discover {
@@ -2539,6 +2574,7 @@ select::-ms-expand {
     font-weight: 600;
     color: #494444;
     padding-top: 10px;
+    word-break: break-all;
 }
 
 .spn-discover-2-quizs {
