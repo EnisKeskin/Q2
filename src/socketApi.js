@@ -154,7 +154,6 @@ const pinCreate = (callback) => {
 const error = (err, socket) => {
     for (d in err.errors) {
         //kontroller sağlanmalı
-        console.log(err);
         let error = err.errors[d]
         const objectKey = error.path[0].toUpperCase() + error.path.slice(1, (error.path.length));
         const isValidationError = err.name == 'ValidationError';
@@ -489,10 +488,12 @@ Io.of('/profile').use((socket, next) => {
                                                 lastname: user.lastname,
                                                 password: hash
                                             }, (err, result) => {
-                                                if (err)
-                                                    throw err
-                                                socket.emit('file', { userId: socket.decoded.userId });
-                                                socket.emit('successfulUpdate', { message: " Successfully updated " });
+                                                if (err) {
+                                                    error(err, socket)
+                                                } else {
+                                                    socket.emit('file', { userId: socket.decoded.userId });
+                                                    socket.emit('successfulUpdate', { message: " Successfully updated " });
+                                                }
                                             })
 
                                         })
@@ -506,10 +507,23 @@ Io.of('/profile').use((socket, next) => {
                                         firstname: user.firstname,
                                         lastname: user.lastname,
                                     }, (err, result) => {
-                                        if (err)
-                                            throw err
-                                        socket.emit('file', { userId: socket.decoded.userId });
-                                        socket.emit('successfulUpdate', { message: " Successfully updated " });
+                                        if (err.code === 11000) {
+                                            let i = 0;
+                                            let index = '';
+                                            while (true) {
+                                                if (err.errmsg.charAt(55 + i) !== '_') {
+                                                    index += err.errmsg.charAt(55 + i);
+                                                    i++;
+                                                } else {
+                                                    break;
+                                                }
+                                            }
+                                            loginEditValidations(`This ${index} has already been saved`);
+                                            error(err, socket);
+                                        } else {
+                                            socket.emit('file', { userId: socket.decoded.userId });
+                                            socket.emit('successfulUpdate', { message: " Successfully updated " });
+                                        }
                                     })
                                 }
 
@@ -744,18 +758,30 @@ Io.of('/user').on('connection', (socket) => {
                             lastname: user.lastname,
                             password: hash
                         });
-                        userRegister.save().then((userLogin) => {
-                            socket.emit('registerSuccessful', message = 'Successfully registered \n You will be redirected in 1 second');
-                            setTimeout(() => {
-                                login(user, socket)
-                            }, 1000);
-                        }).catch((err) => {
-                            if (err.code === 11000) {
-                                registerValidations('This mail has already been saved')
+                        userRegister.save((err, res) => {
+                            if (err) {
+                                if (err.code === 11000) {
+                                    let i = 0;
+                                    let index = '';
+                                    while (true) {
+                                        if (err.errmsg.charAt(55 + i) !== '_') {
+                                            index += err.errmsg.charAt(55 + i);
+                                            i++;
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                    loginEditValidations(`This ${index} has already been saved`);
+                                    error(err, socket);
+                                }
                             } else {
-                                error(err, socket)
+                                socket.emit('registerSuccessful', message = 'Successfully registered \n You will be redirected in 1 second');
+                                setTimeout(() => {
+                                    login(user, socket)
+                                }, 1000);
                             }
-                        });
+
+                        })
                     })
                 } else {
                     registerValidations('Password length must be at least 6 characters')

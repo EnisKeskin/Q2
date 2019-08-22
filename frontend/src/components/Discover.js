@@ -291,9 +291,7 @@ class Discover extends Component {
                         <div className="discover-trend">
                             <div className="discover-trend-in">
                                 <div className="discover-title">
-                                    <span className="spn-discover-title">Trending</span>
-
-                                    <span> <Link to="#"> See All </Link></span>
+                                    <span className="spn-discover-title">Discover</span>
                                 </div>
 
                                 <Slider className="discover-trend-bottom" {...settings}>

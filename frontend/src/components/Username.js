@@ -18,6 +18,7 @@ class Username extends Component {
   }
   componentDidMount() {
     io = Io.connectionsRoom('game');
+
     if (typeof (this.props.location.state) !== 'undefined') {
       if (this.props.location.state.visible) {
         this.setState({
@@ -35,6 +36,7 @@ class Username extends Component {
         visible: true
       });
     }
+
     io.on('gameStart', () => {
       this.setState({
         gameStart: true

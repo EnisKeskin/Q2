@@ -20,25 +20,36 @@ class Players extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (typeof (props.location.state) !== 'undefined') {
-            if (props.location.state.visible) {
-                return state.visible = false;
-            } else {
-                return state.visible = true;
-            }
-        } else {
-            return state.visible = true;
+        if (document.querySelector('.modal-backdrop')) {
+            document.querySelector('.modal-backdrop').remove();
         }
     }
 
     componentDidMount() {
-        if (document.querySelector('.modal-backdrop')) {
-            document.querySelector('.modal-backdrop').remove();
+        let props = this.props;
+        let propsLocation = props.location;
+
+        if (typeof (propsLocation.state) !== 'undefined') {
+            if (propsLocation.state.visible) {
+                this.setState({
+                    visible: false
+                });
+                props.history.replace({ state: {} });
+            } else {
+                this.setState({
+                    visible: true
+                });
+                props.history.replace({ state: {} });
+            }
+        } else {
+            this.setState({
+                visible: true
+            });
         }
         io = Io.connectionsRoom('game');
-        if (typeof (this.props.location.state) !== 'undefined') {
-            if (this.props.location.state.pin !== 0) {
-                const pin = this.props.location.state.pin;
+        if (typeof (propsLocation.state) !== 'undefined') {
+            if (propsLocation.state.pin !== 0) {
+                const pin = propsLocation.state.pin;
 
                 this.setState({
                     pin: pin
@@ -59,18 +70,20 @@ class Players extends Component {
                 io.on('gameStartError', (msg) => { this.setState({ error: <div class="player-error">{msg}</div> }) });
             };
         };
+
         io.on('quizPin', (quiz) => {
             this.setState({
                 pin: quiz.pin,
             })
         });
+
         io.on('newUser', (players) => {
             let userCount = 0;
             if (players) {
                 players.length ? userCount = players.length : userCount = 0;
             }
 
-            if (isNaN(players)) {
+            if (players && isNaN(players)) {
                 this.setState({
                     players: players,
                     userCount: userCount
@@ -100,7 +113,7 @@ class Players extends Component {
     }
 
     onClickEvent = (e) => {
-        io.emit('startGame', this.state.userCount)
+        io.emit('startGame', this.state.userCount);
     }
 
     render() {
@@ -116,7 +129,7 @@ class Players extends Component {
                     :
                     <div>
                         {this.state.visible ?
-                            <Redirect to='/' />
+                            <div> {localStorage.getItem('token') ? <Redirect to='/profile' /> : <Redirect to='/' />} </div>
                             :
                             <div>
                                 <div className="container players-content" >

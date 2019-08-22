@@ -200,6 +200,22 @@ class Quiz extends Component {
             io.removeListener('quizUpdateFile');
         }
     }
+    onChangeTitleEvent = (e) => {
+        if (e.target.value.length <= 100) {
+            this.quiz.title = e.target.value;
+            this.setState({
+                title: e.target.value
+            });
+        }
+    }
+    onChangeDescriptionEvent = (e) => {
+        if (e.target.value.length <= 256) {
+            this.quiz.description = e.target.value
+            this.setState({
+                description: e.target.value
+            });
+        }
+    }
     render() {
         const discoverBottom = {
             arrows: true,
@@ -288,9 +304,9 @@ class Quiz extends Component {
                                                 </div>
                                             </div>
 
-                                            <input type="text" placeholder="Title" className="txt-title" value={quiz.title || ''} onChange={(e) => { this.quiz.title = e.target.value; this.setState({ title: e.target.value }) }} />
+                                            <input type="text" placeholder="Title" className="txt-title" value={quiz.title || ''} onChange={this.onChangeTitleEvent.bind(this)} />
 
-                                            <textarea placeholder="Description" className="txt-description" value={quiz.description || ''} onChange={(e) => { this.quiz.description = e.target.value; this.setState({ description: e.target.value }) }} />
+                                            <textarea placeholder="Description" className="txt-description" value={quiz.description || ''} onChange={this.onChangeDescriptionEvent.bind(this)} />
                                             {this.state.quizError || this.state.questionSucces}
                                         </div>
 

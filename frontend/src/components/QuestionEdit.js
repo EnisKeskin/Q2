@@ -157,6 +157,46 @@ class Question extends Component {
         io.emit('questionUpdate', this.question);
     }
 
+    onChangeTitleEvent = (e) => {
+        const value = e.target.value
+        if (value.length <= 100) {
+            this.question.questionTitle = value;
+            this.setState({
+                questionTitle: value
+            });
+        }
+    }
+
+    onChangeAnswerEvent = (index, e) => {
+        const value = e.target.value
+        if (value.length <= 100) {
+            this.answers[index] = value
+            switch (index) {
+                case 0:
+                    this.setState({
+                        answer0: value
+                    })
+                    break;
+                case 1:
+                    this.setState({
+                        answer1: value
+                    })
+                    break; case 2:
+                    this.setState({
+                        answer2: value
+                    })
+                    break; case 3:
+                    this.setState({
+                        answer3: value
+                    })
+                    break;
+                default:
+                    break;
+            }
+
+        }
+    }
+
     render() {
         return (
             <div>
@@ -201,7 +241,7 @@ class Question extends Component {
                                         </div>
                                         <div className="question-text">
                                             {/* kısa bicimde yaz */}
-                                            <input type="text" className="txt-question" placeholder="Tap to add question" value={this.state.questionTitle || ''} onChange={(e) => { this.question.questionTitle = e.target.value; this.setState({ questionTitle: e.target.value }) }} required />
+                                            <input type="text" className="txt-question" placeholder="Tap to add question" value={this.state.questionTitle || ''} onChange={this.onChangeTitleEvent.bind(this)} required />
 
                                         </div>
 
@@ -211,7 +251,7 @@ class Question extends Component {
 
                                                 <div className="col-md-6 ">
                                                     <div className="a1">
-                                                        <input type="text" className="txt-answer1" placeholder="Answer 1" value={this.state.answer0 || ''} onChange={(e) => { this.answers[0] = e.target.value; this.setState({ answer0: e.target.value }) }} required />
+                                                        <input type="text" className="txt-answer1" placeholder="Answer 1" value={this.state.answer0 || ''} onChange={this.onChangeAnswerEvent.bind(this, 0)} required />
                                                         <div className="checkbox">
                                                             {/* onChange Çalışmayabiliyor */}
                                                             <input type="radio" name="option" value="0" checked={this.state.answer === 0 ? "checked" : ''} onChange={(e) => {
@@ -225,7 +265,7 @@ class Question extends Component {
 
                                                 <div className="col-md-6">
                                                     <div className="a2">
-                                                        <input type="text" className="txt-answer2" placeholder="Answer 2" value={this.state.answer1 || ''} onChange={(e) => { this.answers[1] = e.target.value; this.setState({ answer1: e.target.value }) }} required />
+                                                        <input type="text" className="txt-answer2" placeholder="Answer 2" value={this.state.answer1 || ''} onChange={this.onChangeAnswerEvent.bind(this, 1)} required />
                                                         <div className="checkbox">
                                                             <input type="radio" name="option" value="1" checked={this.state.answer === 1 ? "checked" : ''} onChange={(e) => {
                                                                 this.question.answer = e.target.value
@@ -238,7 +278,7 @@ class Question extends Component {
 
                                                 <div className="col-md-6 ">
                                                     <div className="a3">
-                                                        <input type="text" className="txt-answer3" placeholder="Answer 3" value={this.state.answer2 || ''} onChange={(e) => { this.answers[2] = e.target.value; this.setState({ answer2: e.target.value }) }} required />
+                                                        <input type="text" className="txt-answer3" placeholder="Answer 3" value={this.state.answer2 || ''} onChange={this.onChangeAnswerEvent.bind(this, 2)} required />
                                                         <div className="checkbox">
                                                             <input type="radio" name="option" value="2" checked={this.state.answer === 2 ? "checked" : ''} onChange={(e) => {
                                                                 this.question.answer = e.target.value
@@ -251,7 +291,7 @@ class Question extends Component {
 
                                                 <div className="col-md-6">
                                                     <div className="a4">
-                                                        <input type="text" className="txt-answer4" placeholder="Answer 4" value={this.state.answer3 || ''} onChange={(e) => { this.answers[3] = e.target.value; this.setState({ answer3: e.target.value }) }} required />
+                                                        <input type="text" className="txt-answer4" placeholder="Answer 4" value={this.state.answer3 || ''} onChange={this.onChangeAnswerEvent.bind(this, 3)} required />
                                                         <div className="checkbox">
                                                             <input type="radio" name="option" value="3" checked={this.state.answer === 3 ? "checked" : ''} onChange={(e) => {
                                                                 this.question.answer = e.target.value
