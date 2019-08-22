@@ -3,6 +3,20 @@ const router = express.Router();
 const User = require('../models/User');
 const Quiz = require('../models/Quiz');
 
+router.post('/delete', ensureAuthenticated, (req, res) => {
+  User.findOne({ username: req.user.username }, (err, user) => {
+    if(err){
+      console.error(err);
+    }
+    else{
+      Quiz.deleteOne({userId: user._id, _id:req.body.id},(err)=>{
+        console.log(err);
+      });
+    }
+  });
+  res.redirect("/home");
+});
+
 router.get('/', ensureAuthenticated, (req, res, next) => {
 
   User.findOne({ username: req.user.username }, (err, user) => {
@@ -18,18 +32,21 @@ router.get('/', ensureAuthenticated, (req, res, next) => {
           data.forEach((quiz, index) => {
             quizzes.push({
               img: quiz.img,
+              id: "" + quiz._id,
               title: quiz.title,
               desc: quiz.description,
               pin: quiz.pin,
               index: index,
-              count: quiz.question.length
+              imgURL: user.imgURL,
+              count: quiz.question.length,
+              username: user.username
             })
           });
           res.render('home', {
             myQuizzes: quizzes,
             quizCreated: data.length,
             gamePlayed: 0,
-            img: user.imgURL,
+            imgURL: user.imgURL,
             firstname: user.firstname,
             lastname: user.lastname,
             username: user.username

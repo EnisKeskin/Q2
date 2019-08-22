@@ -42,7 +42,7 @@
             </a>
             <div class="profil-top">
                 <div class="profil-img">
-                    <img src="{{img}}" class="img-profil" alt="">
+                    <img src="{{imgURL}}" class="img-profil" alt="">
                 </div>
                 <div class="profil-name">
                     <h6 class="h6">
@@ -106,26 +106,29 @@
                                 <div class="col-xl-6 modal-right">
                                     <h4 class="h4 modal-h4">{{this.title}}</h4>
                                     <div class="modal-user">
-                                        <img src="{{img}}" class="img-user-modal" alt="">
+                                        <img src="{{this.imgURL}}" class="img-user-modal" alt="user image">
                                         <div class="modal-name">
-                                            {{username}}
+                                            {{this.username}}
                                         </div>
                                         <div class="modal-star">
-                                            <img src="images/quiz/star.png" alt="" class="img-star">
-                                            <img src="images/quiz/delete.png" class="img-delete" alt="Delete">
+                                            <img src="images/quiz/star.png" class="img-star" alt="Star">
+                                            <form action="/home/delete" method="POST">
+                                                <input type="image" class="img-delete" src="images/quiz/delete.png"
+                                                    alt="Delete" />
+                                                <input name="id" type="text" style="display: none;" value="{{this.id}}">
+                                            </form>
                                         </div>
                                     </div>
                                     <h5 class="h5-subtitle">Description</h5>
                                     <br>
                                     <p>
-                                        {{this.desc}} 
-                                        {{this.count}}
+                                        {{this.desc}} ---
+                                        {{this.count}} Question(s)
                                     </p>
                                     <div class="modal-start">
-                                        <a href="/game?pin={{this.pin}}" class="btn-play">Play</a>
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                                            Close
-                                        </button>
+                                        <a href="/game?pin={{this.pin}}" class="btn-play" style="float:left;">Play</a>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                            value="Close">Close</button>
                                     </div>
                                 </div>
                             </div>

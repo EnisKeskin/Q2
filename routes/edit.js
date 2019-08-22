@@ -6,10 +6,10 @@ const { check, validationResult } = require('express-validator');
 var multer = require('multer');
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads/profile');
+        cb(null, 'public/uploads');
     },
     filename: function (req, file, cb) {
-        cb(null, 'QuizImage-' + Date.now());
+        cb(null, 'ProfileImage-' + Date.now());
     }
 });
 var upload = multer({ storage: storage });
@@ -23,20 +23,34 @@ function ensureAuthenticated(req, res, next) {
     res.redirect('/');
 }
 
-router.post('/', (req, res, next) => {
+router.post('/', ensureAuthenticated, upload.single('fileToUpload'), (req, res, next) => {
+
     const { email, password1, password2, firstname, lastname, username } = req.body;
     var Errors = [];
     if (req.user && req.user.username) {
         User.findOne({ username: req.user.username }, (err, data) => {
-            if (err)
-                throw err;
-            if (username != "")
+            if (err) {
+                console.error(err);
+                return res.redirect("/edit");
+            }
+            if (req.file) {
+                data.imgURL = req.file ? "uploads\\" + req.file.filename : "noImage.jpg";
+                data.save();
+            }
+        });
+
+        User.findOne({ username: req.user.username }, (err, data) => {
+            if (err) {
+                console.error(err);
+                return res.redirect("/edit");
+            }
+            if (username && username != "")
                 data.username = username;
-            if (firstname != "")
+            if (firstname && firstname != "")
                 data.firstname = firstname;
-            if (lastname != "")
+            if (lastname && lastname != "")
                 data.lastname = lastname;
-            if (password1 != "") {
+            if (password1 && password1 != "") {
                 if (password1.length >= 8)
                     if (password1 == password2)
                         bcrypt.hash(password1, 10).then((hash) => {
@@ -47,13 +61,12 @@ router.post('/', (req, res, next) => {
                 else
                     Errors.push({ msg: "Please provide a password with minimum lenght of 8!" });
             }
-            if (email != "") {
+            if (email && email != "") {
                 User.find({ email: email }, (err, d) => {
                     if (err)
                         console.log(err);
                     if (d.length <= 0) {
                         data.email = email;
-                        console.log('email:' + email);
                     }
                     else {
                         console.log('exist');
@@ -61,7 +74,6 @@ router.post('/', (req, res, next) => {
                     }
                     if (Errors.length == 0) {
                         data.save();
-                        next();
                     }
                     else {
                         console.log("Errors:" + Errors);
@@ -72,7 +84,6 @@ router.post('/', (req, res, next) => {
             else {
                 if (Errors.length == 0) {
                     data.save();
-                    next();
                 }
                 else {
                     console.log("Errors:" + Errors);
@@ -83,20 +94,6 @@ router.post('/', (req, res, next) => {
     }
     else
         res.redirect('/');
-});
-
-router.post('/', upload.single('uploadToFile'), (req, res, next) => {
-    if (!req.file) {
-        res.render('edit');
-    }
-    else if (req.user && req.user.username) {
-        User.findOne({ username: req.user.username }, (err, data) => {
-
-        });
-    }
-    else {
-        res.render('/');
-    }
 });
 
 module.exports = router;

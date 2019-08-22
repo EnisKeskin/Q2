@@ -94,7 +94,6 @@ router.post('/', upload.single('fileToUpload'), (req, res) => {
         active: false,
         date: Date.now()
       };
-      console.log("quizObj: " + quizObj);
       const quiz = new Quiz(quizObj);
       console.log("Quiz: " + quiz);
       quiz.save().then((data) => {
@@ -141,7 +140,7 @@ router.post('/question', upload.single("fileToUpload"), (req, res) => {
     ],
     answer: parseInt(req.body.option, 10),
     time: parseInt(req.body.time, 10) * 10,
-    img: req.file.path
+    img: req.file ? "uploads\\" + req.file.filename : "noImage.jpg"
   }
   User.findOne({ username: req.user.username }, (err, user) => {
     if (err) {

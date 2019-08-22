@@ -8,7 +8,6 @@ module.exports = (io) => {
   const Answer = require('../models/Answer');
   const SECOND = 1000;
   const STATISTICS_TIMEOUT = 4 * SECOND;
-
   router.get('/', (req, res, next) => {
 
     const pin = req.query.pin;
@@ -45,7 +44,8 @@ module.exports = (io) => {
 
     socket.on('enter-lobby', (pin) => {
       var Room = Rooms[pin];
-      var thePlayer = new Player('player_' + Math.floor(Math.random() * 10000), socket);
+      if (1)
+        var thePlayer = new Player('player_' + Math.floor(Math.random() * 10000), socket);
       Room.players[socket.id] = thePlayer;
       quiz.find({ pin: pin }).then((data) => {
         if (data.length != 0) {
@@ -59,6 +59,7 @@ module.exports = (io) => {
               {
                 source: handleBarsSources["QH"],
                 templatedata: {
+                  questionImage: question.img,
                   question: question.questionTitle,
                   answer1: question.answers[0],
                   answer2: question.answers[1],
@@ -107,6 +108,7 @@ module.exports = (io) => {
               {
                 source: handleBarsSources["QH"],
                 templatedata: {
+                  questionImage: question.img,
                   question: question.questionTitle,
                   answer1: question.answers[0],
                   answer2: question.answers[1],
@@ -156,6 +158,7 @@ module.exports = (io) => {
                 {
                   source: handleBarsSources["QH"],
                   templatedata: {
+                    questionImage: question.img,
                     question: question.questionTitle,
                     answer1: question.answers[0],
                     answer2: question.answers[1],

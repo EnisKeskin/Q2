@@ -65,7 +65,7 @@ global.handleBarsSources = {
       </div>
   </div>
 </div>`,
-  "SHB": `<div class="capsule">
+  "SBH": `<div class="capsule">
 <div class="score-title">
     <h1 class="h1 h1-score">Scoreboard</h1>
 </div>
@@ -105,6 +105,7 @@ global.handleBarsSources = {
     <div class="answer-top">
         <div class="answer-top-in">
             <div class="answer-image">
+                <img src="{{questionImage}}" class="img-quiz" alt="question image">
             </div>
             <div class="answer-question">
                 {{question}}
