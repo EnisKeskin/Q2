@@ -100,7 +100,7 @@ class Profile extends Component {
                     <div data-toggle="modal" data-target={"#quiz-item-modal" + key} className="my-quiz">
 
                         <div className="my-quiz-img">
-                            <img src={`${Ip}${quiz.img}`} className="img-quiz" alt="" />
+                            <img src={quiz.img !== '' ? `${Ip}${quiz.img}` : require('../images/quiz/defaultQuiz.png')} className="img-quiz" alt="" />
                         </div>
 
                         <div className="my-quiz-name">
@@ -121,7 +121,7 @@ class Profile extends Component {
                                     <div className="row">
 
                                         <div className="col-lg-6 modal-left">
-                                            <img src={`${Ip}${quiz.img}`} className="img-modal" alt="" />
+                                            <img src={quiz.img !== '' ? `${Ip}${quiz.img}` : require('../images/quiz/defaultQuiz.png')} className="img-modal" alt="" />
                                         </div>
 
                                         <div className="col-lg-6 modal-right">
@@ -130,13 +130,13 @@ class Profile extends Component {
 
                                             <div className="modal-user">
 
-                                                <img src={`${Ip}${quiz.img}`} className="img-user-modal" alt="" />
+                                                <img src={typeof (quiz.userImg) !== 'undefined' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
 
                                                 <div className="modal-name">{quiz.username}</div>
 
                                                 <div className="modal-star">
                                                     <Link to={{ pathname: '/QuizEdit', state: { quizId: quiz._id } }} >
-                                                        <img src={require('../images/quiz/refresh.png')} alt="" className="img-delete" />
+                                                        <img src={require('../images/quiz/edit.png')} alt="" className="img-delete" />
                                                     </Link>
                                                     <img src={require('../images/quiz/delete.png')} className="img-delete" alt="" data-dismiss="modal" onClick={this.onClickEvent.bind(this, quiz._id)} />
                                                 </div>
@@ -168,11 +168,12 @@ class Profile extends Component {
     }
 
     render() {
+        let state = this.state;
         return (
 
             <div>
                 <script src="../javascripts/main"></script>
-                {this.state.loginVisible ?
+                {state.loginVisible ?
                     <Redirect to='/User' />
                     :
                     <div className="capsule-2">
@@ -186,15 +187,15 @@ class Profile extends Component {
                                 </Link>
                                 <div className="profil-top">
                                     <div className="profil-img">
-                                        <img src={`${Ip}${this.state.user.img}`} className="img-profil" alt="" />
+                                        <img src={typeof (state.user.img) !== 'undefined' ? `${Ip}${state.user.img}` : require('../images/quiz/avatar2.png')} className="img-profil" alt="" />
                                     </div>
 
                                     <div className="profil-name">
                                         {/* isim soy isim */}
-                                        <h6 className="h6">{this.state.fullname} <Link to="/Profile/Edit"><img src={require('../images/user-icon/edit.png')} className="img-edit"
+                                        <h6 className="h6">{state.fullname} <Link to="/Profile/Edit"><img src={require('../images/user-icon/edit.png')} className="img-edit"
                                             alt="Edit" /> </Link> </h6>
                                         {/* kullanıcıadı */}
-                                        <h6 className="h6-mail"> {this.state.username} </h6>
+                                        <h6 className="h6-mail"> {state.username} </h6>
                                     </div>
 
                                 </div>
@@ -206,7 +207,7 @@ class Profile extends Component {
                                         <div className="col-lg-12 ">
                                             <div className="profil-information-left">
                                                 <div>Quiz Created </div>
-                                                <div> {this.state.quizCount} </div>
+                                                <div> {state.quizCount} </div>
                                             </div>
                                         </div>
 
@@ -214,7 +215,7 @@ class Profile extends Component {
 
                                             <div className=" profil-information-right">
                                                 <div> Hosted Games </div>
-                                                <div> {this.state.quizCount} </div>
+                                                <div> {state.quizCount} </div>
 
                                             </div>
                                         </div>

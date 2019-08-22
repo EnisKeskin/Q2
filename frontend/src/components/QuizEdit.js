@@ -52,6 +52,7 @@ class Quiz extends Component {
     componentDidMount() {
         if (localStorage.getItem('token')) {
             if (document.querySelector('.modal-backdrop')) {
+                document.querySelector('body').classList.remove("modal-open");
                 document.querySelector('.modal-backdrop').remove();
             }
             io = Io.connectionsRoom('profile', localStorage.getItem('token'));
@@ -305,17 +306,20 @@ class Quiz extends Component {
                                             </div>
 
                                             <input type="text" placeholder="Title" className="txt-title" value={quiz.title || ''} onChange={this.onChangeTitleEvent.bind(this)} />
+                                            <div className="description">
+                                                <textarea placeholder="Description" className="txt-description" value={quiz.description || ''} onChange={this.onChangeDescriptionEvent.bind(this)} />Character {256 - (this.state.description.length) || '0'}</div>
 
-                                            <textarea placeholder="Description" className="txt-description" value={quiz.description || ''} onChange={this.onChangeDescriptionEvent.bind(this)} />
                                             {this.state.quizError || this.state.questionSucces}
                                         </div>
 
                                     </div>
 
                                     <Slider className="questions-image" {...discoverBottom}>{this.questionShow()}</Slider>
-
+                                    <div className="add-question">
+                                        <Link to={{ pathname: '/question', state: { quizId: this.quizId } }} > <button type="button" className="btn-add"></button> </Link>
+                                    </div>
                                     <div className="quiz-enter-button">
-                                        <button type="submit" className="btn-quiz-enter" onClick={this.onClickEvent} >Enter</button>
+                                        <button type="submit" className="btn-quiz-enter" onClick={this.onClickEvent} >Edit</button>
                                     </div>
                                 </form>
                             </div>

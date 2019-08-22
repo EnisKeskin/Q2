@@ -71,6 +71,7 @@ class User extends Component {
     io.removeListener('succLogin');
     io.removeListener('loginErr');
     io.removeListener('registerError');
+    io.removeListener('registerSuccessful');
   }
 
   onClickLoginEvent = (e) => {

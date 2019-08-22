@@ -16,6 +16,9 @@ socketApi.io = Io;
 class RoomControl {
     constructor() {
         this.rooms = {};
+        this.userCount = 0;
+        this.nextQuestionTime = null;
+        this.showAnswerTime = null;
     }
 
     addUser(userId, roomName, username) {
@@ -28,18 +31,28 @@ class RoomControl {
         };
     }
 
-    getRoom(roomName) {
-        let room = this.rooms[roomName] ?
-            this.rooms[roomName] : {
+    getRoom(roomName, reset) {
+        let room = {};
+        if (reset === true) {
+            room = {
                 quiz: null,
                 startTime: null,
                 currentQuestion: null,
                 currentQuestionIndex: -1,
                 users: {},
             }
-
+        } else {
+            room = this.rooms[roomName] ?
+                this.rooms[roomName] : {
+                    quiz: null,
+                    startTime: null,
+                    currentQuestion: null,
+                    currentQuestionIndex: -1,
+                    users: {},
+                }
+        }
         this.rooms[roomName] = room;
-        return room;
+        return this.rooms[roomName];
     }
 
     setQuiz(roomName, quiz) {
@@ -94,13 +107,17 @@ class RoomControl {
 
     nextQuestion(roomName) {
         const room = this.getRoom(roomName);
-        room.currentQuestionIndex += 1;
-        if (room.currentQuestionIndex > room.quiz.question.length) {
-            return null;
+        if (room) {
+            room.currentQuestionIndex += 1;
+            if (room.currentQuestionIndex > room.quiz.question.length) {
+                return null;
+            }
+            room.currentQuestion = room.quiz.question[room.currentQuestionIndex];
+            room.startTime = Date.now();
+            return room.currentQuestion;
+        } else {
+            throw "Unknow Error"
         }
-        room.currentQuestion = room.quiz.question[room.currentQuestionIndex];
-        room.startTime = Date.now();
-        return room.currentQuestion;
     };
 
     resetRoom(roomName) {
@@ -223,6 +240,8 @@ Io.of('/game').on('connection', (socket) => {
                 socket.join(pin, () => {
                     const roomName = Object.keys(socket.rooms)[0];
                     const userId = Object.keys(socket.rooms)[1];
+                    const userCount = socket.adapter.rooms[roomName].length;
+                    roomControl.userCount = userCount;
                     socket.emit('join', { status: true });
                     socket.on('sendUsername', (username) => {
                         if (typeof (username) !== 'undefined' && username.trim() !== '') {
@@ -245,6 +264,10 @@ Io.of('/game').on('connection', (socket) => {
                             socket.on('disconnect', () => {
                                 roomControl.roomUserDelete(roomName, userId);
                                 io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
+                                if (typeof (socket.adapter.rooms[roomName]) === 'undefined') {
+                                    clearTimeout(roomControl.nextQuestionTime);
+                                    clearTimeout(roomControl.showAnswerTime);
+                                }
                             });
 
                         } else {
@@ -263,52 +286,71 @@ Io.of('/game').on('connection', (socket) => {
         pinActive(pin, (quiz) => {
             socket.join(pin, () => {
                 const roomName = Object.keys(socket.rooms)[0];
-                room = roomControl.getRoom(roomName);
-                socket.emit('startButton', pin);
-                socket.on('startGame', (userCount) => {
-                    if (userCount > 0) {
-                        pinDeactivate(pin);
-                        roomControl.setQuiz(roomName, quiz);
-                        io.to(pin).emit('gameStart');
-                        roomControl.resetRoom(roomName);
-                        room.currentQuestion = null;
-                        nextQuestion();
-                    } else {
-                        socket.emit('gameStartError', 'Cannot start game without player')
+                const userCount = socket.adapter.rooms[roomName].length;
+                roomControl.userCount = userCount
+                if (roomControl.userCount > 0) {
+                    roomControl.getRoom(roomName, true)
+                    room = roomControl.getRoom(roomName);
+                    socket.emit('startButton', pin);
+                    socket.on('startGame', (userCount) => {
+                        if (userCount > 0) {
+                            pinDeactivate(pin);
+                            roomControl.setQuiz(roomName, quiz);
+                            io.to(pin).emit('gameStart');
+                            roomControl.resetRoom(roomName);
+                            room.currentQuestion = null;
+                            nextQuestion();
+                        } else {
+                            socket.emit('gameStartError', 'Cannot start game without player')
+                        }
+                    });
+                    let answernumber = 0;
+                    const nextQuestion = () => {
+                        if (socket.adapter.rooms[roomName]) {
+                            if (socket.adapter.rooms[roomName].length > 0) {
+                                const question = roomControl.nextQuestion(roomName);
+                                if (!question) {
+                                    io.to(roomName).emit('showScoreboard');
+                                    io.to(roomName).emit('Scoreboard', roomControl.top5(roomName));
+                                    return;
+                                }
+                                io.to(roomName).emit('newQuestion', question);
+
+                                roomControl.nextQuestionTime = setTimeout(() => {
+                                    let answStatic = []
+
+                                    Object.keys(room.users).forEach((userId) => {
+                                        if (typeof (room.users[userId].answers[answernumber]) === 'undefined') {
+                                            room.users[userId].answers[answernumber] = { answer: -1, score: 0 }
+                                        }
+                                        answStatic.push(room.users[userId].answers[answernumber]);
+                                    });
+                                    answernumber++;
+                                    io.to(roomName).emit('staticstics', answStatic);
+
+                                    roomControl.showAnswerTime = setTimeout(() => {
+
+                                        if (room.quiz !== null) {
+                                            if (room.quiz.question.length !== question) {
+                                                nextQuestion();
+                                            }
+                                        }
+                                    }, 5000);
+
+                                }, room.currentQuestion.time * 1000);
+                            }
+                        }
+                    }
+                }
+                socket.on('disconnect', () => {
+                    console.log(socket.adapter.rooms[roomName])
+                    if (typeof (socket.adapter.rooms[roomName]) === 'undefined') {
+                        clearTimeout(roomControl.nextQuestionTime);
+                        clearTimeout(roomControl.showAnswerTime);
                     }
                 });
-                let answernumber = 0;
-                const nextQuestion = () => {
-                    const question = roomControl.nextQuestion(roomName);
-                    if (!question) {
-                        io.to(roomName).emit('showScoreboard');
-                        io.to(roomName).emit('Scoreboard', roomControl.top5(roomName));
-
-                        return;
-                    }
-                    io.to(roomName).emit('newQuestion', question);
-
-                    setTimeout(() => {
-                        let answStatic = []
-
-                        Object.keys(room.users).forEach((userId) => {
-                            if (typeof (room.users[userId].answers[answernumber]) === 'undefined') {
-                                room.users[userId].answers[answernumber] = { answer: -1, score: 0 }
-                            }
-                            answStatic.push(room.users[userId].answers[answernumber]);
-                        });
-                        answernumber++;
-                        io.to(roomName).emit('staticstics', answStatic);
-
-                        setTimeout(() => {
-                            if (room.quiz.question.length !== question) {
-                                nextQuestion();
-                            }
-                        }, 5000);
-
-                    }, room.currentQuestion.time * 1000);
-                }
             })
+
         });
     })
 });
@@ -444,6 +486,7 @@ Io.of('/profile').use((socket, next) => {
                         description: 1,
                         img: 1,
                         username: '$user.username',
+                        userImg: '$user.img',
                         pin: 1,
                         questionCount: { $size: '$question' }
                     }
@@ -507,24 +550,27 @@ Io.of('/profile').use((socket, next) => {
                                         firstname: user.firstname,
                                         lastname: user.lastname,
                                     }, (err, result) => {
-                                        if (err.code === 11000) {
-                                            let i = 0;
-                                            let index = '';
-                                            while (true) {
-                                                if (err.errmsg.charAt(55 + i) !== '_') {
-                                                    index += err.errmsg.charAt(55 + i);
-                                                    i++;
-                                                } else {
-                                                    break;
+                                        if (err) {
+
+                                            if (err.code === 11000) {
+                                                let i = 0;
+                                                let index = '';
+                                                while (true) {
+                                                    if (err.errmsg.charAt(55 + i) !== '_') {
+                                                        index += err.errmsg.charAt(55 + i);
+                                                        i++;
+                                                    } else {
+                                                        break;
+                                                    }
                                                 }
+                                                loginEditValidations(`This ${index} has already been saved`);
+                                                error(err, socket);
                                             }
-                                            loginEditValidations(`This ${index} has already been saved`);
-                                            error(err, socket);
                                         } else {
                                             socket.emit('file', { userId: socket.decoded.userId });
                                             socket.emit('successfulUpdate', { message: " Successfully updated " });
                                         }
-                                    })
+                                    });
                                 }
 
                             }
@@ -571,7 +617,7 @@ Io.of('/profile').use((socket, next) => {
                         if (err) {
                             error(err, socket)
                         } else {
-                            socket.emit('newQuestionCreate', { questionId: quiz.question[quiz.question.length - 1]._id });
+                            socket.emit('newQuestionCreate', { questionId: quiz.question[quiz.question.length - 1]._id, questionCount: res.question.length });
                         }
                     });
                 });
@@ -690,7 +736,7 @@ Io.of('/profile').use((socket, next) => {
         ], (err, result) => {
             if (err)
                 throw err
-            socket.emit('setDiscoverTrend', result);
+            socket.emit('setDiscover', result);
         });
         Quiz.aggregate([
             {
@@ -727,7 +773,15 @@ Io.of('/profile').use((socket, next) => {
             socket.emit('setDiscoverMyQuiz', result);
         })
     });
-
+    socket.on('questionCount', (quizId) => {
+        Quiz.findById(quizId, (err, res) => {
+            if (err) {
+                console.log(err);
+            } else {
+                socket.emit('sendQuestionCount', res.question.length)
+            }
+        })
+    })
 });
 
 Io.of('/user').on('connection', (socket) => {
@@ -771,7 +825,7 @@ Io.of('/user').on('connection', (socket) => {
                                             break;
                                         }
                                     }
-                                    loginEditValidations(`This ${index} has already been saved`);
+                                    registerValidations(`This ${index} has already been saved`);
                                     error(err, socket);
                                 }
                             } else {

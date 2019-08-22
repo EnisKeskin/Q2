@@ -21,6 +21,7 @@ class Players extends Component {
 
     static getDerivedStateFromProps(props, state) {
         if (document.querySelector('.modal-backdrop')) {
+            document.querySelector('body').classList.remove("modal-open");
             document.querySelector('.modal-backdrop').remove();
         }
     }

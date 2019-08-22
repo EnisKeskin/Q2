@@ -29,6 +29,8 @@ class Question extends Component {
             answer3: '',
             file: '',
             questionErr: '',
+            questionCount: null,
+            questionSuccessfull: '',
             loginVisible: false,
         }
 
@@ -37,6 +39,7 @@ class Question extends Component {
 
     componentDidMount() {
         if (localStorage.getItem('token')) {
+            const props = this.props.location;
             this.resetVariable();
             io = Io.connectionsRoom('profile', localStorage.getItem('token'));
             io.on('error', () => {
@@ -44,6 +47,14 @@ class Question extends Component {
                     loginVisible: true
                 })
             })
+            if (typeof (props).state !== 'undefined') {
+                io.emit('questionCount', props.state.quizId);
+                io.on('sendQuestionCount', (questionCount) => {
+                    this.setState({
+                        questionCount: questionCount + 1 + '. Question'
+                    })
+                })
+            }
             io.on('newQuestionCreate', (quiz) => {
                 if (this.file) {
                     Superagent
@@ -54,11 +65,19 @@ class Question extends Component {
                         .end((err, result) => {
                             if (err)
                                 throw err
-
                         })
                 }
-                this.resetVariable();
-                this.resetForm();
+                this.setState({
+                    questionErr: null,
+                    questionSuccessfull: <div className="question-succes">Question created successfully You will be redirected in 1 second</div>
+                })
+                setTimeout(() => {
+                    this.setState({
+                        questionCount: quiz.questionCount + 1 + '. Question',
+                    })
+                    this.resetVariable();
+                    this.resetForm();
+                }, 1000);
             })
 
             io.on('errors', (question) => {
@@ -104,9 +123,10 @@ class Question extends Component {
 
     onClickEvent = (e) => {
         e.preventDefault();
+        const props = this.props.location;
         this.question.answers = this.answers;
-        if (this.props.location.state.quizId) {
-            this.question.quizId = this.props.location.state.quizId
+        if (typeof (props).state !== 'undefined') {
+            this.question.quizId = props.state.quizId
         }
         io.emit('addingQuestions', this.question);
     }
@@ -122,8 +142,15 @@ class Question extends Component {
             img: '',
         }
         this.setState({
+            questionTitle: '',
+            answer0: '',
+            answer1: '',
+            answer2: '',
+            answer3: '',
             file: '',
+            questionSuccessfull: '',
             questionErr: '',
+            loginVisible: false,
         })
     }
 
@@ -271,7 +298,9 @@ class Question extends Component {
                                     </div>
 
                                 </div>
+                                <div className="question-number">{this.state.questionCount}</div>
                                 <div>{this.state.questionErr}</div>
+                                {this.state.questionSuccessfull}
                                 <div className="add-question">
                                     <button className="btn-add" type="submit" value='' onClick={this.onClickEvent} ></button>
                                 </div>

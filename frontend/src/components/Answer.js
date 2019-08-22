@@ -38,6 +38,25 @@ class Answer extends Component {
     }
 
     componentDidMount() {
+        let props = this.props;
+        let propsLocation = props.location;
+        if (typeof (propsLocation.state) !== 'undefined') {
+            if (propsLocation.state.visible) {
+                this.setState({
+                    visible: false
+                });
+                props.history.replace({ state: {} });
+            } else {
+                this.setState({
+                    visible: true
+                });
+                props.history.replace({ state: {} });
+            }
+        } else {
+            this.setState({
+                visible: true
+            });
+        }
         io = Io.connectionsRoom('game');
         io.on('newQuestion', (question) => {
             if (isNaN(question)) {
@@ -58,12 +77,10 @@ class Answer extends Component {
                 this.time = question.time;
 
                 this.interval = setInterval(() => {
-
                     this.setState({
                         time: (this.state.time - 1),
                         progress: this.state.progress - (100 / this.time)
                     });
-
                 }, 1000);
 
             };
@@ -164,17 +181,17 @@ class Answer extends Component {
                             <div>
                                 <div className="container answer-contet">
 
-                                    
-                                        <div className="answer-top-in">
-                                            <div className="answer-image">
-                                                <img src={`${Ip}${this.state.img}`} alt="" srcSet="" />
-                                            </div>
-                                            <div className="answer-question">
-                                                {this.state.questionTitle}
-                                                <div className="triangle"></div>
-                                            </div>
+
+                                    <div className="answer-top-in">
+                                        <div className="answer-image">
+                                            <img src={`${Ip}${this.state.img}`} alt="" srcSet="" />
                                         </div>
-                                  
+                                        <div className="answer-question">
+                                            {this.state.questionTitle}
+                                            <div className="triangle"></div>
+                                        </div>
+                                    </div>
+
                                     <div className="progressbar" style={{ 'width': `${this.state.progress}%` }}>
                                         {this.state.time}
                                     </div>

@@ -30,7 +30,8 @@ class Discover extends Component {
                 })
             })
             io.emit('getDiscover');
-            io.on('setDiscoverTrend', (quizs) => {
+            //isim değişikliği
+            io.on('setDiscover', (quizs) => {
                 this.setState({
                     trendQuizzes: quizs
                 })
@@ -53,18 +54,17 @@ class Discover extends Component {
             io.removeListener('setDiscoverMyQuiz');
         }
     }
-    trendShow() {
+    discoverShow() {
         const stateQuizs = this.state.trendQuizzes;
         let quizs = [];
         stateQuizs.forEach((quiz, key) => {
             quizs.push(
                 <div data-toggle="modal" data-target={"#quiz-item-modal" + key} className="discover-trend-block" key={key}>
-                    <img src={`${Ip}${quiz.img}`} alt="" />
-
+                    <img src={quiz.img !== '' ? `${Ip}${quiz.img}` : require('../images/quiz/defaultQuiz.png')} alt="" />
                     <div className="discover-block-text">
-                        <span className="spn-discover">{quiz.title} </span>
+                        <span className="spn-discover">{quiz.title.length < 20 ? quiz.title : quiz.title.slice(0, 20) + '...'} </span>
                         <span className="spn-discover-2"> {quiz.questionCount} Questions</span>
-                        <div className="discover-owner">{quiz.username} <img src={`${Ip}${quiz.userImg}`} alt="" /></div>
+                        <div className="discover-owner">{quiz.username} <img src={typeof (quiz.userImg) !== 'undefined' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} alt="" /></div>
                     </div>
                 </div>
             )
@@ -72,10 +72,11 @@ class Discover extends Component {
         return quizs;
     }
 
-    trendModalShow() {
+    discoverModalShow() {
         const stateQuizs = this.state.trendQuizzes;
         let quizs = [];
         stateQuizs.forEach((quiz, key) => {
+            console.log(quiz);
             quizs.push(
                 <div className="modal fade bd-example-modal-lg" id={"quiz-item-modal" + key} key={key} tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 
@@ -87,7 +88,7 @@ class Discover extends Component {
                                 <div className="row">
 
                                     <div className="col-lg-6 modal-left">
-                                        <img src={`${Ip}${quiz.img}`} className="img-modal" alt="" />
+                                        <img src={quiz.img !== '' ? `${Ip}${quiz.img}` : require('../images/quiz/defaultQuiz.png')} className="img-modal" alt="" />
                                     </div>
 
                                     <div className="col-lg-6 modal-right">
@@ -96,7 +97,7 @@ class Discover extends Component {
 
                                         <div className="modal-user">
 
-                                            <img src={`${Ip}${quiz.img}`} className="img-user-modal" alt="" />
+                                            <img src={typeof (quiz.userImg) !== 'undefined' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
 
                                             <div className="modal-name">{quiz.username}</div>
 
@@ -130,14 +131,14 @@ class Discover extends Component {
         stateQuizs.forEach((quiz, key) => {
             quizs.push(
                 <div data-toggle="modal" data-target={"#my-quiz-item-modal" + key} className="discover-quizs-block" key={key}>
-                    <img src={`${Ip}${quiz.img}`} alt="" />
+                    <img src={quiz.img !== '' ? `${Ip}${quiz.img}` : require('../images/quiz/defaultQuiz.png')} alt="" />
 
                     <div className="discover-quizs-text">
-                        <span className="spn-discover-quizs">{quiz.title}</span>
+                        <span className="spn-discover-quizs">{quiz.title.length < 20 ? quiz.title : quiz.title.slice(0, 20) + '...'}</span>
                         <span className="spn-discover-2-quizs"> {quiz.questionCount}  Questions</span>
 
                         <div className="discover-owner-quizs">
-                            {quiz.username} <img src={`${Ip}${quiz.userImg}`} alt="" />
+                            {quiz.username} <img src={typeof (quiz.userImg) !== 'undefined' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} alt="" />
                         </div>
 
                     </div>
@@ -163,7 +164,7 @@ class Discover extends Component {
                                 <div className="row">
 
                                     <div className="col-lg-6 modal-left">
-                                        <img src={`${Ip}${quiz.img}`} className="img-modal" alt="" />
+                                        <img src={quiz.img !== '' ? `${Ip}${quiz.img}` : require('../images/quiz/defaultQuiz.png')} className="img-modal" alt="" />
                                     </div>
 
                                     <div className="col-lg-6 modal-right">
@@ -172,7 +173,7 @@ class Discover extends Component {
 
                                         <div className="modal-user">
 
-                                            <img src={`${Ip}${quiz.img}`} className="img-user-modal" alt="" />
+                                            <img src={typeof (quiz.userImg) !== 'undefined' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
 
                                             <div className="modal-name">{quiz.username}</div>
 
@@ -296,11 +297,11 @@ class Discover extends Component {
 
                                 <Slider className="discover-trend-bottom" {...settings}>
 
-                                    {this.trendShow()}
+                                    {this.discoverShow()}
 
                                 </Slider>
 
-                                {this.trendModalShow()}
+                                {this.discoverModalShow()}
 
                             </div>
                         </div>

@@ -23,6 +23,8 @@ class Quiz extends Component {
             visibleTo: false,
         }
         this.state = {
+            title: '',
+            description: '',
             loginVisible: false,
             questionVisible: false,
             file: "",
@@ -220,8 +222,8 @@ class Quiz extends Component {
                                         </div>
 
                                         <input type="text" placeholder="Title" className="txt-title" value={this.state.title || ''} required onChange={this.onChangeTitleEvent.bind(this)} />
-
-                                        <textarea placeholder="Description" className="txt-description" value={this.state.description || ''} required onChange={this.onChangeDescriptionEvent.bind(this)} />
+                                        <div class="description">
+                                            <textarea placeholder="Description" className="txt-description" value={this.state.description || ''} required onChange={this.onChangeDescriptionEvent.bind(this)} />Character {256 - (this.state.description.length) || '0'}</div>
                                         {this.state.quizError}
                                     </div>
 
