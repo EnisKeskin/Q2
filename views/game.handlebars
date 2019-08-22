@@ -17,7 +17,8 @@
         socket.emit('give-answer',
             {
                 pin: pin,
-                answer: index
+                answer: index,
+                val: document.getElementById('progressBar').value
             });
     }
     $(function () {
@@ -25,11 +26,23 @@
     });
     socket.on('render-content', (data) => {
         render(data);
+        if (data.templatedata.value && data.templatedata.time)
+            progress(data.templatedata.value, data.templatedata.time);
     });
     function render(data) {
         var source = data.source;
         var template = Handlebars.compile(source);
         var html = template(data.templatedata);
         document.getElementById("Content").innerHTML = html;
+    }
+    function progress(val, time) {
+        var bar = document.getElementById('progressBar');
+        if (!bar)
+            return;
+        bar.value = val;
+        val--;
+        if (val > 0) {
+            setTimeout(() => { progress(val, time) }, (time / 100.0) * 1000);
+        }
     }
 </script>

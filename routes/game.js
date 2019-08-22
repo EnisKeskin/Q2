@@ -13,7 +13,7 @@ module.exports = (io) => {
     const pin = req.query.pin;
     var Room = Rooms[pin];
     if (Room != null || Room != undefined) {
-      res.render('game');
+      res.render('game', { value: 0, time: 100 });
     }
     else {
       quiz.find({ pin: pin }).then((data) => {
@@ -27,7 +27,7 @@ module.exports = (io) => {
             answers: [0, 0, 0, 0],
             time: 0
           };
-          res.render('game');
+          res.render('game', { value: 0, time: 100 });
         } else {
           alert("There is no game with given pin");
           res.redirect("/");
@@ -64,7 +64,9 @@ module.exports = (io) => {
                   answer1: question.answers[0],
                   answer2: question.answers[1],
                   answer3: question.answers[2],
-                  answer4: question.answers[3]
+                  answer4: question.answers[3],
+                  value: 100,
+                  time: question.time
                 }
               });
           }
@@ -113,7 +115,9 @@ module.exports = (io) => {
                   answer1: question.answers[0],
                   answer2: question.answers[1],
                   answer3: question.answers[2],
-                  answer4: question.answers[3]
+                  answer4: question.answers[3],
+                  value: 100,
+                  time: question.time
                 }
               });
           });
@@ -163,7 +167,9 @@ module.exports = (io) => {
                     answer1: question.answers[0],
                     answer2: question.answers[1],
                     answer3: question.answers[2],
-                    answer4: question.answers[3]
+                    answer4: question.answers[3],
+                    value: 100,
+                    time: question.time
                   }
                 });
             });
@@ -220,8 +226,7 @@ module.exports = (io) => {
       var Room = Rooms[pin];
       var index = Room.questionIndex;
       var thePlayer = Room.players[socket.id];
-      let players = Object.values(Room.players);
-
+      var value = data.val;
       if ("isNull" in thePlayer.answers[index]) {
         quiz.find({ pin: pin }).then((result) => {
           if (result.length != 0) {
@@ -231,6 +236,29 @@ module.exports = (io) => {
             thePlayer.answers[index] = answer;
             Room.answers[data.answer]++;
             Room.playersAnswered++;
+            var colors = [
+              "lightgray",
+              "lightgray",
+              "lightgray",
+              "lightgray"
+            ];
+            colors[data.answer] = "blue";
+            gameNamespace.to(socket.id).emit('render-content',
+              {
+                source: handleBarsSources["AH"],
+                templatedata: {
+                  questionImage: question.img,
+                  question: question.questionTitle,
+                  answer1: question.answers[0],
+                  answer2: question.answers[1],
+                  answer3: question.answers[2],
+                  answer4: question.answers[3],
+                  color1: colors[0],
+                  color2: colors[1],
+                  color3: colors[2],
+                  color4: colors[3]
+                }
+              });
           }
         });
       }

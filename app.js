@@ -101,39 +101,73 @@ global.handleBarsSources = {
         <button class="btn-start" type="button" onclick="emit()">Start</button> 
     </div> 
 </div>`,
-  "QH": `<div class="container answer-contet">
-    <div class="answer-top">
-        <div class="answer-top-in">
-            <div class="answer-image">
-                <img src="{{questionImage}}" class="img-quiz" alt="question image">
-            </div>
-            <div class="answer-question">
-                {{question}}
-                <div class="triangle">
-                </div>
-            </div>
-        </div>
-        <div class="progressbar">
-        </div>
-    </div>
-    <div class="answer-bottom">
-       <div class="container answer-bottom-in">
-            <div class="row">
-                <div class="col-md-6" class="col-md-6">
-                    <button type="submit" class="answer-1" onclick="answer(0)">{{answer1}}</button>
-                </div>
-                <div class="col-md-6" class="col-md-6">
-                    <button type="submit" class="answer-2" onclick="answer(1)">{{answer2}}</button>
-                </div>
-                <div class="col-md-6">
-                    <button type="submit" class="answer-3" onclick="answer(2)">{{answer3}}</button>
-                </div>
-                <div class="col-md-6">
-                    <button type="submit" class="answer-4" onclick="answer(3)">{{answer4}}</button>
-                </div>
-            </div>
-        </div>
-    </div>
+"QH": `<div class="container answer-contet">
+  <div class="answer-top">
+      <div class="answer-top-in">
+          <div class="answer-image">
+              <img src="{{questionImage}}" class="img-quiz" alt="question image">
+          </div>
+          <div class="answer-question">
+              {{question}}
+              <div class="triangle">
+              </div>
+          </div>
+      </div>
+      <progress class="progressbar" value="{{value}}" max="100" min="0" id="progressBar">
+      </progress>
+  </div>
+  <div class="answer-bottom">
+     <div class="container answer-bottom-in">
+          <div class="row">
+              <div class="col-md-6" class="col-md-6">
+                  <button type="submit" class="answer-1" onclick="answer(0)">{{answer1}}</button>
+              </div>
+              <div class="col-md-6" class="col-md-6">
+                  <button type="submit" class="answer-2" onclick="answer(1)">{{answer2}}</button>
+              </div>
+              <div class="col-md-6">
+                  <button type="submit" class="answer-3" onclick="answer(2)">{{answer3}}</button>
+              </div>
+              <div class="col-md-6">
+                  <button type="submit" class="answer-4" onclick="answer(3)">{{answer4}}</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>`,
+"AH": `<div class="container answer-contet">
+  <div class="answer-top">
+      <div class="answer-top-in">
+          <div class="answer-image">
+              <img src="{{questionImage}}" class="img-quiz" alt="question image">
+          </div>
+          <div class="answer-question">
+              {{question}}
+              <div class="triangle">
+              </div>
+          </div>
+      </div>
+      <progress class="progressbar" value="{{value}}" max="100" min="0" id="progressBar">
+      </progress>
+  </div>
+  <div class="answer-bottom">
+     <div class="container answer-bottom-in">
+          <div class="row">
+              <div class="col-md-6" class="col-md-6">
+                  <button type="submit" class="answer-1" style="background:{{color1}};">{{answer1}}</button>
+              </div>
+              <div class="col-md-6" class="col-md-6">
+                  <button type="submit" class="answer-2" style="background:{{color2}};">{{answer2}}</button>
+              </div>
+              <div class="col-md-6">
+                  <button type="submit" class="answer-3" style="background:{{color3}};">{{answer3}}</button>
+              </div>
+              <div class="col-md-6">
+                  <button type="submit" class="answer-4" style="background:{{color4}};">{{answer4}}</button>
+              </div>
+          </div>
+      </div>
+  </div>
 </div>`
 }
 
