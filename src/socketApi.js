@@ -229,6 +229,27 @@ const login = (user, socket) => {
     });
 }
 
+const deleteFolder = (img, quiz) => {
+
+    if (quiz) {
+        quiz.question.forEach((question) => {
+            console.log(question);
+            const img = question.img.split('/');
+            if (typeof (img[1]) !== 'undefined') {
+                rimraf.sync('media' + path.join(`/${img[1]}`));
+            }
+        })
+        if (typeof (img) !== 'undefined') {
+            rimraf.sync('media' + path.join(`/${img}`));
+        }
+    } else {
+        if (typeof (img) !== 'undefined') {
+            rimraf.sync('media' + path.join(`/${img}`));
+        }
+    }
+
+}
+
 let roomControl = new RoomControl();
 let room = {};
 Io.of('/game').on('connection', (socket) => {
@@ -416,15 +437,7 @@ Io.of('/profile').use((socket, next) => {
                 throw err
             if (quiz !== null) {
                 const img = quiz.img.split('/');
-                if (typeof (img[1]) !== 'undefined') {
-                    rimraf.sync('media' + path.join(`/${img[1]}`));
-                }
-                quiz.question.forEach((question) => {
-                    const img = question.img.split('/');
-                    if (typeof (img[1]) !== 'undefined') {
-                        rimraf.sync('media' + path.join(`/${img[1]}`));
-                    }
-                })
+                deleteFolder(img[1], quiz);
                 Quiz.findByIdAndDelete(quizId, (err, result) => {
                     if (err)
                         throw err
@@ -773,12 +786,56 @@ Io.of('/profile').use((socket, next) => {
             socket.emit('setDiscoverMyQuiz', result);
         })
     });
+
     socket.on('questionCount', (quizId) => {
         Quiz.findById(quizId, (err, res) => {
             if (err) {
                 console.log(err);
             } else {
                 socket.emit('sendQuestionCount', res.question.length)
+            }
+        })
+    });
+
+    socket.on('userDeleteImg', (userId) => {
+        User.findById(userId, (err, res) => {
+            if (err) {
+                console.log(err);
+            } else {
+                const img = res.img.split('/');
+                if (img) {
+                    deleteFolder(img[1]);
+                }
+            }
+        });
+    });
+
+    socket.on('quizDeleteImg', (quizId) => {
+        Quiz.findById(quizId, (err, res) => {
+            if (err) {
+                console.log(err);
+            } else {
+                const img = res.img.split('/');
+                if (img) {
+                    deleteFolder(img[1]);
+                }
+            }
+        });
+    });
+
+    socket.on('questionDeleteImg', (questionId) => {
+        Quiz.findOne({ 'question._id': questionId }, (err, res) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.question.forEach((question) => {
+                    if (question._id == questionId) {
+                        const img = question.img.split('/');
+                        if (img) {
+                            deleteFolder(img[1]);
+                        }
+                    }
+                });
             }
         })
     })

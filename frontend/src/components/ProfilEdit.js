@@ -47,6 +47,7 @@ class ProfilEdit extends Component {
 
             io.on('file', (user) => {
                 if (this.file) {
+                    io.emit('userDeleteImg', user.userId);
                     Superagent
                         .post(`${Ip}api/upload`)
                         .field('userId', user.userId)

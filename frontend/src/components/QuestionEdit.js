@@ -87,6 +87,7 @@ class Question extends Component {
             })
             io.on('questionUpdateImg', (quiz) => {
                 if (this.file) {
+                    io.emit('questionDeleteImg', quiz.questionId);
                     Superagent
                         .post(`${Ip}api/upload`)
                         .field('questionId', quiz.questionId)
