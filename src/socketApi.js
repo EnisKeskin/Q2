@@ -802,9 +802,11 @@ Io.of('/profile').use((socket, next) => {
             if (err) {
                 console.log(err);
             } else {
-                const img = res.img.split('/');
-                if (img) {
-                    deleteFolder(img[1]);
+                if (res.img !== '') {
+                    const img = res.img.split('/');
+                    if (img) {
+                        deleteFolder(img[1]);
+                    }
                 }
             }
         });
@@ -815,9 +817,11 @@ Io.of('/profile').use((socket, next) => {
             if (err) {
                 console.log(err);
             } else {
-                const img = res.img.split('/');
-                if (img) {
-                    deleteFolder(img[1]);
+                if (res.img !== '') {
+                    const img = res.img.split('/');
+                    if (img) {
+                        deleteFolder(img[1]);
+                    }
                 }
             }
         });
