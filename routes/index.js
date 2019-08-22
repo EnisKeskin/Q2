@@ -8,8 +8,7 @@ const fs = require('fs');
 const path = require('path');
 
 router.get('/*', (req, res, next) => {
-    res.json({ status: 1 })
-    // res.sendFile(path.join(process.cwd(), 'views', 'index.html'));
+    res.sendFile(path.join(process.cwd(), 'views', 'index.html'));
 });
 
 //soruyu bulmak için
