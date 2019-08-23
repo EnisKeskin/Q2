@@ -64,7 +64,7 @@ class Discover extends Component {
                     <div className="discover-block-text">
                         <span className="spn-discover">{quiz.title.length < 20 ? quiz.title : quiz.title.slice(0, 20) + '...'} </span>
                         <span className="spn-discover-2"> {quiz.questionCount} Questions</span>
-                        <div className="discover-owner">{quiz.username} <img src={typeof (quiz.userImg) !== 'undefined' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} alt="" /></div>
+                        <div className="discover-owner">{quiz.username} <img src={typeof (quiz.userImg) !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} alt="" /></div>
                     </div>
                 </div>
             )
@@ -97,7 +97,7 @@ class Discover extends Component {
 
                                         <div className="modal-user">
 
-                                            <img src={typeof (quiz.userImg) !== 'undefined' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
+                                            <img src={typeof (quiz.userImg) !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
 
                                             <div className="modal-name">{quiz.username}</div>
 
@@ -138,7 +138,7 @@ class Discover extends Component {
                         <span className="spn-discover-2-quizs"> {quiz.questionCount}  Questions</span>
 
                         <div className="discover-owner-quizs">
-                            {quiz.username} <img src={typeof (quiz.userImg) !== 'undefined' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} alt="" />
+                            {quiz.username} <img src={typeof (quiz.userImg) !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} alt="" />
                         </div>
 
                     </div>
@@ -173,7 +173,7 @@ class Discover extends Component {
 
                                         <div className="modal-user">
 
-                                            <img src={typeof (quiz.userImg) !== 'undefined' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
+                                            <img src={typeof (quiz.userImg) !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
 
                                             <div className="modal-name">{quiz.username}</div>
 

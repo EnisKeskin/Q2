@@ -130,7 +130,7 @@ class Profile extends Component {
 
                                             <div className="modal-user">
 
-                                                <img src={typeof (quiz.userImg) !== 'undefined' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
+                                                <img src={typeof (quiz.userImg) !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
 
                                                 <div className="modal-name">{quiz.username}</div>
 
