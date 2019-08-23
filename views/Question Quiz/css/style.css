@@ -1240,10 +1240,6 @@ ul {
     border-radius: 10px;
 }
 
-.quiz-question-header{
-    display: flex;
-    justify-content: flex-start;
-}
 .btn-question-add{
     width: 35px;
     height: 35px;
@@ -1321,6 +1317,7 @@ ul {
     background: #FFFFFF;
     box-shadow: 0px 2px 4px #DEDEDE;
     border-radius: 12px;
+    
 }
 .select-box select:hover{
     cursor: pointer;
@@ -1343,6 +1340,7 @@ ul {
     left: 3px;
     width: 30px;
     height: 19px;
+    
 }
 
 .select-box select {
@@ -1359,6 +1357,7 @@ ul {
     color: gray;
     padding-left: 35px;
     outline: 0;
+    text-align: center; 
 }
 
 select::-ms-expand {
@@ -1488,6 +1487,7 @@ select::-ms-expand {
         padding-left: 0px;
         margin-top: 40px;
     }
+ 
 }
 
 /*Selectbox*/
@@ -1496,11 +1496,34 @@ select::-ms-expand {
 
 /* question page*/
 
+.question-header{
+    position: fixed;
+    width: 100%;
+    z-index: 3;
+
+}
+
 .question-content {
     height: auto;
     padding-bottom: 30px;
+    padding-top: 130px;
 }
-
+.btn-finish{
+    width: 100px;
+    height: 50px;;
+    border: none;
+    background-color: #00d58f;
+    color: white;
+    border-radius: 10px;
+    position: absolute;
+    right: 50px;
+    transition: 0.2s;
+}
+.btn-finish:hover{
+    background-color: #2be9aa;
+    transition: 0.2s;
+transform: scale(1.08);
+}
 .question-image {
     cursor: pointer;
     overflow: hidden;
@@ -1560,18 +1583,23 @@ select::-ms-expand {
 }
 
 .select-box-question {
-    position: absolute;
-    right: 10px;
     margin: 0;
     bottom: 40px;
     vertical-align: middle;
-    min-width: 70px;
+    width: 100px;
     height: 40px;
     background: #9B3ADB;
     border-radius: 12px;
     bottom: 10px;
     right: 25;
     z-index: 2;
+    margin: auto;
+    margin-bottom: 20px;
+}
+.select-box-question select:hover{
+    cursor: pointer;
+    transform: scale(1.07);
+    transition: 0.2s;
 }
 
 .select-box-question select {
@@ -1589,6 +1617,7 @@ select::-ms-expand {
     outline: 0;
     background: #9B3ADB;
     border-radius: 12px;
+    transition: 0.2s;
 }
 
 .question-text {
@@ -1626,8 +1655,8 @@ select::-ms-expand {
     border: 0px solid;
     background: #FF3D71;
     color: white;
-    outline: 0;
     padding: 35px;
+    outline-color: rgb(206, 21, 70);
 }
 .a1:hover , .a2:hover , .a3:hover , .a4:hover{
     transform: scale(1.03);
@@ -1640,8 +1669,9 @@ select::-ms-expand {
     border: 0px solid;
     background: #FFAA00;
     color: white;
-    outline: 0;
     padding: 35px;
+    outline-color: rgb(190, 130, 9);
+
 }
 
 .txt-answer3 {
@@ -1651,8 +1681,8 @@ select::-ms-expand {
     border: 0px solid;
     background: #0EC6F1;
     color: white;
-    outline: 0;
     padding: 35px;
+    outline-color: rgb(17, 133, 160);
 }
 
 .txt-answer4 {
@@ -1662,8 +1692,8 @@ select::-ms-expand {
     border: 0px solid;
     background: #00D68F;
     color: white;
-    outline: 0;
     padding: 35px;
+    outline-color: rgb(1, 163, 109);
 }
 
 .txt-answer1::placeholder {
@@ -1850,6 +1880,14 @@ select::-ms-expand {
 
 .checkbox input[type="radio"]:checked+label {
     display: block;
+}
+
+
+@media only screen and (max-width: 980px) {
+    .btn-finish{
+        right: 10px;
+        width: 80px;
+    }
 }
 
 /* question page*/
