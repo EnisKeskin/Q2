@@ -546,7 +546,6 @@ ul {
     background: rgb(185, 99, 241);
     opacity: 0.85;
     border: 6px solid #e34e43;
-    color: white;
     margin: auto;
     margin-bottom: 30px;
     display: flex;
@@ -558,6 +557,7 @@ ul {
     animation-name: example;
     animation-duration: 0.5s;
     transition: 1s;
+    color: white;
 }
 @keyframes example {
     0%{
@@ -766,6 +766,9 @@ ul {
     padding-right: 40px;
     background-color: #fff;
     border-radius: 8px;
+    animation-name: example;
+    animation-duration: 0.5s;
+    transition: 1s;
 }
 .login-succes{
     max-width: 347px;
@@ -790,6 +793,9 @@ ul {
 }
 .sign-err{
     margin-top: 0px;
+    animation-name: example;
+    animation-duration: 0.5s;
+    transition: 1s;
 }
 .login-img {
     width: 19px;
@@ -1144,6 +1150,34 @@ ul {
     border-radius: 8px;
     border:1px solid #d5d5d5;
     font-size: 16px;
+    animation-name: example;
+    animation-duration: 0.5s;
+    transition: 1s;
+    color: #f42;
+}
+.quiz-succes{
+    width:100%;
+    min-height: 40px;
+    background-image: url("../images/quiz/succes.png");
+    background-size: 23px;
+    background-repeat: no-repeat;
+    background-position: 1%;
+    padding:10px;
+    padding-left: 50px;
+    padding-right: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    border:1px solid #d5d5d5;
+    font-size: 16px;
+    color: #209e00;
+    animation-name: example;
+    animation-duration: 0.5s;
+    transition: 1s;
 }
 
 .dropdown {
@@ -1190,7 +1224,10 @@ ul {
     transform: scale(1.05); 
     position: relative;
 }
-
+.questions-image-in a{
+    color: #333;
+    text-decoration: none;
+}
 .q-image {
     height: 120px;
     border-radius: 10px;
@@ -1203,6 +1240,24 @@ ul {
     border-radius: 10px;
 }
 
+.quiz-question-header{
+    display: flex;
+    justify-content: flex-start;
+}
+.btn-question-add{
+    width: 35px;
+    height: 35px;
+    background-image: url("../images/quiz/add.png") ;
+    background-size: 100%;
+    border: none;
+    background-color: white;
+    transition: 0.2s;
+    margin-left: 20px;
+}
+.btn-question-add:hover{
+    transition: 0.2s;
+    transform: scale(1.07);
+}
 .spn-questions {
     height: calc(100% - 120px);
     display: flex;
@@ -1210,7 +1265,7 @@ ul {
     justify-content: center;
     word-break: break-all;
     padding-left: 10px;
-    padding-right: 10px;as
+    padding-right: 10px;
 }
 
 .slick-track {
@@ -1222,7 +1277,7 @@ ul {
     
 }
 .slick-slide{
-    /*padding-left:20px;*/
+    padding-left:20px;
 }
 
 .slick-arrow.slick-next {
@@ -1573,7 +1628,6 @@ select::-ms-expand {
     color: white;
     outline: 0;
     padding: 35px;
-
 }
 .a1:hover , .a2:hover , .a3:hover , .a4:hover{
     transform: scale(1.03);
@@ -1588,7 +1642,6 @@ select::-ms-expand {
     color: white;
     outline: 0;
     padding: 35px;
-
 }
 
 .txt-answer3 {
@@ -1713,6 +1766,9 @@ select::-ms-expand {
     border-radius: 8px;
     border:1px solid #d5d5d5;
     font-size: 16px;
+    color: #f05227;
+    animation-name: example;
+    animation-duration: 0.5s;
 }
 
 .question-succes{
@@ -1734,6 +1790,9 @@ select::-ms-expand {
     border-radius: 8px;
     border:1px solid #d5d5d5;
     font-size: 16px;
+    color: #209e00;
+    animation-name: example;
+    animation-duration: 0.5s;
 }
 .question-number{
     text-align: center;
@@ -1881,6 +1940,21 @@ select::-ms-expand {
     background: #27CB31;
     transition: 0.3s;
     transform: scale(1.05);
+}
+.players-close{
+    position: absolute;
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 1;
+}
+.players-close img{
+    width: 30px;
+    height: 30px;
+}
+.players-close img:hover{
+    cursor: pointer;
+    opacity: 0.8;
 }
 @media only screen and (max-width:1000px) {
     .question-error{
@@ -2075,12 +2149,13 @@ select::-ms-expand {
     height: 165px;
     border-radius: 20px;
     color: white;
-    text-align: center;
     margin-bottom: 20px;
     transition: 0.2s;
     border:none;
     word-break: break-all;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .answer-2 {
@@ -2089,12 +2164,13 @@ select::-ms-expand {
     width: 100%;
     border-radius: 20px;
     color: white;
-    text-align: center;
     margin-bottom: 20px;
     border:none;
     transition: 0.2s;
     word-break: break-all;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .answer-3 {
@@ -2103,12 +2179,13 @@ select::-ms-expand {
     width: 100%;
     border-radius: 20px;
     color: white;
-    text-align: center;
     margin-bottom: 20px;
     border:none;
     transition: 0.2s;
     word-break: break-all;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .answer-4 {
@@ -2117,12 +2194,13 @@ select::-ms-expand {
     width: 100%;
     border-radius: 20px;
     color: white;
-    text-align: center;
-    text-align: center;
     margin-bottom: 20px;
     border:none;
     transition: 0.2s;
     word-break: break-all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .answer-1:hover {
