@@ -86,7 +86,7 @@ class Pin extends Component {
                 </div>
               </div>
               <div className="a-pin">
-                <Link to="/user">Login or Register</Link>
+                <Link to="/user">{localStorage.getItem('token') ? 'Go to profile' : 'Login or Register'}</Link>
               </div>
             </div>
           </div>

@@ -36,7 +36,6 @@ class Quiz extends Component {
         this.onChangeUploadEvent = this.onChangeUploadEvent.bind(this);
         this.onChangeVisibleToEvent = this.onChangeVisibleToEvent.bind(this);
     }
-
     static getDerivedStateFromProps(props, state) {
         if (typeof (props.location.state) !== 'undefined') {
             if (props.location.state.quizId) {
@@ -48,7 +47,6 @@ class Quiz extends Component {
             return state.visible = true;
         }
     }
-
     componentDidMount() {
         if (localStorage.getItem('token')) {
             if (document.querySelector('.modal-backdrop')) {
@@ -74,7 +72,6 @@ class Quiz extends Component {
                     io.emit('reqQuizInfo', this.quizId)
                     io.on('sendQuizInfo', (quiz) => {
                         if (quiz !== null) {
-
                             if (typeof (quiz.question[0]) !== 'undefined') {
                                 this.setState({
                                     title: quiz.title,
@@ -123,7 +120,7 @@ class Quiz extends Component {
             io.on('quizUpdateSuccess', (msg) => {
                 this.setState({
                     quizError: null,
-                    questionSucces: <div className="login-succes sign-err">{msg}</div>
+                    questionSucces: <div className="quiz-succes">{msg}</div>
                 })
             })
 
@@ -179,7 +176,7 @@ class Quiz extends Component {
             questions.push(
                 <div className="questions-image-in" key={key}>
                     <div className="question-delete"><img src={require('../images/quiz/cancel.png')} alt="" onClick={this.onClickDeleteQuestionEvent.bind(this, question._id)} /></div>
-                    <Link to={{ pathname: 'QuestionEdit', state: { questionId: question._id } }}>
+                    <Link to={{ pathname: '/Question/Edit', state: { questionId: question._id, quizId: this.props.location.state.quizId } }}>
 
                         <div className="q-image">
                             <img src={`${Ip}${question.img}`} alt="" />
@@ -202,6 +199,7 @@ class Quiz extends Component {
             io.removeListener('quizUpdateFile');
         }
     }
+
     onChangeTitleEvent = (e) => {
         if (e.target.value.length <= 100) {
             this.quiz.title = e.target.value;
@@ -210,6 +208,7 @@ class Quiz extends Component {
             });
         }
     }
+
     onChangeDescriptionEvent = (e) => {
         if (e.target.value.length <= 256) {
             this.quiz.description = e.target.value
@@ -218,6 +217,7 @@ class Quiz extends Component {
             });
         }
     }
+
     render() {
         const discoverBottom = {
             arrows: true,
@@ -250,7 +250,9 @@ class Quiz extends Component {
         return (
             <div>
                 {this.state.visible ?
-                    <Redirect to='/Profile' />
+                    <div>{console.log('çalıştı')}
+                        <Redirect to='/Profile' />
+                    </div>
                     :
                     <div>
                         {this.state.loginVisible ?

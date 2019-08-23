@@ -29,9 +29,9 @@ class App extends Component {
                     <Route exact path='/Profile' component={Profile} />
                     <Route exact path='/Profile/Edit' component={ProfileEdit} />
                     <Route exact path='/Quiz' component={Quiz} />
-                    <Route exact path='/QuizEdit' component={QuizEdit} />
+                    <Route exact path='/Quiz/Edit' component={QuizEdit} />
                     <Route exact path='/Question' component={Question} />
-                    <Route exact path='/QuestionEdit' component={QuestionEdit} />
+                    <Route exact path='/Question/Edit' component={QuestionEdit} />
 
                     <Route exact path='/Discover' component={Discover} />
 

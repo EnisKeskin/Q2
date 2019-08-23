@@ -678,6 +678,7 @@ Io.of('/profile').use((socket, next) => {
     })
 
     socket.on('questionUpdate', (question) => {
+        console.log(question);
         let validationMessage = (message) => { socket.emit('errors', { message }) };
         let checkAnswers = true;
         objectTrim(question);
@@ -691,7 +692,7 @@ Io.of('/profile').use((socket, next) => {
         });
         if (checkAnswers) {
             if ((question.time >= 10)) {
-                Quiz.update(
+                Quiz.updateOne(
                     { 'question._id': question._id },
                     {
                         '$set': {
@@ -847,7 +848,7 @@ Io.of('/profile').use((socket, next) => {
 
 Io.of('/user').on('connection', (socket) => {
     socket.on('userLogin', (user) => {
-
+        objectTrim(user);
         if (user.email.trim() !== '' && user.password !== '') {
             if (user.email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
                 login(user, socket)

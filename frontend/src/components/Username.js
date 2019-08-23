@@ -97,11 +97,11 @@ class Username extends Component {
                           <img src={require('../images/logo/logo-w.png')} className="img-pin-logo" alt="" />
                         </div>
                         <div className="pin-text">
-                          <input type="text" className="txt-pin" placeholder="Username" value={this.state.value || ''} onChange={this.onChangeEvent} />
+                          <input type="text" id='username' className="txt-pin" placeholder="Username" value={this.state.value || ''} onChange={this.onChangeEvent} />
                         </div>
                         {this.state.err}
                         <div className="pin-button">
-                          <button onClick={this.onClickEvent} type="submit" className="btn-pin">Enter</button>
+                          <button onClick={this.onClickEvent} id='btn-username' type="submit" className="btn-pin">Enter</button>
                         </div>
                       </div>
                     </div>

@@ -553,7 +553,6 @@ ul {
     background: rgb(185, 99, 241);
     opacity: 0.85;
     border: 6px solid #e34e43;
-    color: white;
     margin: auto;
     margin-bottom: 30px;
     display: flex;
@@ -565,6 +564,7 @@ ul {
     animation-name: example;
     animation-duration: 0.5s;
     transition: 1s;
+    color: white;
 }
 
 @keyframes example {
@@ -778,6 +778,9 @@ ul {
     padding-right: 40px;
     background-color: #fff;
     border-radius: 8px;
+    animation-name: example;
+    animation-duration: 0.5s;
+    transition: 1s;
 }
 
 .login-succes {
@@ -803,6 +806,9 @@ ul {
 
 .sign-err {
     margin-top: 0px;
+    animation-name: example;
+    animation-duration: 0.5s;
+    transition: 1s;
 }
 
 .login-img {
@@ -1161,6 +1167,35 @@ ul {
     border-radius: 8px;
     border: 1px solid #d5d5d5;
     font-size: 16px;
+    animation-name: example;
+    animation-duration: 0.5s;
+    transition: 1s;
+    color: #f42;
+}
+
+.quiz-succes {
+    width: 100%;
+    min-height: 40px;
+    background-image: url("../images/quiz/succes.png");
+    background-size: 23px;
+    background-repeat: no-repeat;
+    background-position: 1%;
+    padding: 10px;
+    padding-left: 50px;
+    padding-right: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #d5d5d5;
+    font-size: 16px;
+    color: #209e00;
+    animation-name: example;
+    animation-duration: 0.5s;
+    transition: 1s;
 }
 
 .dropdown {
@@ -1208,6 +1243,11 @@ ul {
     position: relative;
 }
 
+.questions-image-in a {
+    color: #333;
+    text-decoration: none;
+}
+
 .q-image {
     height: 120px;
     border-radius: 10px;
@@ -1218,6 +1258,22 @@ ul {
     height: 120px;
     object-fit: cover;
     border-radius: 10px;
+}
+
+.btn-question-add {
+    width: 35px;
+    height: 35px;
+    background-image: url("../images/quiz/add.png");
+    background-size: 100%;
+    border: none;
+    background-color: white;
+    transition: 0.2s;
+    margin-left: 20px;
+}
+
+.btn-question-add:hover {
+    transition: 0.2s;
+    transform: scale(1.07);
 }
 
 .spn-questions {
@@ -1239,7 +1295,7 @@ ul {
 }
 
 .slick-slide {
-    padding-left:20px;
+    padding-left: 20px;
 }
 
 .slick-arrow.slick-next {
@@ -1322,6 +1378,7 @@ ul {
     color: gray;
     padding-left: 35px;
     outline: 0;
+    text-align: center;
 }
 
 select::-ms-expand {
@@ -1459,9 +1516,35 @@ select::-ms-expand {
 
 /* question page*/
 
+.question-header {
+    position: fixed;
+    width: 100%;
+    z-index: 3;
+}
+
 .question-content {
     height: auto;
     padding-bottom: 30px;
+    padding-top: 130px;
+}
+
+.btn-finish {
+    width: 100px;
+    height: 50px;
+    ;
+    border: none;
+    background-color: #00d58f;
+    color: white;
+    border-radius: 10px;
+    position: absolute;
+    right: 50px;
+    transition: 0.2s;
+}
+
+.btn-finish:hover {
+    background-color: #2be9aa;
+    transition: 0.2s;
+    transform: scale(1.08);
 }
 
 .question-image {
@@ -1527,18 +1610,24 @@ select::-ms-expand {
 }
 
 .select-box-question {
-    position: absolute;
-    right: 10px;
     margin: 0;
     bottom: 40px;
     vertical-align: middle;
-    min-width: 70px;
+    width: 100px;
     height: 40px;
     background: #9B3ADB;
     border-radius: 12px;
     bottom: 10px;
     right: 25;
     z-index: 2;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.select-box-question select:hover {
+    cursor: pointer;
+    transform: scale(1.07);
+    transition: 0.2s;
 }
 
 .select-box-question select {
@@ -1556,6 +1645,7 @@ select::-ms-expand {
     outline: 0;
     background: #9B3ADB;
     border-radius: 12px;
+    transition: 0.2s;
 }
 
 .question-text {
@@ -1594,8 +1684,8 @@ select::-ms-expand {
     border: 0px solid;
     background: #FF3D71;
     color: white;
-    outline: 0;
     padding: 35px;
+    outline-color: rgb(206, 21, 70);
 }
 
 .a1:hover, .a2:hover, .a3:hover, .a4:hover {
@@ -1610,8 +1700,8 @@ select::-ms-expand {
     border: 0px solid;
     background: #FFAA00;
     color: white;
-    outline: 0;
     padding: 35px;
+    outline-color: rgb(190, 130, 9);
 }
 
 .txt-answer3 {
@@ -1621,8 +1711,8 @@ select::-ms-expand {
     border: 0px solid;
     background: #0EC6F1;
     color: white;
-    outline: 0;
     padding: 35px;
+    outline-color: rgb(17, 133, 160);
 }
 
 .txt-answer4 {
@@ -1632,8 +1722,8 @@ select::-ms-expand {
     border: 0px solid;
     background: #00D68F;
     color: white;
-    outline: 0;
     padding: 35px;
+    outline-color: rgb(1, 163, 109);
 }
 
 .txt-answer1::placeholder {
@@ -1735,6 +1825,9 @@ select::-ms-expand {
     border-radius: 8px;
     border: 1px solid #d5d5d5;
     font-size: 16px;
+    color: #f05227;
+    animation-name: example;
+    animation-duration: 0.5s;
 }
 
 .question-succes {
@@ -1756,6 +1849,9 @@ select::-ms-expand {
     border-radius: 8px;
     border: 1px solid #d5d5d5;
     font-size: 16px;
+    color: #209e00;
+    animation-name: example;
+    animation-duration: 0.5s;
 }
 
 .question-number {
@@ -1815,6 +1911,13 @@ select::-ms-expand {
 
 .checkbox input[type="radio"]:checked+label {
     display: block;
+}
+
+@media only screen and (max-width: 980px) {
+    .btn-finish {
+        right: 10px;
+        width: 80px;
+    }
 }
 
 /* question page*/
@@ -1902,6 +2005,24 @@ select::-ms-expand {
     background: #27CB31;
     transition: 0.3s;
     transform: scale(1.05);
+}
+
+.players-close {
+    position: absolute;
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 1;
+}
+
+.players-close img {
+    width: 30px;
+    height: 30px;
+}
+
+.players-close img:hover {
+    cursor: pointer;
+    opacity: 0.8;
 }
 
 @media only screen and (max-width:1000px) {
@@ -2098,11 +2219,13 @@ select::-ms-expand {
     height: 165px;
     border-radius: 20px;
     color: white;
-    text-align: center;
     margin-bottom: 20px;
     transition: 0.2s;
     border: none;
     word-break: break-all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .answer-2 {
@@ -2111,11 +2234,13 @@ select::-ms-expand {
     width: 100%;
     border-radius: 20px;
     color: white;
-    text-align: center;
     margin-bottom: 20px;
     border: none;
     transition: 0.2s;
     word-break: break-all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .answer-3 {
@@ -2124,11 +2249,13 @@ select::-ms-expand {
     width: 100%;
     border-radius: 20px;
     color: white;
-    text-align: center;
     margin-bottom: 20px;
     border: none;
     transition: 0.2s;
     word-break: break-all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .answer-4 {
@@ -2137,12 +2264,13 @@ select::-ms-expand {
     width: 100%;
     border-radius: 20px;
     color: white;
-    text-align: center;
-    text-align: center;
     margin-bottom: 20px;
     border: none;
     transition: 0.2s;
     word-break: break-all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .answer-1:hover {
@@ -2777,6 +2905,22 @@ select::-ms-expand {
     .players-number {
         font-size: 20px;
     }
+}
+
+.question-finish {
+    height: 50px;
+    border: none;
+    background-color: #00d58f;
+    color: white;
+    border-radius: 10px;
+    position: absolute;
+    right: 0px;
+    transition: 0.2s;
+}
+
+.quiz-question-header {
+    display: flex;
+    justify-content: flex-start
 }
 
 /*New stye*/

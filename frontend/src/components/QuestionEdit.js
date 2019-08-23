@@ -129,7 +129,7 @@ class Question extends Component {
             io.removeListener('questionUpdateImg');
             io.removeListener('errors');
             io.removeListener('questUpdateSuccess');
-
+            io.removeListener('sendQuestionInfo');
         }
     }
 
@@ -153,7 +153,6 @@ class Question extends Component {
     }
 
     onClickEvent = (e) => {
-        e.preventDefault();
         this.question.answers = this.answers;
         io.emit('questionUpdate', this.question);
     }
@@ -202,43 +201,26 @@ class Question extends Component {
         return (
             <div>
                 {this.state.visible ?
-                    <Redirect to='/QuizEdit' />
+                    <Redirect to='/Quiz/Edit' />
                     : <div>
                         {this.state.loginVisible ? <Redirect to='/User' /> :
 
                             <div className="capsule-2">
 
-                                <header className="quiz-header">
+                                <header className="quiz-header question-header">
                                     <div className="quiz-logo">
                                         <img src={require('../images/logo/logo-w.png')} className="img-quiz-logo" accept="image/*" alt='' />
 
                                     </div>
-
-                                    <div className="close">
-                                        <Link to='/profile'><img src={require('../images/quiz/cancel.png')} alt='' /></Link>
-
-                                    </div>
+                                    <Link to={{ pathname: '/Quiz/Edit', state: { quizId: this.props.location.state.quizId } }} className='question-finish'><button type="button" className="btn-finish" onClick={this.onClickEvent}> Finish </button></Link>
 
                                 </header>
-
                                 <div className="container question-content">
                                     <form action="." method="POST" ref={(el) => this.myFormRef = el}>
                                         <div className="question-image">
                                             <label className="lbl-file" htmlFor="file">   Tap to add cover images    </label>
                                             <input className="fileupload" type="file" name="fileToUpload" id="file" accept="image/*" onChange={this.onChangeFileEvent} />
                                             <img src={this.state.file || `${Ip}${this.state.img}`} alt='' srcSet='' />
-                                            <div className="select-box-question" >
-                                                <select value={this.state.time || 'DEFAULT'} onChange={(e) => { this.question.time = e.target.value; this.setState({ time: e.target.value }) }} >
-                                                    <option value={'DEFAULT'}>Select Time</option>
-                                                    <option value={10}>10 sec </option>
-                                                    <option value={20}>20 sec </option>
-                                                    <option value={30}>30 sec </option>
-                                                    <option value={40}>40 sec </option>
-                                                    <option value={50}>50 sec </option>
-                                                    <option value={60}>60 sec </option>
-                                                </select>
-                                            </div>
-
                                         </div>
                                         <div className="question-text">
                                             {/* kısa bicimde yaz */}
@@ -305,10 +287,18 @@ class Question extends Component {
                                             </div>
 
                                         </div>
-                                        <div>{this.state.questionErr || this.state.questionSucces}</div>
-                                        <div className="add-question">
-                                            <button className="btn-add" type="submit" onClick={this.onClickEvent} ></button>
+                                        <div className="select-box-question" >
+                                            <select value={this.state.time || 'DEFAULT'} onChange={(e) => { this.question.time = e.target.value; this.setState({ time: e.target.value }) }} >
+                                                <option value={'DEFAULT'}>Select Time</option>
+                                                <option value={10}>10 sec </option>
+                                                <option value={20}>20 sec </option>
+                                                <option value={30}>30 sec </option>
+                                                <option value={40}>40 sec </option>
+                                                <option value={50}>50 sec </option>
+                                                <option value={60}>60 sec </option>
+                                            </select>
                                         </div>
+                                        <div>{this.state.questionErr || this.state.questionSucces}</div>
                                     </form>
                                 </div>
                             </div>

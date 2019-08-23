@@ -66,7 +66,7 @@ class scoreboard extends Component {
                         {this.state.isVisible ?
                             <div className="capsule">
                                 <div class="profile-edit-close">
-                                    <Link to='/profile'> <img src="images/quiz/cancel.png" alt="" /> </Link>
+                                    <Link to='/profile'> <img src={require('../images/quiz/cancel.png')}alt="" /> </Link>
                                 </div>
                                 <div className="score-title">
                                     <h1 className="h1 h1-score">Scoreboard</h1>
@@ -76,7 +76,7 @@ class scoreboard extends Component {
 
                                     <div className="score-block-1st">
                                         <span> {this.state.users[0] ? this.state.users[0].username : null}  </span> <span> {this.state.users[0] ? this.state.users[0].score : null} </span>
-                                        {/* <img src={require('../images/user-icon/create.png')} className="img-medal" alt="" /> */}
+                                        <img src={require('../images/user-icon/medal.png')} className="img-medal" alt="" />
                                         <div className="block-1st"></div>
                                     </div>
                                     {this.createUserScore()}

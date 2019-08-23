@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Io from '../connection';
 import { Redirect } from 'react-router'
+import { Link } from 'react-router-dom'
 
 let io = null;
 
@@ -19,17 +20,9 @@ class Players extends Component {
         }
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (document.querySelector('.modal-backdrop')) {
-            document.querySelector('body').classList.remove("modal-open");
-            document.querySelector('.modal-backdrop').remove();
-        }
-    }
-
     componentDidMount() {
         let props = this.props;
         let propsLocation = props.location;
-
         if (typeof (propsLocation.state) !== 'undefined') {
             if (propsLocation.state.visible) {
                 this.setState({
@@ -46,6 +39,10 @@ class Players extends Component {
             this.setState({
                 visible: true
             });
+        }
+        if (document.querySelector('.modal-backdrop')) {
+            document.querySelector('body').classList.remove("modal-open");
+            document.querySelector('.modal-backdrop').remove();
         }
         io = Io.connectionsRoom('game');
         if (typeof (propsLocation.state) !== 'undefined') {
@@ -132,7 +129,11 @@ class Players extends Component {
                         {this.state.visible ?
                             <div> {localStorage.getItem('token') ? <Redirect to='/profile' /> : <Redirect to='/' />} </div>
                             :
-                            <div>
+                            <div class="capsule-2">
+
+                                <div class="players-close">
+                                    <Link to={localStorage.getItem('token') ? '/profile' : '/'} > <img src={require('../images/quiz/cancel-p.png')} alt="" /></Link>
+                                </div>
                                 <div className="container players-content" >
                                     <div className="players-top" > {this.state.pin}  </div>
                                     <div className="players-bottom" > {
