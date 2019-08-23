@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const userShema = new Schema ({
+const userShema = new Schema({
     email: {
         type: String,
         required: true,
@@ -24,8 +24,9 @@ const userShema = new Schema ({
         type: String,
         maxlength: 50
     },
-    img:{
+    img: {
         type: String,
+        default: '',
         maxlength: 255
     }
 })

@@ -472,43 +472,48 @@ Io.of('/profile').use((socket, next) => {
 
     socket.on('getProfilInfo', () => {
         User.findById(socket.decoded.userId, (err, user) => {
-            if (err)
-                throw err
-            socket.emit('setProfilInfo', { username: user.username, userId: user._id, firstname: user.firstname, lastname: user.lastname, img: user.img });
-            Quiz.aggregate([
-                {
-                    $match: {
-                        userId: mongoose.Types.ObjectId(user._id)
-                    }
-                },
-                { $sort: { date: -1 } },
-                {
-                    $lookup: {
-                        from: 'users',
-                        localField: 'userId',
-                        foreignField: '_id',
-                        as: 'user'
-                    }
-                },
-                {
-                    $unwind: '$user'
-                },
-                {
-                    $project: {
-                        title: 1,
-                        description: 1,
-                        img: 1,
-                        username: '$user.username',
-                        userImg: '$user.img',
-                        pin: 1,
-                        questionCount: { $size: '$question' }
-                    }
-                },
-            ], (err, result) => {
-                if (err)
-                    throw err
-                socket.emit('profilQuiz', result);
-            })
+            if (err) {
+                console.log(err);
+            } else {
+                if (user) {
+
+                    socket.emit('setProfilInfo', { username: user.username, userId: user._id, firstname: user.firstname, lastname: user.lastname, img: user.img });
+                    Quiz.aggregate([
+                        {
+                            $match: {
+                                userId: mongoose.Types.ObjectId(user._id)
+                            }
+                        },
+                        { $sort: { date: -1 } },
+                        {
+                            $lookup: {
+                                from: 'users',
+                                localField: 'userId',
+                                foreignField: '_id',
+                                as: 'user'
+                            }
+                        },
+                        {
+                            $unwind: '$user'
+                        },
+                        {
+                            $project: {
+                                title: 1,
+                                description: 1,
+                                img: 1,
+                                username: '$user.username',
+                                userImg: '$user.img',
+                                pin: 1,
+                                questionCount: { $size: '$question' }
+                            }
+                        },
+                    ], (err, result) => {
+                        if (err)
+                            throw err
+                        socket.emit('profilQuiz', result);
+                    });
+                }
+            }
         });
     });
 
@@ -803,7 +808,8 @@ Io.of('/profile').use((socket, next) => {
             if (err) {
                 console.log(err);
             } else {
-                if (res.img !== '') {
+                console.log(res.img);
+                if ((res.img !== '' || typeof (res.img) !== 'undefined') || res.img !== null) {
                     const img = res.img.split('/');
                     if (img) {
                         deleteFolder(img[1]);
