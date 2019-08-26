@@ -1,7 +1,13 @@
+<div class="figure">
+</div>
+<div class="figure-2">
+</div>
 <div class="capsule">
   <div class="container user">
     <div class="user-logo">
-      <img src="images/logo/logo-w.png" class="img-user-logo" alt="Quiz">
+      <a href="/">
+        <img src="images/logo/logo-w.png" class="img-user-logo" alt="Quiz">
+      </a>
     </div>
     <div class="row">
       <div class="col-lg-6 login">
@@ -9,13 +15,13 @@
           Log In
         </div>
         <div class="login-in">
-          <form action="users/login" method="POST">
+          <form action="/users/login" method="POST">
             <div class="login-input">
               <div class="login-img">
                 <img src="images/user-icon/user.png" class="img-user" alt="">
               </div>
               <div class="login-textarea">
-                <input name="username" type="text" placeholder="User Name" class="txt-user" required="">
+                <input name="username" type="text" placeholder="User Name" class="txt-user">
               </div>
             </div>
             <div class="login-password-input">
@@ -23,9 +29,14 @@
                 <img src="images/user-icon/password.png" class="img-password" alt="">
               </div>
               <div class="login-textarea">
-                <input name="password" type="password" placeholder="Password" class="txt-password" required="">
+                <input name="password" type="password" placeholder="Password" class="txt-password">
               </div>
             </div>
+            {{#if LoginError}}
+            <div class="login-error">
+              {{LoginError}}
+            </div>
+            {{/if}}
             <div class="login-button">
               <button type="submit" class="btn-login">Enter</button>
             </div>
@@ -37,7 +48,7 @@
           Sign Up
         </div>
         <div class="signup-in">
-          <form action="users/register" method="POST">
+          <form action="/users/register" method="POST">
             <div class="user-name">
               <input name="firstname" type="text" class="txt-username" placeholder="First Name">
               <input name="lastname" type="text" class="txt-username" placeholder="Last Name">
@@ -46,11 +57,11 @@
             <input name="email" type="email" class="txt-signup" placeholder="E-Mail">
             <input name="password1" type="password" class="txt-signup" placeholder="Password">
             <input name="password2" type="password" class="txt-signup" placeholder="Confirm Password">
-            <ul style="color:red;list-style-type:none;">
-              {{#each errors}}
-              <li>{{this.msg}}</li>
-              {{/each}}
-            </ul>
+            {{#if RegisterError}}
+            <div class="login-error sign-err">
+              {{RegisterError}}
+            </div>
+            {{/if}}
             <div class="sign-button">
               <button type="submit" class="btn-sign">Sign Up</button>
             </div>

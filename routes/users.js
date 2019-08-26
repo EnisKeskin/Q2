@@ -21,11 +21,20 @@ router.post('/register', (req, res, next) => {
 
   var errors = req.validationErrors();
 
-  if (errors) {
-    res.render('users', {
-      errors: errors
-    })
-  } else {
+  if (errors && errors.length > 0) {
+    return res.redirect('/users?RegisterError=' + encodeURIComponent(errors[0].msg));
+  }
+  else {
+    User.findOne({ 'username': username }, (user) => {
+      if (user) {
+        return res.redirect('/users?RegisterError=' + encodeURIComponent('Username is already taken'));
+      }
+    });
+    User.findOne({ 'email': email }, (user) => {
+      if (user) {
+        return res.redirect('/users?RegisterError=' + encodeURIComponent('Email is already taken'));
+      }
+    });
     bcrypt.hash(password1, 10).then((hash) => {
       const user = new User({
         email: email,
@@ -36,10 +45,9 @@ router.post('/register', (req, res, next) => {
       });
 
       user.save().then((data) => {
-        res.location('/home');
-        res.redirect('/home');
-      }).catch((err) => {
-        res.json(err);
+        return res.redirect('/users');
+      }).catch((error) => {
+        console.error(error);
       });
 
     })
@@ -73,12 +81,18 @@ passport.use(new LocalStrategy((username, password, done) => {
   });
 }));
 
-router.post('/login', passport.authenticate('local', { failureRedirect: "/users", failureFlash: "Invalid username or passwprd" }), (req, res) => {
+router.post('/login', passport.authenticate('local', { failureRedirect: "/users", failureFlash: "Invalid username or password" }), (req, res) => {
   res.redirect("/home");
 });
 
-router.get('/', ensureNotAuthenticated,function (req, res, next) {
-  res.render('users');
+router.get('/', ensureNotAuthenticated, function (req, res, next) {
+  if (req.query.RegisterError && req.query.RegisterError != "")
+    return res.render('users', { 'RegisterError': decodeURIComponent(req.query.RegisterError) });
+  else if (req.query.LoginError && req.query.LoginError != "")
+    return res.render('users', { 'LoginError': decodeURIComponent(req.query.LoginError) });
+  else {
+    return res.render('users');
+  }
 });
 
 function ensureNotAuthenticated(req, res, next) {
@@ -86,13 +100,8 @@ function ensureNotAuthenticated(req, res, next) {
   res.redirect('/home');
 }
 
-router.get('/register', function (req, res, next) {
-  res.send('users');
-});
-
 router.get('/logout', (req, res) => {
   req.logout();
-  res.location('/');
   res.redirect('/');
 });
 
