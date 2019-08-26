@@ -19,6 +19,7 @@ class Header extends Component {
             Io.connectionsRoomDelete();
         }
     }
+    
     render() {
         return (
             <div>
@@ -36,26 +37,15 @@ class Header extends Component {
 
                             <ul>
                                 <Link to="/">
-                                    <li>
-                                        <div className="icon"> <img src={require('../../images/menu-icon/enter-pin.png')} className="img-icon" alt="" /> </div>
-                                        Enter Pin
-                                </li>
+                                    <li><div className="icon"> <img src={require('../../images/menu-icon/enter-pin.png')} className="img-icon" alt="" /> </div>Enter Pin</li>
                                 </Link>
                                 <Link to="/Discover">
-                                    <li>
-                                        <div className="icon"><img src={require('../../images/menu-icon/discover.png')} className="img-icon" alt="" /> </div>
-                                        Discover
-                                </li>
+                                    <li><div className="icon"><img src={require('../../images/menu-icon/discover.png')} className="img-icon" alt="" /> </div>Discover</li>
                                 </Link>
                                 <Link to="/Quiz">
-                                    <li>
-                                        <div className="icon"> <img src={require('../../images/menu-icon/create.png')} className="img-icon" alt="" /> </div>
-                                        Create
-                                </li>
+                                    <li><div className="icon"> <img src={require('../../images/menu-icon/create.png')} className="img-icon" alt="" /> </div>Create</li>
                                 </Link>
-
                                 <li className="li-icon"> <Link to="/Profile/Edit"><img src={require('../../images/menu-icon/profil.png')} className="img-icon" alt="" /> </Link> </li>
-
                                 <li> <img src={require('../../images/menu-icon/logout.png')} className="img-icon" alt="" onClick={this.onClickEvent} /> </li>
 
                             </ul>

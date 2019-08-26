@@ -52,12 +52,14 @@ class Question extends Component {
             return state.visible = true;
         }
     }
-
+    //validatonlar kontrol edilecek
     componentDidMount() {
-        if (localStorage.getItem('token')) {
-            io = Io.connectionsRoom('profile', localStorage.getItem('token'));
-            if (typeof (this.props.location.state) !== 'undefined') {
-                const questionId = this.props.location.state.questionId;
+        let token = localStorage.getItem('token')
+        let propsState = this.props.location.state;
+        if (token) {
+            io = Io.connectionsRoom('profile', token);
+            if (typeof (propsState) !== 'undefined') {
+                const questionId = propsState.questionId;
                 if (questionId) {
                     this.questionId = questionId;
                 } else {
@@ -119,7 +121,7 @@ class Question extends Component {
 
         } else {
             this.setState({
-                loginVisible: true
+                loginVisible: true,
             });
         }
     }

@@ -16,18 +16,20 @@ class scoreboard extends Component {
     }
 
     componentDidMount() {
+        const props = this.props;
+        const propsState = props.location.state
         io = Io.connectionsRoom('game');
-        if (typeof (this.props.location.state) !== 'undefined') {
-            if (this.props.location.state.visible) {
+        if (typeof (propsState) !== 'undefined') {
+            if (propsState.visible) {
                 this.setState({
                     visible: false
                 })
-                this.props.history.replace({ state: {} });
+                props.history.replace({ state: {} });
             } else {
                 this.setState({
                     visible: true
                 })
-                this.props.history.replace({ state: {} });
+                props.history.replace({ state: {} });
             }
         } else {
             this.setState({
@@ -56,17 +58,17 @@ class scoreboard extends Component {
     }
 
     render() {
-
+        let state = this.state
         return (
             <div>
-                {this.state.visible ?
+                {state.visible ?
                     <Redirect to='/' />
                     :
                     <div>
-                        {this.state.isVisible ?
+                        {state.isVisible ?
                             <div className="capsule">
                                 <div class="profile-edit-close">
-                                    <Link to='/profile'> <img src={require('../images/quiz/cancel.png')}alt="" /> </Link>
+                                    <Link to='/profile'> <img src={require('../images/quiz/cancel.png')} alt="" /> </Link>
                                 </div>
                                 <div className="score-title">
                                     <h1 className="h1 h1-score">Scoreboard</h1>
@@ -75,7 +77,7 @@ class scoreboard extends Component {
                                 <div className="container score-content">
 
                                     <div className="score-block-1st">
-                                        <span> {this.state.users[0] ? this.state.users[0].username : null}  </span> <span> {this.state.users[0] ? this.state.users[0].score : null} </span>
+                                        <span> {state.users[0] ? state.users[0].username : null}  </span> <span> {state.users[0] ? state.users[0].score : null} </span>
                                         <img src={require('../images/user-icon/medal.png')} className="img-medal" alt="" />
                                         <div className="block-1st"></div>
                                     </div>

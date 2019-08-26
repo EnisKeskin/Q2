@@ -35,9 +35,9 @@ class Quiz extends Component {
     }
 
     componentDidMount() {
-        if (localStorage.getItem('token')) {
-            this.resetVarible();
-            io = Io.connectionsRoom('profile', localStorage.getItem('token'));
+        let token = localStorage.getItem('token');
+        if (token) {
+            io = Io.connectionsRoom('profile', token);
 
             io.on('error', () => {
                 this.setState({
@@ -108,7 +108,7 @@ class Quiz extends Component {
         e.preventDefault();
         io.emit('quizCreate', this.quiz);
     }
-
+    //kontrol edilecek true sağlanacak
     onChangeVisibleToEvent = (e) => {
         if (e.target.value === "1") {
             this.quiz.visibleTo = true
@@ -118,52 +118,32 @@ class Quiz extends Component {
     }
 
     onChangeTitleEvent = (e) => {
-        if (e.target.value.length <= 100) {
-            this.quiz.title = e.target.value;
+        const value = e.target.value;
+        if (value.length <= 100) {
+            this.quiz.title = value;
             this.setState({
-                title: e.target.value
+                title: value
             });
         }
     }
     onChangeDescriptionEvent = (e) => {
-        if (e.target.value.length <= 256) {
-            this.quiz.description = e.target.value
+        const value = e.target.value;
+        if (value.length <= 256) {
+            this.quiz.description = value
             this.setState({
-                description: e.target.value
+                description: value
             });
         }
     }
 
-    resetVarible = () => {
-        this.quizId = "";
-        this.file = "";
-        this.quiz = {
-            location: "",
-            language: "",
-            title: "",
-            description: "",
-            img: "",
-            question: [],
-            visibleTo: false,
-        };
-        this.setState(
-            {
-                title: '',
-                description: '',
-                loginVisible: false,
-                questionVisible: false,
-                file: "",
-                quizError: "",
-            })
-    }
-
     render() {
+        let state = this.state;
         return (
             <div>
-                {this.state.loginVisible ?
+                {state.loginVisible ?
                     <Redirect to="/user" />
                     :
-                    this.state.questionVisible ?
+                    state.questionVisible ?
                         <Redirect to={
                             {
                                 pathname: '/question',
@@ -187,7 +167,7 @@ class Quiz extends Component {
                                         <label className="lbl-file" htmlFor="file">    Tap to add cover images   </label>
 
                                         <input className="fileupload" type="file" name="fileToUpload" id="file" accept="image/*" encType="multipart/form-data" onChange={this.onChangeUploadEvent} />
-                                        <img src={this.state.file} alt="" />
+                                        <img src={state.file} alt="" />
                                     </div>
 
                                     <div className="quiz-right">
@@ -221,10 +201,10 @@ class Quiz extends Component {
                                             </div>
                                         </div>
 
-                                        <input type="text" placeholder="Title" className="txt-title" value={this.state.title || ''} required onChange={this.onChangeTitleEvent.bind(this)} />
+                                        <input type="text" placeholder="Title" className="txt-title" value={state.title || ''} required onChange={this.onChangeTitleEvent.bind(this)} />
                                         <div className="description">
-                                            <textarea placeholder="Description" className="txt-description" value={this.state.description || ''} required onChange={this.onChangeDescriptionEvent.bind(this)} />Character {256 - (this.state.description.length) || '0'}</div>
-                                        {this.state.quizError}
+                                            <textarea placeholder="Description" className="txt-description" value={state.description || ''} required onChange={this.onChangeDescriptionEvent.bind(this)} />Character {256 - (state.description.length) || '0'}</div>
+                                        {state.quizError}
                                     </div>
 
                                 </div>

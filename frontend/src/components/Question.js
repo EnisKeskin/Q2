@@ -40,17 +40,18 @@ class Question extends Component {
     }
 
     componentDidMount() {
-        if (localStorage.getItem('token')) {
-            const props = this.props.location;
+        const token = localStorage.getItem('token');
+        if (token) {
+            const propsState = this.props.location.state;
             this.resetVariable();
-            io = Io.connectionsRoom('profile', localStorage.getItem('token'));
+            io = Io.connectionsRoom('profile', token);
             io.on('error', () => {
                 this.setState({
                     loginVisible: true
                 })
             })
-            if (typeof (props).state !== 'undefined') {
-                io.emit('questionCount', props.state.quizId);
+            if (typeof (propsState) !== 'undefined') {
+                io.emit('questionCount', propsState.quizId);
                 io.on('sendQuestionCount', (questionCount) => {
                     this.setState({
                         questionCount: questionCount + 1 + '. Question'
@@ -165,7 +166,7 @@ class Question extends Component {
         if (value.length <= 100) {
             this.question.questionTitle = value;
             this.setState({
-                questionTitle: value
+                questionTitle: value,
             });
         }
     }
@@ -201,10 +202,11 @@ class Question extends Component {
     }
 
     onChangeTrueAnswerEvent = (e) => {
+        const value = e.target.value;
         this.setState({
-            answer: e.target.value
-        })
-        this.question.answer = e.target.value
+            answer: value,
+        });
+        this.question.answer = value;
     }
 
     render() {

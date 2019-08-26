@@ -52,16 +52,18 @@ class Pin extends Component {
 
   onChangeEvent = (e) => {
     const re = /^[0-9\b]+$/;
-    if ((e.target.value === '' || re.test(e.target.value)) && e.target.value.length <= 6) {
-      this.setState({ pin: e.target.value })
-      this.pin = e.target.value
+    const value = e.target.value;
+    if ((value === '' || re.test(value)) && value.length <= 6) {
+      this.setState({ pin: value })
+      this.pin = value
     }
   };
 
   render() {
+    let state = this.state
     return (
       <div>
-        {this.state.isVisible ?
+        {state.isVisible ?
           <Redirect to={
             {
               pathname: '/Username',
@@ -77,9 +79,9 @@ class Pin extends Component {
                 <div className="pin-logo">
                   <img src={require('../images/logo/logo-w.png')} className="img-pin-logo" alt="" />
                 </div>
-                {this.state.err}
+                {state.err}
                 <div className="pin-text">
-                  <input type="text" className="txt-pin" value={this.state.pin || ''} placeholder="Game Pin" onChange={this.onChangeEvent} />
+                  <input type="text" className="txt-pin" value={state.pin || ''} placeholder="Game Pin" onChange={this.onChangeEvent} />
                 </div>
                 <div className="pin-button">
                   <button onClick={this.onClickEvent} type="submit" className="btn-pin">Enter</button>

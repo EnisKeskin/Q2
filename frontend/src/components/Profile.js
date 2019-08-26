@@ -25,32 +25,36 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        this.resetVariable()
-        if (localStorage.getItem('token')) {
+        this.resetVariable();
+        let token = localStorage.getItem('token');
+        if (token) {
             this.setState({
-                token: localStorage.getItem('token')
+                token: token
             })
-            io = Io.connectionsRoom('profile', localStorage.getItem('token'));
+            io = Io.connectionsRoom('profile', token);
             io.emit('getProfilInfo');
+
             io.on('error', () => {
                 this.setState({
                     loginVisible: true
-                })
-            })
-            io.on('setProfilInfo', (user) => {
+                });
+            });
 
+            io.on('setProfilInfo', (user) => {
                 this.setState({
                     user,
                     username: user.username,
                     fullname: user.firstname + " " + user.lastname
                 });
             });
+
             io.on('profilQuiz', (quizs) => {
                 this.setState({
                     quizs,
                     quizCount: quizs.length
                 });
             });
+            
         } else {
             this.setState({
                 loginVisible: true

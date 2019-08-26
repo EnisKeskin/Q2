@@ -26,8 +26,9 @@ class ProfilEdit extends Component {
     }
 
     componentDidMount() {
-        if (localStorage.getItem('token')) {
-            io = Io.connectionsRoom('profile', localStorage.getItem('token'));
+        const token =localStorage.getItem('token');
+        if (token) {
+            io = Io.connectionsRoom('profile', token);
             io.emit('getProfileEditInfo');
             io.on('setProfileEditInfo', (user) => {
                 this.setState({
@@ -88,7 +89,7 @@ class ProfilEdit extends Component {
     onClickEvent = (e) => {
         e.preventDefault();
         const user = this.state
-        if (this.state.newPassword) {
+        if (user.newPassword) {
 
             io.emit('profilUpdate', {
                 email: user.email,
@@ -109,10 +110,10 @@ class ProfilEdit extends Component {
         }
     }
     render() {
-        let user = this.state;
+        let state = this.state;
         return (
             <div>
-                {this.state.loginVisible ?
+                {state.loginVisible ?
                     <Redirect to='/User' />
                     :
                     <div className="capsule">
@@ -136,25 +137,25 @@ class ProfilEdit extends Component {
 
                                     <form action="." method="POST">
                                         <div className="profil-avatar">
-                                            <label className="lbl-file-profil" htmlFor="profil"> Tap to add cover profil images <img src={this.state.file || `${Ip}${user.img}`} alt="" /> </label>
+                                            <label className="lbl-file-profil" htmlFor="profil"> Tap to add cover profil images <img src={state.file || `${Ip}${state.img}`} alt="" /> </label>
                                             <input className="fileupload-profil" type="file" name="fileToUpload" accept="image/*" id="profil" onChange={(e) => { this.file = e.target.files[0]; this.setState({ file: URL.createObjectURL(e.target.files[0]) }) }} />
                                         </div>
                                         <div className="user-name">
 
-                                            <input type="text" className="txt-username" placeholder="First Name" value={user.firstname || ''} onChange={(e) => { this.setState({ firstname: e.target.value }) }}
+                                            <input type="text" className="txt-username" placeholder="First Name" value={state.firstname || ''} onChange={(e) => { this.setState({ firstname: e.target.value }) }}
                                             />
-                                            <input type="text" className="txt-username" placeholder="Last Name" value={user.lastname || ''} onChange={(e) => { this.setState({ lastname: e.target.value }) }} />
+                                            <input type="text" className="txt-username" placeholder="Last Name" value={state.lastname || ''} onChange={(e) => { this.setState({ lastname: e.target.value }) }} />
 
                                         </div>
-                                        <input type="text" className="txt-signup" autoComplete="username" placeholder="User Name" value={user.username || ''} onChange={(e) => { this.setState({ username: e.target.value }) }} />
+                                        <input type="text" className="txt-signup" autoComplete="username" placeholder="User Name" value={state.username || ''} onChange={(e) => { this.setState({ username: e.target.value }) }} />
 
-                                        <input type="email" className="txt-signup" placeholder="E-Mail" value={user.email || ''} onChange={(e) => { this.setState({ email: e.target.value }) }} />
+                                        <input type="email" className="txt-signup" placeholder="E-Mail" value={state.email || ''} onChange={(e) => { this.setState({ email: e.target.value }) }} />
 
                                         <input type="password" className="txt-signup" autoComplete="password" placeholder="Password" onChange={(e) => { this.setState({ password: e.target.value }) }} />
 
                                         <input type="password" className="txt-signup" autoComplete="password" placeholder="New Password" ref='If you want to change the password, fill in the new password field.' onChange={(e) => { this.setState({ newPassword: e.target.value }) }} />
 
-                                        {this.state.message}
+                                        {state.message}
 
                                         <div className="sign-button">
                                             <button type="submit" className="btn-sign save" onClick={this.onClickEvent}>Save</button>

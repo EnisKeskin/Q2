@@ -22,9 +22,9 @@ class Lobby extends Component {
 
     componentDidMount() {
         let props = this.props;
-        let propsLocation = props.location;
-        if (typeof (propsLocation.state) !== 'undefined') {
-            if (propsLocation.state.visible) {
+        let propsState = props.location.state;
+        if (typeof (propsState) !== 'undefined') {
+            if (propsState.visible) {
                 this.setState({
                     visible: false
                 });
@@ -40,14 +40,16 @@ class Lobby extends Component {
                 visible: true
             });
         }
+
         if (document.querySelector('.modal-backdrop')) {
             document.querySelector('body').classList.remove("modal-open");
             document.querySelector('.modal-backdrop').remove();
         }
+
         io = Io.connectionsRoom('game');
-        if (typeof (propsLocation.state) !== 'undefined') {
-            if (propsLocation.state.pin !== 0) {
-                const pin = propsLocation.state.pin;
+        if (typeof (propsState) !== 'undefined') {
+            if (propsState.pin !== 0) {
+                const pin = propsState.pin;
 
                 this.setState({
                     pin: pin
@@ -115,9 +117,11 @@ class Lobby extends Component {
     }
 
     render() {
+        let state = this.state;
+        let token = localStorage.getItem('token');
         return (
             <div>
-                {this.state.isVisible ?
+                {state.isVisible ?
                     <Redirect to={
                         {
                             pathname: '/Game',
@@ -126,25 +130,25 @@ class Lobby extends Component {
                     } />
                     :
                     <div>
-                        {this.state.visible ?
-                            <div> {localStorage.getItem('token') ? <Redirect to='/profile' /> : <Redirect to='/' />} </div>
+                        {state.visible ?
+                            <div> {token ? <Redirect to='/profile' /> : <Redirect to='/' />} </div>
                             :
                             <div className="capsule-2">
 
                                 <div className="players-close">
-                                    <Link to={localStorage.getItem('token') ? '/profile' : '/'} > <img src={require('../images/quiz/cancel-p.png')} alt="" /></Link>
+                                    <Link to={token ? '/profile' : '/'} > <img src={require('../images/quiz/cancel-p.png')} alt="" onClick={() => Io.connectionsRoomDelete()} /></Link>
                                 </div>
                                 <div className="container players-content" >
-                                    <div className="players-top" > {this.state.pin}  </div>
+                                    <div className="players-top" > {state.pin}  </div>
                                     <div className="players-bottom" > {
-                                        this.state.players.map((player, i) => {
+                                        state.players.map((player, i) => {
                                             return (< div key={i} > {player} </div>)
                                         })
                                     } </div>
                                 </div>
                                 <div className="container-fluid players-start" >
-                                    <div className="players-number" > {this.state.userCount} Players </div>
-                                    {this.state.error} {this.state.startButton}
+                                    <div className="players-number" > {state.userCount} Players </div>
+                                    {state.error} {state.startButton}
 
                                 </div>
                             </div>

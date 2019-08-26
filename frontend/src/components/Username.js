@@ -18,18 +18,19 @@ class Username extends Component {
   }
   componentDidMount() {
     io = Io.connectionsRoom('game');
-
-    if (typeof (this.props.location.state) !== 'undefined') {
-      if (this.props.location.state.visible) {
+    const props = this.props
+    const propsState = props.location.state;
+    if (typeof (propsState) !== 'undefined') {
+      if (propsState.visible) {
         this.setState({
           visible: false
         })
-        this.props.history.replace({ state: {} });
+        props.history.replace({ state: {} });
       } else {
         this.setState({
           visible: true
         })
-        this.props.history.replace({ state: {} });
+        props.history.replace({ state: {} });
       }
     } else {
       this.setState({
@@ -42,6 +43,7 @@ class Username extends Component {
         gameStart: true
       });
     });
+
     io.on('usernameErr', (msg) => {
       this.setState({
         err: <div className="pin-error">

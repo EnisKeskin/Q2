@@ -16,6 +16,7 @@ import QuestionEdit from './components/QuestionEdit'
 
 class App extends Component {
     render() {
+        let token = localStorage.getItem('token');
         return (
             <Router>
                 <Switch>
@@ -35,7 +36,7 @@ class App extends Component {
 
                     <Route exact path='/Discover' component={Discover} />
 
-                    <Route component={Pin} />
+                    <Route component={token ? Profile : Pin} />
                 </Switch>
             </Router>
         )

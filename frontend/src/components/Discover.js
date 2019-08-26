@@ -20,17 +20,16 @@ class Discover extends Component {
         }
     }
 
-
     componentDidMount() {
-        if (localStorage.getItem('token')) {
-            io = Io.connectionsRoom('profile', localStorage.getItem('token'));
+        const token = localStorage.getItem('token')
+        if (token) {
+            io = Io.connectionsRoom('profile', token);
             io.on('error', () => {
                 this.setState({
                     loginVisible: true
                 })
             })
             io.emit('getDiscover');
-            //isim değişikliği
             io.on('setDiscover', (quizs) => {
                 this.setState({
                     trendQuizzes: quizs
@@ -50,10 +49,11 @@ class Discover extends Component {
     componentWillUnmount() {
         if (localStorage.getItem('token')) {
             io.removeListener('error');
-            io.removeListener('setDiscoverTrend');
             io.removeListener('setDiscoverMyQuiz');
+            io.removeListener('setDiscover')
         }
     }
+
     discoverShow() {
         const stateQuizs = this.state.trendQuizzes;
         let quizs = [];
@@ -71,6 +71,7 @@ class Discover extends Component {
         });
         return quizs;
     }
+
     discoverModalShow() {
         const stateQuizs = this.state.trendQuizzes;
         let quizs = [];
@@ -270,6 +271,7 @@ class Discover extends Component {
                 }
             ]
         };
+
         return (
             <div>
                 {this.state.loginVisible ?
@@ -282,7 +284,6 @@ class Discover extends Component {
 
                             <ul>
                                 <li><Link className="active" to="#"> History </Link></li>
-
                             </ul>
 
                         </div>
@@ -293,29 +294,20 @@ class Discover extends Component {
                                     <span className="spn-discover-title">Discover</span>
                                 </div>
 
-                                <Slider className="discover-trend-bottom" {...settings}>
-
-                                    {this.discoverShow()}
-
-                                </Slider>
-
-                                {this.discoverModalShow()}
+                                <Slider className="discover-trend-bottom" {...settings}>{this.discoverShow()}</Slider> {this.discoverModalShow()}
 
                             </div>
                         </div>
 
                         <div className="discover-quizs">
+
                             <div className="discover-quizs-title">
                                 <h3>Quizs</h3>
                             </div>
 
-                            <Slider className="discover-quizs-bottom" {...discoverBottom}>
-                                {this.quizsShow()}
-                            </Slider>
-                            {this.quizsModalShow()}
+                            <Slider className="discover-quizs-bottom" {...discoverBottom}>{this.quizsShow()}</Slider> {this.quizsModalShow()}
+
                         </div>
-
-
 
                     </div>
                 }

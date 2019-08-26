@@ -19,6 +19,8 @@ class RoomControl {
         this.userCount = 0;
         this.nextQuestionTime = null;
         this.showAnswerTime = null;
+        this.socketAdmin = '';
+        this.socketPlayer = '';
     }
 
     addUser(userId, roomName, username) {
@@ -52,11 +54,11 @@ class RoomControl {
                 }
         }
         this.rooms[roomName] = room;
-        return this.rooms[roomName];
+        return room;
     }
 
     setQuiz(roomName, quiz) {
-        this.rooms[roomName].quiz = quiz
+        this.getRoom(roomName).quiz = quiz
     }
 
     addAnswer(roomName, userId, answer, score, ansToQues) {
@@ -97,8 +99,9 @@ class RoomControl {
 
     getUserNames(roomName) {
         let usernames = [];
-        Object.keys(this.getRoom(roomName).users).forEach((userId) => {
-            usernames.push(this.getRoom(roomName).users[userId].username)
+        let room = this.getRoom(roomName)
+        Object.keys(room.users).forEach((userId) => {
+            usernames.push(room.users[userId].username)
         });
         if (usernames.length > 0)
             return usernames;
@@ -107,6 +110,7 @@ class RoomControl {
 
     nextQuestion(roomName) {
         const room = this.getRoom(roomName);
+        console.log(room);
         if (room) {
             room.currentQuestionIndex += 1;
             if (room.currentQuestionIndex > room.quiz.question.length) {
@@ -129,48 +133,39 @@ class RoomControl {
 
 const pinControl = (data, callback) => {
     if (data) {
-        Quiz.find({ pin: data, active: true })
-            .then((data) => {
-                if (data[0]) {
-                    callback(data);
+        Quiz.findOne({ pin: data, active: true }, (err, res) => {
+            if (err) {
+                callback(0);
+            } else {
+                if (res) {
+                    callback(res);
                 } else {
                     callback(0);
                 }
-            }).catch((err) => {
-                callback(0);
-            });
+            }
+        })
     }
 }
 
 const pinActive = (data, callback) => {
-    Quiz.findOneAndUpdate({ pin: data }, { active: true }).then((quiz) => {
-        callback(quiz);
-    }).catch((err) => {
-        throw err
+    Quiz.findOneAndUpdate({ pin: data }, { active: true }, (err, quiz) => {
+        if (err) {
+            console.log(err)
+        } else {
+            callback(quiz);
+        }
     })
 }
 
 const pinDeactivate = (data) => {
-    Quiz.updateOne({ pin: data }, { active: false }).then((data) => {
-    });
+    Quiz.updateOne({ pin: data }, { active: false }, (err, res) => {
+        if (err)
+            console.log(err);
+    })
 }
 
-const pinCreate = (callback) => {
-    let randomKey = 0;
-    randomKey = Math.floor(Math.random() * 1000000) + 100000;
-    Quiz.findOne({ pin: randomKey }).then((data) => {
-        if (data) {
-            pinCreate()
-        } else {
-            callback(randomKey);
-        }
-    });
-}
-
-//mesajlar global yerde duracak..
 const error = (err, socket) => {
     for (d in err.errors) {
-        //kontroller sağlanmalı
         let error = err.errors[d]
         const objectKey = error.path[0].toUpperCase() + error.path.slice(1, (error.path.length));
         const isValidationError = err.name == 'ValidationError';
@@ -230,7 +225,6 @@ const login = (user, socket) => {
 }
 
 const deleteFolder = (img, quiz) => {
-
     if (quiz) {
         quiz.question.forEach((question) => {
             console.log(question);
@@ -256,36 +250,43 @@ Io.of('/game').on('connection', (socket) => {
     socket.emit('connected');
     const io = Io.of('/game');
     socket.on('sendPin', (pin) => {
+        this.socketPlayer = socket;
         pinControl(pin, (quiz) => {
             if (quiz !== 0) {
                 socket.join(pin, () => {
                     const roomName = Object.keys(socket.rooms)[0];
                     const userId = Object.keys(socket.rooms)[1];
-                    const userCount = socket.adapter.rooms[roomName].length;
+                    const socketRooms = socket.adapter.rooms[roomName];
+                    const userCount = socketRooms.length;
                     roomControl.userCount = userCount;
                     socket.emit('join', { status: true });
                     socket.on('sendUsername', (username) => {
                         if (typeof (username) !== 'undefined' && username.trim() !== '') {
-                            socket.emit('start')
+                            socket.emit('start');
+
                             roomControl.addUser(userId, roomName, username);
+
                             io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
+
                             socket.emit('quizPin', { pin });
+
                             socket.on('sendAnswer', (user) => {
+                                const room = roomControl.getRoom(roomName)
                                 let questionScore = 0
                                 if (user.answer === null) {
                                     user.answer = -1;
                                 }
-                                if (user.answer === roomControl.rooms[roomName].currentQuestion.answer) {
-                                    questionScore = Math.floor((1000 - ((Date.now() - roomControl.rooms[roomName].startTime) / 10)));
+                                if (user.answer === room.currentQuestion.answer) {
+                                    questionScore = Math.floor((1000 - ((Date.now() - room.startTime) / 10)));
                                     questionScore = Math.max(100, questionScore);
                                 }
-                                roomControl.addAnswer(roomName, userId, user.answer, questionScore, roomControl.rooms[roomName].currentQuestion.answer);
+                                roomControl.addAnswer(roomName, userId, user.answer, questionScore, room.currentQuestion.answer);
                             });
 
                             socket.on('disconnect', () => {
                                 roomControl.roomUserDelete(roomName, userId);
                                 io.to(pin).emit('newUser', roomControl.getUserNames(roomName));
-                                if (typeof (socket.adapter.rooms[roomName]) === 'undefined') {
+                                if (typeof (socketRooms) === 'undefined') {
                                     clearTimeout(roomControl.nextQuestionTime);
                                     clearTimeout(roomControl.showAnswerTime);
                                 }
@@ -306,8 +307,10 @@ Io.of('/game').on('connection', (socket) => {
     socket.on('sendAdmin', (pin) => {
         pinActive(pin, (quiz) => {
             socket.join(pin, () => {
+                this.socketAdmin = socket;
                 const roomName = Object.keys(socket.rooms)[0];
-                const userCount = socket.adapter.rooms[roomName].length;
+                const socketRooms = socket.adapter.rooms[roomName];
+                const userCount = socketRooms.length;
                 roomControl.userCount = userCount
                 if (roomControl.userCount > 0) {
                     roomControl.getRoom(roomName, true)
@@ -327,24 +330,28 @@ Io.of('/game').on('connection', (socket) => {
                     });
                     let answernumber = 0;
                     const nextQuestion = () => {
-                        if (socket.adapter.rooms[roomName]) {
-                            if (socket.adapter.rooms[roomName].length > 0) {
+                        if (socketRooms) {
+                            if (socketRooms.length > 0) {
                                 const question = roomControl.nextQuestion(roomName);
                                 if (!question) {
                                     io.to(roomName).emit('showScoreboard');
                                     io.to(roomName).emit('Scoreboard', roomControl.top5(roomName));
+                                    if (typeof (socketRooms) === 'undefined') {
+                                        clearTimeout(roomControl.nextQuestionTime);
+                                        clearTimeout(roomControl.showAnswerTime);
+                                    }
                                     return;
                                 }
                                 io.to(roomName).emit('newQuestion', question);
 
                                 roomControl.nextQuestionTime = setTimeout(() => {
                                     let answStatic = []
-
                                     Object.keys(room.users).forEach((userId) => {
-                                        if (typeof (room.users[userId].answers[answernumber]) === 'undefined') {
-                                            room.users[userId].answers[answernumber] = { answer: -1, score: 0 }
+                                        let userAnswer = room.users[userId].answers[answernumber];
+                                        if (typeof (userAnswer) === 'undefined') {
+                                            userAnswer = { answer: -1, score: 0 }
                                         }
-                                        answStatic.push(room.users[userId].answers[answernumber]);
+                                        answStatic.push(userAnswer);
                                     });
                                     answernumber++;
                                     io.to(roomName).emit('staticstics', answStatic);
@@ -364,8 +371,7 @@ Io.of('/game').on('connection', (socket) => {
                     }
                 }
                 socket.on('disconnect', () => {
-                    console.log(socket.adapter.rooms[roomName])
-                    if (typeof (socket.adapter.rooms[roomName]) === 'undefined') {
+                    if (typeof (socketRooms) === 'undefined') {
                         clearTimeout(roomControl.nextQuestionTime);
                         clearTimeout(roomControl.showAnswerTime);
                     }
@@ -408,22 +414,32 @@ Io.of('/profile').use((socket, next) => {
     });
 
     socket.on('quizCreate', (quiz) => {
-        pinCreate((randomKey) => {
-            quiz.userId = socket.decoded.userId;
-            quiz.pin = randomKey;
-            objectTrim(quiz);
-            new Quiz(quiz).save()
-                .then((quiz) => {
-                    socket.emit('quizId', quiz._id);
-                }).catch((err) => {
-                    error(err, socket);
-                });
-        });
+        const pinCreate = () => {
+            let randomKey = 0;
+            randomKey = Math.floor(Math.random() * 100000) + 100000;
+            Quiz.findOne({ pin: randomKey }).then((data) => {
+                if (data) {
+                    pinCreate()
+                } else {
+                    quiz.userId = socket.decoded.userId;
+                    quiz.pin = randomKey;
+                    objectTrim(quiz);
+                    new Quiz(quiz).save((err, quiz) => {
+                        if (err) {
+                            error(err, socket);
+                        } else {
+                            console.log(quiz);
+                            socket.emit('quizId', quiz._id);
+                        }
+                    });
+                }
+            });
+        };
+        pinCreate();
     });
 
     socket.on('reqQuizInfo', (quizId) => {
         Quiz.findById(quizId, (err, quiz) => {
-            //kontrol sağlanacak
             if (err) {
                 console.log(err)
             }

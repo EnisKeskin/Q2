@@ -52,12 +52,14 @@ class Quiz extends Component {
     }
 
     componentDidMount() {
-        if (localStorage.getItem('token')) {
+        const token = localStorage.getItem('token');
+        const propsState = this.props.location.state;
+        if (token) {
             if (document.querySelector('.modal-backdrop')) {
                 document.querySelector('body').classList.remove("modal-open");
                 document.querySelector('.modal-backdrop').remove();
             }
-            io = Io.connectionsRoom('profile', localStorage.getItem('token'));
+            io = Io.connectionsRoom('profile', token);
 
             io.on('error', () => {
                 this.setState({
@@ -65,8 +67,8 @@ class Quiz extends Component {
                 });
             });
 
-            if (typeof (this.props.location.state) !== 'undefined') {
-                const quizId = this.props.location.state.quizId;
+            if (typeof (propsState) !== 'undefined') {
+                const quizId = propsState.quizId;
                 if (quizId) {
                     this.quizId = quizId;
                 } else {
@@ -200,19 +202,21 @@ class Quiz extends Component {
     }
 
     onChangeTitleEvent = (e) => {
-        if (e.target.value.length <= 100) {
-            this.quiz.title = e.target.value;
+        const value = e.target.value;
+        if (value.length <= 100) {
+            this.quiz.title = value;
             this.setState({
-                title: e.target.value
+                title: value
             });
         }
     }
 
     onChangeDescriptionEvent = (e) => {
-        if (e.target.value.length <= 256) {
-            this.quiz.description = e.target.value
+        const value = e.target.value;
+        if (value.length <= 256) {
+            this.quiz.description = value
             this.setState({
-                description: e.target.value
+                description: value
             });
         }
     }
@@ -245,16 +249,16 @@ class Quiz extends Component {
                 }
             ]
         };
-        const quiz = this.state
+        const state = this.state
         return (
             <div>
-                {this.state.visible ?
+                {state.visible ?
                     <div>
                         <Redirect to='/Profile' />
                     </div>
                     :
                     <div>
-                        {this.state.loginVisible ?
+                        {state.loginVisible ?
                             <Redirect to="/user" />
                             :
                             <div className="capsule-2">
@@ -273,7 +277,7 @@ class Quiz extends Component {
                                             <label className="lbl-file" htmlFor="file">    Tap to add cover images   </label>
 
                                             <input className="fileupload" type="file" name="fileToUpload" id="file" accept="image/*" encType="multipart/form-data" onChange={this.onChangeUploadEvent} />
-                                            <img src={this.state.file || `${Ip}${quiz.img}`} alt="" />
+                                            <img src={this.state.file || `${Ip}${state.img}`} alt="" />
                                         </div>
 
                                         <div className="quiz-right">
@@ -281,7 +285,7 @@ class Quiz extends Component {
                                             <div className="dropdown">
 
                                                 <div className="select-box select-box-1 ">
-                                                    <select value={quiz.visibleTo.toString() || 'DEFAULT'} onChange={(e) => { this.quiz.visibleTo = e.target.value; this.setState({ visibleTo: e.target.value }); }}>
+                                                    <select value={state.visibleTo.toString() || 'DEFAULT'} onChange={(e) => { this.quiz.visibleTo = e.target.value; this.setState({ visibleTo: e.target.value }); }}>
                                                         <option value={"DEFAULT"}>Visible to </option>
                                                         <option value={false}>Private</option>
                                                         <option value={true}>Public</option>
@@ -289,7 +293,7 @@ class Quiz extends Component {
                                                 </div>
 
                                                 <div className="select-box select-box-2">
-                                                    <select value={quiz.location.toString() || 'DEFAULT'} onChange={(e) => { this.quiz.location = e.target.value; this.setState({ location: e.target.value }) }}>
+                                                    <select value={state.location.toString() || 'DEFAULT'} onChange={(e) => { this.quiz.location = e.target.value; this.setState({ location: e.target.value }) }}>
                                                         <option value={"DEFAULT"}>Location  </option>
                                                         <option value={"Turkey"}>Turkey</option>
                                                         <option value={"United States"}>United States</option>
@@ -298,7 +302,7 @@ class Quiz extends Component {
                                                 </div>
 
                                                 <div className="select-box select-box-3">
-                                                    <select value={quiz.language.toString() || 'DEFAULT'} onChange={(e) => { this.quiz.language = e.target.value; this.setState({ language: e.target.value }) }}>
+                                                    <select value={state.language.toString() || 'DEFAULT'} onChange={(e) => { this.quiz.language = e.target.value; this.setState({ language: e.target.value }) }}>
                                                         <option value={"DEFAULT"}>Language</option>
                                                         <option value={"Turkish"}>Turkish</option>
                                                         <option value={"English"}>English</option>
@@ -307,9 +311,9 @@ class Quiz extends Component {
                                                 </div>
                                             </div>
 
-                                            <input type="text" placeholder="Title" className="txt-title" value={quiz.title || ''} onChange={this.onChangeTitleEvent.bind(this)} />
+                                            <input type="text" placeholder="Title" className="txt-title" value={state.title || ''} onChange={this.onChangeTitleEvent.bind(this)} />
                                             <div className="description">
-                                                <textarea placeholder="Description" className="txt-description" value={quiz.description || ''} onChange={this.onChangeDescriptionEvent.bind(this)} />Character {256 - (this.state.description.length) || '0'}</div>
+                                                <textarea placeholder="Description" className="txt-description" value={state.description || ''} onChange={this.onChangeDescriptionEvent.bind(this)} />Character {256 - (this.state.description.length) || '0'}</div>
 
                                             {this.state.quizError || this.state.questionSucces}
                                         </div>

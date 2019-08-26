@@ -34,7 +34,7 @@ const quizSchema = new Schema({
         type: Schema.Types.ObjectId,
         require: true,
     },
-    visibleTo:{
+    visibleTo: {
         type: Boolean,
         require: true,
     },
@@ -68,7 +68,7 @@ const quizSchema = new Schema({
         default: false
     },
     date: {
-        type: Date, default: Date.now    
+        type: Date, default: Date.now
     }
 })
 
