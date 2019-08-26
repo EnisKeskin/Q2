@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Pin from './components/Pin';
-import Players from './components/Players';
+import Lobby from './components/Lobby';
 import User from './components/User';
 import Quiz from './components/Quiz';
 import QuizEdit from './components/QuizEdit';
 import Question from './components/Question';
 import Profile from './components/Profile';
 import ProfileEdit from './components/ProfilEdit'
-import Answer from './components/Answer';
+import Game from './components/Game';
 import Username from './components/Username';
 import Scoreboard from './components/Scoreboard'
 import Discover from './components/Discover'
@@ -21,8 +21,8 @@ class App extends Component {
                 <Switch>
                     <Route exact path='/' component={Pin} />
                     <Route exact path='/Username' component={Username} />
-                    <Route exact path='/Players' component={Players} />
-                    <Route exact path='/Answer' component={Answer} />
+                    <Route exact path='/Lobby' component={Lobby} />
+                    <Route exact path='/Game' component={Game} />
                     <Route exact path='/Scoreboard' component={Scoreboard} />
 
                     <Route exact path='/User' component={User} />

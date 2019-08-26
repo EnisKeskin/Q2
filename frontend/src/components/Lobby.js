@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 let io = null;
 
-class Players extends Component {
+class Lobby extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -65,7 +65,7 @@ class Players extends Component {
                             </div>,
                     });
                 });
-                io.on('gameStartError', (msg) => { this.setState({ error: <div class="player-error">{msg}</div> }) });
+                io.on('gameStartError', (msg) => { this.setState({ error: <div className="player-error">{msg}</div> }) });
             };
         };
 
@@ -120,7 +120,7 @@ class Players extends Component {
                 {this.state.isVisible ?
                     <Redirect to={
                         {
-                            pathname: '/Answer',
+                            pathname: '/Game',
                             state: { visible: true }
                         }
                     } />
@@ -129,9 +129,9 @@ class Players extends Component {
                         {this.state.visible ?
                             <div> {localStorage.getItem('token') ? <Redirect to='/profile' /> : <Redirect to='/' />} </div>
                             :
-                            <div class="capsule-2">
+                            <div className="capsule-2">
 
-                                <div class="players-close">
+                                <div className="players-close">
                                     <Link to={localStorage.getItem('token') ? '/profile' : '/'} > <img src={require('../images/quiz/cancel-p.png')} alt="" /></Link>
                                 </div>
                                 <div className="container players-content" >
@@ -156,4 +156,4 @@ class Players extends Component {
     }
 };
 
-export default Players;
+export default Lobby;

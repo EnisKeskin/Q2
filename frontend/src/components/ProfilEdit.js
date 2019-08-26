@@ -81,6 +81,7 @@ class ProfilEdit extends Component {
             io.removeListener('file');
             io.removeListener('successfulUpdate');
             io.removeListener('errors');
+            io.removeListener('error');
         }
     }
 

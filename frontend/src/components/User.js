@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Io from '../connection';
-import { Redirect } from 'react-router'
+import { Redirect } from 'react-router';
 
 let io = null;
 
@@ -51,7 +51,7 @@ class User extends Component {
     io.on('loginErr', (err) => {
       this.setState({
         loginErrMessage: <div className="login-error sign-err">{err.message}</div>
-      })
+      });
     })
 
     io.on('registerError', (err) => {

@@ -25,17 +25,20 @@ class Quiz extends Component {
         }
         this.state = {
             title: '',
+            location: '',
+            language: '',
             description: '',
             img: '',
             questions: [],
             loginVisible: false,
+            visibleTo: '',
             visible: false,
             file: "",
             quizError: "",
         }
         this.onChangeUploadEvent = this.onChangeUploadEvent.bind(this);
-        this.onChangeVisibleToEvent = this.onChangeVisibleToEvent.bind(this);
     }
+
     static getDerivedStateFromProps(props, state) {
         if (typeof (props.location.state) !== 'undefined') {
             if (props.location.state.quizId) {
@@ -47,6 +50,7 @@ class Quiz extends Component {
             return state.visible = true;
         }
     }
+
     componentDidMount() {
         if (localStorage.getItem('token')) {
             if (document.querySelector('.modal-backdrop')) {
@@ -77,7 +81,10 @@ class Quiz extends Component {
                                     title: quiz.title,
                                     description: quiz.description,
                                     img: quiz.img,
-                                    questions: quiz.question
+                                    questions: quiz.question,
+                                    visibleTo: quiz.visibleTo,
+                                    location: quiz.location,
+                                    language: quiz.language,
                                 });
                                 this.quiz = quiz;
                             } else {
@@ -162,14 +169,6 @@ class Quiz extends Component {
         io.emit('quizUpdate', this.quiz);
     }
 
-    onChangeVisibleToEvent = (e) => {
-        if (e.target.value === "1") {
-            this.quiz.visibleTo = true
-        } else {
-            this.quiz.visibleTo = false
-        }
-    }
-
     questionShow = () => {
         const questions = [];
         this.state.questions.forEach((question, key) => {
@@ -179,7 +178,7 @@ class Quiz extends Component {
                     <Link to={{ pathname: '/Question/Edit', state: { questionId: question._id, quizId: this.props.location.state.quizId } }}>
 
                         <div className="q-image">
-                            <img src={`${Ip}${question.img}`} alt="" />
+                            <img src={question.img !== '' ? `${Ip}${question.img}` : require('../images/quiz/default-quiz.png')} alt="" />
                         </div>
                         <div className="spn-questions">{question.questionTitle}</div>
                     </Link>
@@ -250,7 +249,7 @@ class Quiz extends Component {
         return (
             <div>
                 {this.state.visible ?
-                    <div>{console.log('çalıştı')}
+                    <div>
                         <Redirect to='/Profile' />
                     </div>
                     :
@@ -282,28 +281,28 @@ class Quiz extends Component {
                                             <div className="dropdown">
 
                                                 <div className="select-box select-box-1 ">
-                                                    <select name="" id="" onChange={this.onChangeVisibleToEvent}>
-                                                        <option value="">Visible to </option>
-                                                        <option value="0">Private</option>
-                                                        <option value="1">Public</option>
+                                                    <select value={quiz.visibleTo.toString() || 'DEFAULT'} onChange={(e) => { this.quiz.visibleTo = e.target.value; this.setState({ visibleTo: e.target.value }); }}>
+                                                        <option value={"DEFAULT"}>Visible to </option>
+                                                        <option value={false}>Private</option>
+                                                        <option value={true}>Public</option>
                                                     </select>
                                                 </div>
 
-                                                <div className="select-box select-box-2" onChange={(e) => { this.quiz.location = e.target.value }}>
-                                                    <select required name="" id="">
-                                                        <option value="">Location  </option>
-                                                        <option value="Turkey">Turkey</option>
-                                                        <option value="United States">United States</option>
-                                                        <option value="Venezuela">Venezuela</option>
+                                                <div className="select-box select-box-2">
+                                                    <select value={quiz.location.toString() || 'DEFAULT'} onChange={(e) => { this.quiz.location = e.target.value; this.setState({ location: e.target.value }) }}>
+                                                        <option value={"DEFAULT"}>Location  </option>
+                                                        <option value={"Turkey"}>Turkey</option>
+                                                        <option value={"United States"}>United States</option>
+                                                        <option value={"Venezuela"}>Venezuela</option>
                                                     </select>
                                                 </div>
 
-                                                <div className="select-box select-box-3" onChange={(e) => { this.quiz.language = e.target.value }}>
-                                                    <select required name="" id="">
-                                                        <option value="">Language</option>
-                                                        <option value="Turkish">Turkish</option>
-                                                        <option value="English">English</option>
-                                                        <option value="Spanish">Spanish</option>
+                                                <div className="select-box select-box-3">
+                                                    <select value={quiz.language.toString() || 'DEFAULT'} onChange={(e) => { this.quiz.language = e.target.value; this.setState({ language: e.target.value }) }}>
+                                                        <option value={"DEFAULT"}>Language</option>
+                                                        <option value={"Turkish"}>Turkish</option>
+                                                        <option value={"English"}>English</option>
+                                                        <option value={"Spanish"}>Spanish</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -316,13 +315,18 @@ class Quiz extends Component {
                                         </div>
 
                                     </div>
+                                    <div className="quiz-questions">
 
-                                    <Slider className="questions-image" {...discoverBottom}>{this.questionShow()}</Slider>
-                                    <div className="add-question">
-                                        <Link to={{ pathname: '/question', state: { quizId: this.quizId } }} > <button type="button" className="btn-add"></button> </Link>
-                                    </div>
-                                    <div className="quiz-enter-button">
-                                        <button type="submit" className="btn-quiz-enter" onClick={this.onClickEvent} >Edit</button>
+                                        <div className="quiz-question-header">
+                                            <h2>Questions</h2>
+                                            <Link to={{ pathname: '/question', state: { quizId: this.quizId } }} > <button type="button" className="btn-question-add"></button> </Link>
+                                        </div>
+
+                                        <Slider className="questions-image" {...discoverBottom}>{this.questionShow()}</Slider>
+
+                                        <div className="quiz-enter-button">
+                                            <button type="submit" className="btn-quiz-enter" onClick={this.onClickEvent} >Edit</button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>

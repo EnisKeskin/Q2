@@ -27,6 +27,7 @@ class Question extends Component {
             answer1: '',
             answer2: '',
             answer3: '',
+            answer: '',
             file: '',
             questionErr: '',
             questionCount: null,
@@ -35,6 +36,7 @@ class Question extends Component {
         }
 
         this.onChangeFileEvent = this.onChangeFileEvent.bind(this);
+        this.onChangeTrueAnswerEvent = this.onChangeTrueAnswerEvent.bind(this);
     }
 
     componentDidMount() {
@@ -75,8 +77,7 @@ class Question extends Component {
                     this.setState({
                         questionCount: quiz.questionCount + 1 + '. Question',
                     })
-                    this.resetVariable();
-                    this.resetForm();
+                    this.resetPage();
                 }, 1000);
             })
 
@@ -99,6 +100,7 @@ class Question extends Component {
             io.removeListener('error');
             io.removeListener('newQuestionCreate');
             io.removeListener('errors');
+            io.removeListener('sendQuestionCount');
         }
     }
 
@@ -154,8 +156,8 @@ class Question extends Component {
         })
     }
 
-    resetForm = () => {
-        this.myFormRef.reset();
+    resetPage = () => {
+        window.location.reload();
     }
 
     onChangeTitleEvent = (e) => {
@@ -169,7 +171,6 @@ class Question extends Component {
     }
 
     onChangeAnswerEvent = (index, e) => {
-        console.log(index)
         const value = e.target.value
         if (value.length <= 100) {
             this.answers[index] = value
@@ -199,10 +200,18 @@ class Question extends Component {
         }
     }
 
+    onChangeTrueAnswerEvent = (e) => {
+        this.setState({
+            answer: e.target.value
+        })
+        this.question.answer = e.target.value
+    }
+
     render() {
+        const state = this.state
         return (
             <div>
-                {this.state.loginVisible ? <Redirect to='/User' /> :
+                {state.loginVisible ? <Redirect to='/User' /> :
 
                     <div className="capsule-2">
 
@@ -211,7 +220,7 @@ class Question extends Component {
                                 <img src={require('../images/logo/logo-w.png')} className="img-quiz-logo" accept="image/*" alt='' />
 
                             </div>
-                            <Link to='/profile' className='question-finish'><button type="button" className="btn-finish"> Finish </button></Link>
+                            <Link to={{ pathname: '/Quiz/Edit', state: { quizId: this.props.location.state.quizId } }} className='question-finish'><button type="button" className="btn-finish"> Finish </button></Link>
 
                         </header>
 
@@ -220,10 +229,10 @@ class Question extends Component {
                                 <div className="question-image">
                                     <label className="lbl-file" htmlFor="file">   Tap to add cover images    </label>
                                     <input className="fileupload" type="file" name="fileToUpload" id="file" accept="image/*" onChange={this.onChangeFileEvent} />
-                                    <img src={this.state.file} alt='' srcSet='' />
+                                    <img src={state.file} alt='' srcSet='' />
                                 </div>
                                 <div className="question-text">
-                                    <input type="text" className="txt-question" placeholder="Tap to add question" value={this.state.questionTitle || ''} onChange={this.onChangeTitleEvent.bind(this)} required />
+                                    <input type="text" className="txt-question" placeholder="Tap to add question" value={state.questionTitle || ''} onChange={this.onChangeTitleEvent.bind(this)} required />
                                 </div>
 
                                 <div className="question-answer">
@@ -232,12 +241,10 @@ class Question extends Component {
 
                                         <div className="col-md-6 ">
                                             <div className="a1">
-                                                <input type="text" className="txt-answer1" placeholder="Answer 1" value={this.state.answer0 || ''} onChange={this.onChangeAnswerEvent.bind(this, 0)} required />
+                                                <input type="text" className="txt-answer1" placeholder="Answer 1" value={state.answer0 || ''} onChange={this.onChangeAnswerEvent.bind(this, 0)} required />
                                                 <div className="checkbox">
                                                     {/* onChange Çalışmayabiliyor */}
-                                                    <input type="radio" name="option" value="0" onChange={(e) => {
-                                                        this.question.answer = e.target.value
-                                                    }} required />
+                                                    <input type="radio" name="option" value={"0"} checked={state.answer === '0' || ''} onChange={this.onChangeTrueAnswerEvent} required />
                                                     <label>Option 1</label>
                                                 </div>
                                             </div>
@@ -245,11 +252,9 @@ class Question extends Component {
 
                                         <div className="col-md-6">
                                             <div className="a2">
-                                                <input type="text" className="txt-answer2" placeholder="Answer 2" value={this.state.answer1 || ''} onChange={this.onChangeAnswerEvent.bind(this, 1)} required />
+                                                <input type="text" className="txt-answer2" placeholder="Answer 2" value={state.answer1 || ''} onChange={this.onChangeAnswerEvent.bind(this, 1)} required />
                                                 <div className="checkbox">
-                                                    <input type="radio" name="option" value="1" onChange={(e) => {
-                                                        this.question.answer = e.target.value
-                                                    }} required />
+                                                    <input type="radio" name="option" value={"1"} checked={state.answer === '1' || ''} onChange={this.onChangeTrueAnswerEvent} required />
                                                     <label>Option 1</label>
                                                 </div>
                                             </div>
@@ -257,11 +262,9 @@ class Question extends Component {
 
                                         <div className="col-md-6 ">
                                             <div className="a3">
-                                                <input type="text" className="txt-answer3" placeholder="Answer 3" value={this.state.answer2 || ''} onChange={this.onChangeAnswerEvent.bind(this, 2)} required />
+                                                <input type="text" className="txt-answer3" placeholder="Answer 3" value={state.answer2 || ''} onChange={this.onChangeAnswerEvent.bind(this, 2)} required />
                                                 <div className="checkbox">
-                                                    <input type="radio" name="option" value="2" onChange={(e) => {
-                                                        this.question.answer = e.target.value
-                                                    }} required />
+                                                    <input type="radio" name="option" value={"2"} checked={state.answer === '2' || ''} onChange={this.onChangeTrueAnswerEvent} required />
                                                     <label>Option 1</label>
                                                 </div>
                                             </div>
@@ -269,11 +272,9 @@ class Question extends Component {
 
                                         <div className="col-md-6">
                                             <div className="a4">
-                                                <input type="text" className="txt-answer4" placeholder="Answer 4" value={this.state.answer3 || ''} onChange={this.onChangeAnswerEvent.bind(this, 3)} required />
+                                                <input type="text" className="txt-answer4" placeholder="Answer 4" value={state.answer3 || ''} onChange={this.onChangeAnswerEvent.bind(this, 3)} required />
                                                 <div className="checkbox">
-                                                    <input type="radio" name="option" value="3" onChange={(e) => {
-                                                        this.question.answer = e.target.value
-                                                    }} required />
+                                                    <input type="radio" name="option" value={"3"} checked={state.answer === '3' || ''} onChange={this.onChangeTrueAnswerEvent} required />
                                                     <label>Option 1</label>
                                                 </div>
                                             </div>
@@ -293,9 +294,9 @@ class Question extends Component {
 
                                     </select>
                                 </div>
-                                <div className="question-number">{this.state.questionCount}</div>
-                                <div>{this.state.questionErr}</div>
-                                {this.state.questionSuccessfull}
+                                <div className="question-number">{state.questionCount}</div>
+                                <div>{state.questionErr}</div>
+                                {state.questionSuccessfull}
                                 <div className="add-question">
                                     <button className="btn-add" type="submit" value='' onClick={this.onClickEvent} ></button>
                                 </div>

@@ -64,19 +64,17 @@ class Discover extends Component {
                     <div className="discover-block-text">
                         <span className="spn-discover">{quiz.title.length < 20 ? quiz.title : quiz.title.slice(0, 20) + '...'} </span>
                         <span className="spn-discover-2"> {quiz.questionCount} Questions</span>
-                        <div className="discover-owner">{quiz.username} <img src={typeof (quiz.userImg) !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} alt="" /></div>
+                        <div className="discover-owner">{quiz.username} <img src={quiz.userImg !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} alt="" /></div>
                     </div>
                 </div>
             )
         });
         return quizs;
     }
-
     discoverModalShow() {
         const stateQuizs = this.state.trendQuizzes;
         let quizs = [];
         stateQuizs.forEach((quiz, key) => {
-            console.log(quiz);
             quizs.push(
                 <div className="modal fade bd-example-modal-lg" id={"quiz-item-modal" + key} key={key} tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 
@@ -97,7 +95,7 @@ class Discover extends Component {
 
                                         <div className="modal-user">
 
-                                            <img src={typeof (quiz.userImg) !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
+                                            <img src={quiz.userImg !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
 
                                             <div className="modal-name">{quiz.username}</div>
 
@@ -107,7 +105,7 @@ class Discover extends Component {
 
                                         <p> {quiz.description} </p>
                                         <div className="modal-start">
-                                            <Link to={{ pathname: '/Players', state: { pin: quiz.pin, visible: true } }} className="btn-play">Play</Link>
+                                            <Link to={{ pathname: '/Lobby', state: { pin: quiz.pin, visible: true } }} className="btn-play">Play</Link>
                                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
@@ -138,7 +136,7 @@ class Discover extends Component {
                         <span className="spn-discover-2-quizs"> {quiz.questionCount}  Questions</span>
 
                         <div className="discover-owner-quizs">
-                            {quiz.username} <img src={typeof (quiz.userImg) !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} alt="" />
+                            {quiz.username} <img src={quiz.userImg !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} alt="" />
                         </div>
 
                     </div>
@@ -173,7 +171,7 @@ class Discover extends Component {
 
                                         <div className="modal-user">
 
-                                            <img src={typeof (quiz.userImg) !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
+                                            <img src={quiz.userImg !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
 
                                             <div className="modal-name">{quiz.username}</div>
 
@@ -190,7 +188,7 @@ class Discover extends Component {
 
                                         <p> {quiz.description} </p>
                                         <div className="modal-start">
-                                            <Link to={{ pathname: '/Players', state: { pin: quiz.pin, visible: true } }} className="btn-play">Play</Link>
+                                            <Link to={{ pathname: '/Lobby', state: { pin: quiz.pin, visible: true } }} className="btn-play">Play</Link>
                                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>

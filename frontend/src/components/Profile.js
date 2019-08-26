@@ -129,8 +129,7 @@ class Profile extends Component {
                                             <h4 className="h4 modal-h4">{quiz.title}</h4>
 
                                             <div className="modal-user">
-
-                                                <img src={typeof (quiz.userImg) !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
+                                                <img src={quiz.userImg !== '' ? `${Ip}${quiz.userImg}` : require('../images/quiz/avatar2.png')} className="img-user-modal" alt="" />
 
                                                 <div className="modal-name">{quiz.username}</div>
 
@@ -147,7 +146,7 @@ class Profile extends Component {
 
                                             <p> {quiz.description} </p>
                                             <div className="modal-start">
-                                                <Link to={{ pathname: '/Players', state: { pin: quiz.pin, visible: true } }} className="btn-play">Play</Link>
+                                                <Link to={{ pathname: '/Lobby', state: { pin: quiz.pin, visible: true } }} className="btn-play">Play</Link>
                                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                                             </div>
                                         </div>
