@@ -62,7 +62,11 @@ ul {
     margin-right: 5px;
 }
 
-.menu ul li a {
+.img-icon:hover {
+    cursor: pointer;
+}
+
+.menu ul a {
     color: #333;
     margin-right: 15px;
     position: relative;
@@ -74,7 +78,7 @@ ul {
     transition: 0.1s;
 }
 
-.menu ul li a:hover {
+.menu ul a:hover {
     color: gray;
     opacity: 0.8;
 }
@@ -132,20 +136,6 @@ ul {
     margin-top: 10px;
     padding-left: 15px;
     padding-right: 15px;
-}
-
-.profil-information-left:hover {
-    background: #9b3adb;
-    cursor: pointer;
-    transition: .2s;
-    transform: scale(1.02);
-}
-
-.profil-information-right:hover {
-    background: #9b3adb;
-    cursor: pointer;
-    transition: .2s;
-    transform: scale(1.02);
 }
 
 .profil-bottom {
@@ -247,6 +237,7 @@ ul {
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.108474);
     border-radius: 41px;
     transition: 0.2s;
+    position: relative;
 }
 
 .my-quiz:hover {
@@ -254,6 +245,14 @@ ul {
     transition: 0.2s;
     background-color: #f5f5f5;
     transform: scale(1.02);
+}
+
+.my-quiz-question {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    font-size: 15px;
+    color: #626060;
 }
 
 .my-quiz-img {
@@ -276,6 +275,9 @@ ul {
     font-family: 'Poppins', sans-serif;
     font-weight: 300;
     width: calc(100% - 250px);
+    padding-bottom: 40px;
+    padding-top: 40px;
+    word-break: break-all;
 }
 
 .modal-content {
@@ -302,6 +304,7 @@ ul {
     height: auto;
     padding-top: 100px;
     padding-bottom: 30px;
+    word-break: break-all;
 }
 
 .modal-h4 {
@@ -349,6 +352,7 @@ ul {
 }
 
 .modal-start {
+    display: flex;
     justify-content: space-between;
 }
 
@@ -463,7 +467,6 @@ ul {
         margin-right: 30px;
     }
     .my-quiz-name {
-        padding-top: 0;
         display: flex;
         align-items: center;
         width: calc(100% - 30%)
@@ -489,7 +492,7 @@ ul {
 }
 
 @media only screen and (max-width: 670px) {
-    .menu ul li a {
+    .menu ul a {
         font-size: 0;
         margin-right: 5px;
     }
@@ -498,10 +501,13 @@ ul {
     }
 }
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 550px) {
     .my-quiz {
         display: block;
         padding: 15px;
+        width: 70%;
+        margin: auto;
+        margin-top: 20px;
     }
     .my-quiz-name {
         width: 100%;
@@ -518,6 +524,12 @@ ul {
     }
 }
 
+@media only screen and (max-width: 450px) {
+    .my-quiz {
+        width: 100%;
+    }
+}
+
 /*Profil page*/
 
 /*Pin page*/
@@ -525,7 +537,7 @@ ul {
 .pin {
     position: relative;
     z-index: 1;
-    min-height: calc(100vh - 25px);
+    min-height: calc(100vh - 35px);
     display: flex;
     align-items: center;
     align-content: center;
@@ -536,7 +548,7 @@ ul {
 }
 
 .pin-error {
-    width: 45%;
+    width: 70%;
     height: 60px;
     background: rgb(185, 99, 241);
     opacity: 0.85;
@@ -548,8 +560,30 @@ ul {
     justify-content: center;
     align-items: center;
     border-radius: 10px;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 18px;
+    animation-name: example;
+    animation-duration: 0.5s;
+    transition: 1s;
+}
+
+@keyframes example {
+    0% {}
+    25% {
+        transform: rotate(8deg);
+    }
+    50% {
+        transform: rotate(-8deg);
+    }
+    75% {
+        transform: rotate(8deg);
+    }
+    90% {
+        transform: rotate(-8deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
 }
 
 .img-cancel-2 {
@@ -623,7 +657,7 @@ ul {
 
 .a-pin a {
     color: #FFFFFF;
-    font-size: 15px;
+    font-size: 20px;
     font-weight: 500;
 }
 
@@ -722,6 +756,7 @@ ul {
     border-radius: 8px;
     display: flex;
     justify-content: flex-start;
+    transition: 0.2s;
 }
 
 .login-error {
@@ -733,6 +768,27 @@ ul {
     margin-bottom: 20px;
     color: #f05227;
     background-image: url(../images/quiz/cancel-2.png);
+    background-size: 18px;
+    background-repeat: no-repeat;
+    background-position: 15px center;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 40px;
+    padding-right: 40px;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.login-succes {
+    max-width: 347px;
+    min-height: 40px;
+    margin: auto;
+    text-align: left;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #209e00;
+    background-image: url(../images/quiz/succes.png);
     background-size: 18px;
     background-repeat: no-repeat;
     background-position: 15px center;
@@ -778,6 +834,12 @@ ul {
     font-size: 15px;
     padding-top: 15px;
     padding-bottom: 10px;
+    transition: 0.2s;
+}
+
+.login-input:hover {
+    transform: scale(1.05);
+    transition: 0.2s;
 }
 
 .login-password-input {
@@ -790,6 +852,12 @@ ul {
     justify-content: flex-start;
     margin-top: 23px;
     margin-bottom: 23px;
+    transition: 0.2s;
+}
+
+.login-password-input:hover {
+    transform: scale(1.05);
+    transition: 0.2s;
 }
 
 .img-password {
@@ -829,6 +897,7 @@ ul {
 .btn-login:hover {
     transition: 0.2s;
     background-color: #fe3c70;
+    transform: scale(1.05);
 }
 
 .signup {
@@ -862,6 +931,12 @@ ul {
     outline: none;
     font-size: 15px;
     margin-bottom: 23px;
+    transition: 0.2s;
+}
+
+.txt-signup:hover {
+    transform: scale(1.05);
+    transition: 0.2s;
 }
 
 .user-name {
@@ -880,6 +955,12 @@ ul {
     border: none;
     outline: none;
     padding-left: 23px;
+    transition: 0.2s;
+}
+
+.txt-username:hover {
+    transform: scale(1.05);
+    transition: 0.2s;
 }
 
 .btn-sign {
@@ -897,6 +978,7 @@ ul {
 .btn-sign:hover {
     background-color: #fe3c70;
     transition: 0.2s;
+    transform: scale(1.05);
 }
 
 @media only screen and (max-width: 990px) {
@@ -997,6 +1079,7 @@ ul {
     display: block;
     width: 100%;
     object-fit: cover;
+    z-index: 1;
 }
 
 .quiz-right {
@@ -1005,6 +1088,7 @@ ul {
     width: calc(100% - 900px);
     padding-right: 50px;
     position: relative;
+    font-size: 20px;
 }
 
 .txt-title {
@@ -1027,8 +1111,20 @@ ul {
     position: relative;
 }
 
-.txt-description {
+.description {
     margin-top: 40px;
+    border: 0px solid;
+    border-radius: 12px;
+    box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.21);
+    color: gray;
+    outline: none;
+    transition: all .2s ease-in;
+    text-align: right;
+    padding-right: 10px;
+    font-size: 18px;
+}
+
+.txt-description {
     width: 100%;
     max-height: 250px;
     min-height: 250px;
@@ -1036,13 +1132,11 @@ ul {
     padding-top: 15px;
     border: 0px solid;
     border-radius: 12px;
-    box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.21);
-    color: gray;
-    outline: none;
-    transition: all .2s ease-in;
+    outline: 0;
+    font-size: 20px;
 }
 
-.txt-description:hover {
+.description:hover {
     transition: all .2s ease-in;
     transform: scale(1.02);
     position: relative;
@@ -1104,6 +1198,7 @@ ul {
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     transition: all .2s ease-in;
+    position: relative;
 }
 
 .questions-image-in:hover {
@@ -1130,36 +1225,46 @@ ul {
     display: flex;
     align-items: center;
     justify-content: center;
+    word-break: break-all;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.slick-track {
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    min-width: 100%;
+    padding-top: 10px;
 }
 
 .slick-arrow.slick-next {
     background: url("../images/quiz/next-arrow.png");
-    width: 50px;
-    height: 70%;
-    position: absolute;
-    right: 0;
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: 0px 50%;
-    background-color: white;
+    width: 40px;
+    height: 100%;
+    position: absolute;
     border: none;
     outline-style: none;
     font-size: 0px;
+    right: 0;
+    top: 0;
 }
 
 .slick-arrow.slick-prev {
     background: url("../images/quiz/previous-arrow.png");
-    width: 50px;
-    height: 70%;
-    position: absolute;
-    left: 0;
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: 0px 50%;
-    background-color: white;
     border: none;
+    width: 40px;
+    height: 100%;
+    position: absolute;
     outline-style: none;
     font-size: 0px;
+    left: 0;
 }
 
 /*selectbox*/
@@ -1352,6 +1457,7 @@ select::-ms-expand {
 
 .question-content {
     height: auto;
+    padding-bottom: 30px;
 }
 
 .question-image {
@@ -1367,8 +1473,7 @@ select::-ms-expand {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-top-right-radius: 30px;
-    border-bottom-right-radius: 30px;
+    border-radius: 30px;
     position: relative;
 }
 
@@ -1396,6 +1501,7 @@ select::-ms-expand {
     top: 0;
     position: absolute;
     opacity: 0;
+    z-index: 2;
 }
 
 .fileupload:hover {
@@ -1413,6 +1519,7 @@ select::-ms-expand {
     display: block;
     width: 100%;
     object-fit: cover;
+    z-index: 1;
 }
 
 .select-box-question {
@@ -1427,6 +1534,7 @@ select::-ms-expand {
     border-radius: 12px;
     bottom: 10px;
     right: 25;
+    z-index: 2;
 }
 
 .select-box-question select {
@@ -1586,7 +1694,7 @@ select::-ms-expand {
 .add-question {
     height: 65px;
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 0px;
 }
 
 .btn-add {
@@ -1596,6 +1704,12 @@ select::-ms-expand {
     background-size: 100%;
     border: none;
     background-color: white;
+    transition: 0.2s;
+}
+
+.btn-add:hover {
+    transform: scale(1.09);
+    transition: 0.2s;
 }
 
 .question-error {
@@ -1617,6 +1731,34 @@ select::-ms-expand {
     border-radius: 8px;
     border: 1px solid #d5d5d5;
     font-size: 16px;
+}
+
+.question-succes {
+    width: 100%;
+    min-height: 40px;
+    background-image: url("../images/quiz/succes.png");
+    background-size: 23px;
+    background-repeat: no-repeat;
+    background-position: 1%;
+    padding: 10px;
+    padding-left: 50px;
+    padding-right: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #d5d5d5;
+    font-size: 16px;
+}
+
+.question-number {
+    text-align: center;
+    font-size: 19px;
+    color: #333;
+    margin-bottom: 20px;
 }
 
 .custom-control {
@@ -1817,7 +1959,7 @@ select::-ms-expand {
 }
 
 .answer-image {
-    min-width: 88%;
+    min-width: calc(50% + 30px);
     height: 300px;
     background-color: rgb(226, 226, 226);
     border-radius: 15px;
@@ -1832,8 +1974,8 @@ select::-ms-expand {
 }
 
 .answer-question {
-    min-width: 88%;
-    height: 300px;
+    min-width: calc(50% + 30px);
+    min-height: 300px;
     background: #9B3ADB;
     position: relative;
     left: 0;
@@ -1841,13 +1983,14 @@ select::-ms-expand {
     border-radius: 15px;
     margin: 40px 0 0 -60px;
     font-style: normal;
-    font-size: 17.5px;
+    font-size: 19px;
     font-weight: 500;
     color: white;
     padding-left: 80px;
     padding-right: 40px;
     display: flex;
     align-items: center;
+    word-break: break-all;
 }
 
 .statistics {
@@ -1918,7 +2061,7 @@ select::-ms-expand {
 
 .progressbar {
     width: 100%;
-    height: 20px;
+    height: 23px;
     background: #F60E4C;
     margin-top: 10px;
     border-radius: 18px;
@@ -1926,6 +2069,8 @@ select::-ms-expand {
     padding-right: 15px;
     display: flex;
     justify-content: flex-end;
+    color: white;
+    font-size: 17px;
 }
 
 .answer-bottom {
@@ -1933,7 +2078,7 @@ select::-ms-expand {
     width: 100%;
     bottom: 0;
     margin-top: 20px;
-    font-size: 17px;
+    font-size: 19px;
 }
 
 .answer-selection {
@@ -1949,11 +2094,11 @@ select::-ms-expand {
     height: 165px;
     border-radius: 20px;
     color: white;
-    line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
     transition: 0.2s;
     border: none;
+    word-break: break-all;
 }
 
 .answer-2 {
@@ -1962,11 +2107,11 @@ select::-ms-expand {
     width: 100%;
     border-radius: 20px;
     color: white;
-    line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
     border: none;
     transition: 0.2s;
+    word-break: break-all;
 }
 
 .answer-3 {
@@ -1975,11 +2120,11 @@ select::-ms-expand {
     width: 100%;
     border-radius: 20px;
     color: white;
-    line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
     border: none;
     transition: 0.2s;
+    word-break: break-all;
 }
 
 .answer-4 {
@@ -1989,11 +2134,11 @@ select::-ms-expand {
     border-radius: 20px;
     color: white;
     text-align: center;
-    line-height: 165px;
     text-align: center;
     margin-bottom: 20px;
     border: none;
     transition: 0.2s;
+    word-break: break-all;
 }
 
 .answer-1:hover {
@@ -2024,14 +2169,7 @@ select::-ms-expand {
     transform: scale(1.03);
 }
 
-@media only screen and (max-width: 1200px) {
-    .answer-image {
-        min-width: 70%;
-    }
-    .answer-question {
-        min-width: 70%;
-    }
-}
+@media only screen and (max-width: 1200px) {}
 
 @media only screen and (max-width: 991.5px) {
     .answer-image {
@@ -2207,8 +2345,6 @@ select::-ms-expand {
 .discover-trend-in {
     height: 400px;
     width: 65%;
-    position: relative;
-    padding-right: 40px;
     background-color: #9b3adb;
     border-top-right-radius: 50px;
     border-bottom-right-radius: 50px;
@@ -2238,17 +2374,18 @@ select::-ms-expand {
     padding-left: 10px;
     display: flex;
     justify-content: flex-start;
-    margin-left: 40px;
-    padding-right: 25px;
+    padding-right: 15px;
     color: #494444;
+    padding-right: 30px;
+    position: relative;
 }
 
 .discover-trend-block {
     width: 230px;
     min-height: 230px;
     background-color: white;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 15px;
+    margin-right: 15px;
     position: relative;
     box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.21);
     border-radius: 10px;
@@ -2272,6 +2409,12 @@ select::-ms-expand {
 
 .slick-list {
     width: 100%;
+    position: relative;
+    display: block;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    margin-left: 10px;
 }
 
 .discover-trend-block img {
@@ -2295,6 +2438,7 @@ select::-ms-expand {
     border-radius: 10px;
     padding-right: 20px;
     padding-top: 10px;
+    word-break: break-all;
 }
 
 .spn-discover {
@@ -2325,31 +2469,36 @@ select::-ms-expand {
 }
 
 .discover-trend-bottom .slick-arrow.slick-next {
-    background: url("../images/quiz/next-arrow-w.png");
-    width: 50px;
-    height: 70%;
-    right: 0;
-    position: absolute;
-    background-size: 100%;
-    background-repeat: no-repeat;
-    background-position: 0px 50%;
     border: none;
     outline-style: none;
     font-size: 0px;
+    width: 30px;
+    height: 100%;
+    background: url("../images/quiz/next-arrow-w.png");
+    position: absolute;
+    right: 7px;
+    background-color: #9b3adb;
+    top: 0;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: 0px 50%;
 }
 
 .discover-trend-bottom .slick-arrow.slick-prev {
-    background: url("../images/quiz/previous-arrow-w.png");
-    width: 50px;
-    height: 70%;
-    position: absolute;
-    left: 0;
-    background-size: 100%;
-    background-repeat: no-repeat;
-    background-position: 0px 50%;
     border: none;
     outline-style: none;
     font-size: 0px;
+    background: url("../images/quiz/previous-arrow-w.png");
+    width: 30px;
+    height: 100%;
+    left: 0;
+    top: 0;
+    position: absolute;
+    z-index: 1;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-color: #9b3adb;
+    background-position: 0px 50%;
 }
 
 .discover-quizs {
@@ -2374,6 +2523,9 @@ select::-ms-expand {
     display: flex;
     justify-content: flex-start;
     margin-top: 20px;
+    position: relative;
+    padding-right: 50px;
+    padding-left: 30px;
 }
 
 .discover-quizs-block {
@@ -2438,6 +2590,7 @@ select::-ms-expand {
     font-weight: 600;
     color: #494444;
     padding-top: 10px;
+    word-break: break-all;
 }
 
 .spn-discover-2-quizs {
@@ -2531,6 +2684,27 @@ select::-ms-expand {
     margin-bottom: 15px;
 }
 
+.profile-edit-close {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 1;
+}
+
+.profile-edit-close img {
+    width: 100%;
+    height: auto;
+    transition: 0.2s;
+}
+
+.profile-edit-close img:hover {
+    transform: scale(1.2);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
 /*Profile Edit Page*/
 
 /* 404 error Page*/
@@ -2553,3 +2727,53 @@ select::-ms-expand {
 }
 
 /* 404 error Page*/
+
+/*New stye*/
+
+.player-error {
+    width: auto;
+    background-color: white;
+    min-height: 50px;
+    color: #f05227;
+    background-image: url(../images/quiz/cancel-2.png);
+    background-size: 18px;
+    background-repeat: no-repeat;
+    background-position: 15px center;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 40px;
+    padding-right: 40px;
+    border-radius: 8px;
+    animation-name: example;
+    animation-duration: 0.5s;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.question-delete {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background-color: #f42;
+    border-radius: 5px;
+}
+
+.question-delete img {
+    width: 20px;
+    height: 20px;
+}
+
+@media only screen and (max-width: 700px) {
+    .player-error {
+        font-size: 13px;
+    }
+    .btn-start {
+        width: 100px;
+    }
+    .players-number {
+        font-size: 20px;
+    }
+}
+
+/*New stye*/

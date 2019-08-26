@@ -1,35 +1,45 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const quiz = require('../models/Quiz');
+const User = require('../models/User');
+const Quiz = require('../models/Quiz');
 
 router.get('/', ensureAuthenticated, (req, res, next) => {
-
-  quiz.find({}).then((data) => {
-    var quizzes = [];
-
-    if (data.length > 0) {
-      data.forEach((quiz) => {
-        quizzes.push({
-          quizImage: quiz.img,
-          quizTitle: quiz.title,
-          questionCount: quiz.question.length,
-          ownerName: "Burak",
-          ownerImage: "images/sago.jpg"
-        })
-      });
-
-      res.render('discover',
-        {
-          Trending: quizzes,
-          Discover: quizzes
-        })
-    } else {
-      res.render('discover', {
-        Trending: [],
-        Discover: []
-      });
+  var quizData = [];
+  var userData = {};
+  var quizzes = [];
+  Quiz.find({}, (error, qresult) => {
+    if (error) {
+      console.error(error);
+      return res.redirect('/home');
     }
+    else if (qresult.length > 0) {
+      quizData = qresult;
+    }
+  }).then(() => {
+    User.find({}, (error, result) => {
+      if (error) {
+        console.error(error);
+        return res.redirect('/home');
+      }
+      else if (result.length > 0) {
+        result.forEach((user) => {
+          userData[user._id] = user;
+        });
+      }
+    }).then(() => {
+      quizData.forEach((quiz) => {
+        if (userData[quiz.userId])
+          quizzes.push({
+            quizImage: quiz.img,
+            quizTitle: ((quiz.title.length > 15) ? quiz.title.substring(0, 15) + "..." : quiz.title),
+            questionCount: quiz.question.length,
+            ownerName: userData[quiz.userId].username,
+            ownerImage: userData[quiz.userId].imgURL
+          });
+      });
+      res.render('discover', { Trending: quizzes, Discover: quizzes });
+    });
   });
 });
 

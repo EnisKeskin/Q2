@@ -23,8 +23,8 @@ module.exports = (io) => {
           return res.redirect('/');
         }
         else if (!quiz) {
-          alert("There is no game with given pin");
-          return res.redirect("/");
+          var msg = encodeURIComponent('There is no game with given pin');
+          return res.redirect('/?message=' + msg);
         }
         else {
           Rooms[pin] = {

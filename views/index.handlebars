@@ -1,16 +1,31 @@
+<script type="text/javascript" language="javascript">
+    function number(evt) {
+        evt = (evt) ? evt : window.event
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false
+        }
+        return true
+    }
+</script>
 <div class="figure">
 </div>
 <div class="figure-2">
 </div>
-
 <div class="capsule">
     <div class="pin">
-        <form method="POST" action=".">
+        <form method="POST" action="/">
             <div class="pin-logo">
-                <img src="images/logo/logo-w.png" class="img-pin-logo" alt="">
+                <img src="images/logo/logo-w.png" class=img-pin-logo alt="">
             </div>
+            {{#if message}}
+            <div class="pin-error">
+                <img src="images/quiz/cancel-2.png" class="img-cancel-2" />
+                {{message}}
+            </div>
+            {{/if}}
             <div class="pin-text">
-                <input required="" name="pin" type="text" class="txt-pin" placeholder="Game Pin">
+                <input name="pin" type="text" class="txt-pin" placeholder="Game Pin">
             </div>
             <div class="pin-button">
                 <button type="submit" class="btn-pin">Enter</button>
@@ -18,6 +33,6 @@
         </form>
     </div>
     <div class="a-pin">
-        <a href="users">Login or Register</a>
+        <a href="user.html">Login or Register</a>
     </div>
 </div>

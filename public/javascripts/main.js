@@ -22,7 +22,7 @@ $(document).ready(function () {
 
 	$('.discover-trend-bottom').slick({
 		infinite: false,
-		slidesToShow: 3,
+		slidesToShow: 4,
 		slidesToScroll: 1,
 		variableWidth: true,
 		responsive: [
@@ -50,8 +50,8 @@ $(document).ready(function () {
 
 
 	$('.discover-quizs-bottom').slick({
-		infinite: false,
-		slidesToShow: 3,
+		infinite: true,
+		slidesToShow: 4,
 		slidesToScroll: 1,
 
 		responsive: [
@@ -76,11 +76,6 @@ $(document).ready(function () {
 		]
 
 	});
-
-
-
-
-
 	$(".mobil-profil").click(function (e) {
 		e.preventDefault();
 		$(".content-profil").addClass("open");
@@ -90,7 +85,4 @@ $(document).ready(function () {
 		e.preventDefault();
 		$(".content-profil").removeClass("open");
 	});
-
-
-
 });
