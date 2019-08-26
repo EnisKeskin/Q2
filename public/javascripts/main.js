@@ -86,14 +86,16 @@ $(document).ready(function () {
 		$(".content-profil").removeClass("open");
 	});
 });
-function readURL(input,name) {
+function readQuizImageURL(input) {
 	if (input.files && input.files[0]) {
 		var reader = new FileReader();
 
 		reader.onload = function (e) {
-			$('#'+ name).attr('src', e.target.result);
+			$('#QuizImage').attr('src', e.target.result);
 		};
 
-		reader.readAsDataURL(input.files[0]);
+		if (input.files && input.files.length > 0) {
+			reader.readAsDataURL(input.files[0]);
+		}
 	}
 }

@@ -20,38 +20,34 @@ router.post('/register', (req, res, next) => {
   req.checkBody("password2", "Passwords do not match").equals(req.body.password1);
 
   var errors = req.validationErrors();
-
-  if (errors && errors.length > 0) {
+  if (errors && errors.length > 0)
     return res.redirect('/users?RegisterError=' + encodeURIComponent(errors[0].msg));
-  }
-  else {
-    User.findOne({ 'username': username }, (user) => {
-      if (user) {
-        return res.redirect('/users?RegisterError=' + encodeURIComponent('Username is already taken'));
-      }
-    });
-    User.findOne({ 'email': email }, (user) => {
-      if (user) {
-        return res.redirect('/users?RegisterError=' + encodeURIComponent('Email is already taken'));
-      }
-    });
-    bcrypt.hash(password1, 10).then((hash) => {
-      const user = new User({
-        email: email,
-        firstname: firstname,
-        lastname: lastname,
-        username: username,
-        password: hash
-      });
 
-      user.save().then((data) => {
-        return res.redirect('/users');
-      }).catch((error) => {
-        console.error(error);
-      });
+  User.findOne({ 'username': username }, (user) => {
+    if (user) {
+      return res.redirect('/users?RegisterError=' + encodeURIComponent('Username is already taken'));
+    }
+  });
+  User.findOne({ 'email': email }, (user) => {
+    if (user) {
+      return res.redirect('/users?RegisterError=' + encodeURIComponent('Email is already taken'));
+    }
+  });
+  bcrypt.hash(password1, 10).then((hash) => {
+    const user = new User({
+      email: email,
+      firstname: firstname,
+      lastname: lastname,
+      username: username,
+      password: hash
+    });
 
-    })
-  }
+    user.save().then((data) => {
+      return res.redirect('/users');
+    }).catch((error) => {
+      console.error(error);
+    });
+  });
 });
 
 passport.serializeUser((user, done) => {

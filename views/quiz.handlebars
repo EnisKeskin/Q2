@@ -1,17 +1,23 @@
 <div class="capsule-2">
     <header class="quiz-header">
         <div class="quiz-logo">
-            <img src="images/logo/logo-w.png" class="img-quiz-logo" alt="">
+            <a href="/home">
+                <img src="images/logo/logo-w.png" class="img-quiz-logo" alt="Logo White">
+            </a>
         </div>
         <div class="close">
-            <img src="images/quiz/cancel.png" alt="">
+            <a href="/home">
+                <img src="images/quiz/cancel.png" alt="Cancel">
+            </a>
         </div>
     </header>
     <form action="quiz" method="POST" enctype="multipart/form-data">
         <div class="quiz-content">
             <div class="quiz-image">
                 <label class="lbl-file" for="file"> Tap to add cover images </label>
-                <input class="fileupload" type="file" name="fileToUpload" id="file">
+                <input name="fileToUpload" class="fileupload" type="file" onchange="()=>{readQuizImageURL(this);}"
+                    id="file">
+                <img id="QuizImage" src="images/quiz/default-quiz.png" alt="quizImage">
             </div>
             <div class="quiz-right">
                 <div class="dropdown">
@@ -37,8 +43,17 @@
                         </select>
                     </div>
                 </div>
-                <input type="text" name="title" placeholder="Title" class="txt-title" required="">
-                <textarea placeholder="Description" name="description" class="txt-description" required=""></textarea>
+                <input name="title" type="text" placeholder="Title" class="txt-title" maxlength="32">
+                <div class="description">
+                    <textarea name="description" type="text" placeholder="Description" class="txt-description"
+                        maxlength="256"></textarea>
+                    Character 256
+                </div>
+                {{#if Message}}
+                <div class="quiz-error">
+                    {{Message}}
+                </div>
+                {{/if}}
             </div>
         </div>
         <div class="quiz-enter-button">

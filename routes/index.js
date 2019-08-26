@@ -4,8 +4,8 @@ module.exports = (io) => {
   const router = app.Router();
 
   router.get('/', (req, res, next) => {
-    if (req.query.message && req.query.message != "")
-      return res.render('index', { "message": decodeURIComponent(req.query.message) });
+    if (req.query.Message && req.query.Message != "")
+      return res.render('index', { "Message": decodeURIComponent(req.query.message) });
     else
       return res.render('index');
   });
@@ -14,7 +14,7 @@ module.exports = (io) => {
     if (req.body.pin && req.body.pin != "")
       res.redirect('game?pin=' + req.body.pin);
     else
-      res.redirect('/?message=' + encodeURIComponent('Provide a Pin'));
+      res.redirect('/?Message=' + encodeURIComponent('Provide a Pin'));
   });
 
   return router;

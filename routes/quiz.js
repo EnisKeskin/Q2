@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const Quiz = require('../models/Quiz');
 const User = require('../models/User');
 var multer = require('multer');
-var storage = multer.diskStorage({
+
+var storageQuiz = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'public/uploads');
   },
@@ -12,38 +13,45 @@ var storage = multer.diskStorage({
     cb(null, 'QuizImage-' + Date.now());
   }
 });
-var upload = multer({ storage: storage });
+var uploadQuiz = multer({ storage: storageQuiz });
+
+var storageQuestion = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads');
+  },
+  filename: function (req, file, cb) {
+    cb(null, 'QuestionImage-' + Date.now());
+  }
+});
+var uploadQuestion = multer({ storage: storageQuestion });
 
 
 router.get('/', ensureAuthenticated, (req, res, next) => {
-  User.findOne({ username: req.user.username }, (err, user) => {
-    Quiz.find({ userId: user._id }, (err, quizzes) => {
-      console.log("Quiz: " + quizzes);
-    });
-  });
-  res.render('quiz',
-    {
-      visibility: [
-        { option: "Visibility0" },
-        { option: "Visibility1" },
-        { option: "Visibility2" },
-        { option: "Visibility3" }
-      ],
-      location: [
-        { option: "Turkey" },
-        { option: "China" },
-        { option: "USA" },
-        { option: "UK" },
-        { option: "Mars" }
-      ],
-      language: [
-        { option: "Turkish" },
-        { option: "Chinese" },
-        { option: "English" },
-        { option: "ElonIsh" }
-      ]
-    }
-  );
+  const data = {
+    'visibility': [
+      { option: "To only Me" },
+      { option: "To me with friends" },
+      { option: "To everyone" },
+      { option: "To ONLY Elon Musk" }
+    ],
+    'location': [
+      { option: "Turkey" },
+      { option: "China" },
+      { option: "USA" },
+      { option: "UK" },
+      { option: "Mars" }
+    ],
+    'language': [
+      { option: "Turkish" },
+      { option: "Chinese" },
+      { option: "English" },
+      { option: "ElonIsh" }
+    ]
+  };
+  if (req.query.message) {
+    data['Message'] = decodeURIComponent(req.query.message);
+  }
+  return res.render('quiz', data);
 });
 
 router.get('/question', ensureAuthenticated, (req, res, next) => {
@@ -71,46 +79,48 @@ router.get('/question', ensureAuthenticated, (req, res, next) => {
 
 });
 
-router.post('/', upload.single('fileToUpload'), (req, res) => {
+router.post('/', uploadQuiz.single('fileToUpload'), (req, res) => {
   const pin = pinCreate();
   User.findOne({ username: req.user.username }, (err, user) => {
-    //5d5a9ae7476b4d3348491aa4
     if (err || !user || user.length == 0) {
       console.error(err);
-      res.redirect("/");
+      req.logOut();
+      return res.redirect('/users?LoginError=' + encodeURIComponent('Unauthorized Post Request :\nWe couldn\'t find you in our database!'));
     }
-    else {
-      var quizObj = {
-        title: req.body.title,
-        description: req.body.description,
-        location: req.body.location,
-        language: req.body.language,
-        pin: pin,
-        img: req.file ? "uploads\\" + req.file.filename : "noImage.jpg",
-        userId: user._id,
-        visibleTo: true,
-        visibility: req.body.visibility,
-        question: [],
-        active: false,
-        date: Date.now()
-      };
-      const quiz = new Quiz(quizObj);
-      console.log("Quiz: " + quiz);
-      quiz.save().then((data) => {
-        console.log("data: " + data);
-        res.redirect("/quiz/question?quiz=" + data._id);
-      }).catch((err) => {
-        if (err) {
-          console.error(err);
-          res.redirect("/quiz");
-        }
-      });
-    }
-  }).catch((err) => {
-    if (err) {
-      console.error(err);
-      res.redirect("/quiz");
-    }
+    const { title, description, location, language, visibility } = req.body;
+
+    req.checkBody("title", "Title is required").notEmpty();
+    req.checkBody("description", "Description is required").notEmpty();
+
+    var errors = req.validationErrors();
+    if (errors && errors.length > 0)
+      return res.redirect('/quiz?Message=' + encodeURIComponent(errors[0].msg));
+
+    var quizObj = {
+      title: title,
+      description: description,
+      location: location,
+      language: language,
+      pin: pin,
+      img: req.file ? "uploads\\" + req.file.filename : "noImage.jpg",
+      userId: user._id,
+      visibleTo: true,
+      visibility: visibility,
+      question: [],
+      active: false,
+      date: Date.now()
+    };
+
+    const quiz = new Quiz(quizObj);
+
+    quiz.save().then((result) => {
+      res.redirect('/quiz/question?quiz=' + result._id);
+    }).catch((error) => {
+      if (error) {
+        console.error(error);
+        res.redirect('/quiz?Message=' + encodeURIComponent("Unknown Error occurred!"));
+      }
+    });
   });
 })
 
@@ -124,10 +134,9 @@ function pinCreate() {
       return randomKey;
     }
   });
-  return randomKey;
 }
 
-router.post('/question', upload.single("fileToUpload"), (req, res) => {
+router.post('/question', uploadQuestion.single("fileToUpload"), (req, res) => {
   const quizID = req.body.quizID;
   console.log(req.body);
   var question = {
@@ -169,6 +178,6 @@ router.post('/question', upload.single("fileToUpload"), (req, res) => {
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) return next();
-  res.redirect('/');
+  res.redirect('/users?LoginError=' + encodeURIComponent("You have to Login to see this page"));
 }
 module.exports = router;

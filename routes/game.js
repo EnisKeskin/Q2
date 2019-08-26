@@ -24,7 +24,7 @@ module.exports = (io) => {
         }
         else if (!quiz) {
           var msg = encodeURIComponent('There is no game with given pin');
-          return res.redirect('/?message=' + msg);
+          return res.redirect('/?Message=' + msg);
         }
         else {
           Rooms[pin] = {
