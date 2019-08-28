@@ -2,10 +2,10 @@ const { Builder, By, Key, until } = require('selenium-webdriver');
 
 for (let index = 0; index < 5; index++) {
     let driver = new Builder('./chromedriver').forBrowser('chrome').build();
-    driver.get('http://localhost:3001/').then(async () => {
+    driver.get('http://67.205.175.221/').then(async () => {
 
         await driver.findElement(By.className('txt-pin')).then(async (pin) => {
-            await pin.sendKeys('685811', Key.RETURN).then(async () => {
+            await pin.sendKeys('195053', Key.RETURN).then(async () => {
                 await driver.findElement(By.className('btn-pin')).then(async (el) => {
                     el.click()
                 });

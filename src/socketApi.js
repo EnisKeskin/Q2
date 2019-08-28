@@ -314,14 +314,14 @@ Io.of('/game').on('connection', (socket) => {
                     roomControl.getRoom(roomName, true)
                     room = roomControl.getRoom(roomName);
                     socket.emit('startButton', pin);
-                    socket.on('startGame', (userCount) => {
+                    socket.on('startGame', async (userCount) => {
                         if (userCount > 0) {
-                            pinDeactivate(pin);
-                            roomControl.setQuiz(roomName, quiz);
-                            io.to(pin).emit('gameStart');
-                            roomControl.resetRoom(roomName);
+                            await pinDeactivate(pin);
+                            await roomControl.setQuiz(roomName, quiz);
+                            await io.to(pin).emit('gameStart');
+                            await roomControl.resetRoom(roomName);
                             room.currentQuestion = null;
-                            nextQuestion();
+                            await nextQuestion();
                         } else {
                             socket.emit('gameStartError', 'Cannot start game without player')
                         }
