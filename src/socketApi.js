@@ -242,6 +242,10 @@ const deleteFolder = (img, quiz) => {
 
 }
 
+const reloadUser = (socket) => {
+    socket.emit('gameStop');
+}
+
 let roomControl = new RoomControl();
 let room = {};
 Io.of('/game').on('connection', (socket) => {
@@ -252,6 +256,7 @@ Io.of('/game').on('connection', (socket) => {
         pinControl(pin, (quiz) => {
             if (quiz !== 0) {
                 socket.join(pin, () => {
+                    this.socketPlayer = socket;
                     const roomName = Object.keys(socket.rooms)[0];
                     const userId = Object.keys(socket.rooms)[1];
                     const socketRooms = socket.adapter.rooms[roomName];
@@ -321,7 +326,7 @@ Io.of('/game').on('connection', (socket) => {
                             await io.to(pin).emit('gameStart');
                             await roomControl.resetRoom(roomName);
                             room.currentQuestion = null;
-                            await nextQuestion();
+                            nextQuestion();
                         } else {
                             socket.emit('gameStartError', 'Cannot start game without player')
                         }
@@ -329,7 +334,7 @@ Io.of('/game').on('connection', (socket) => {
                     let answernumber = 0;
                     const nextQuestion = () => {
                         if (socketRooms) {
-                            if (socketRooms.length > 0) {
+                            if (userCount > 0) {
                                 const question = roomControl.nextQuestion(roomName);
                                 if (!question) {
                                     io.to(roomName).emit('showScoreboard');
@@ -369,10 +374,10 @@ Io.of('/game').on('connection', (socket) => {
                     }
                 }
                 socket.on('disconnect', () => {
-                    if (typeof (socketRooms) === 'undefined') {
-                        clearTimeout(roomControl.nextQuestionTime);
-                        clearTimeout(roomControl.showAnswerTime);
-                    }
+                    clearTimeout(roomControl.nextQuestionTime);
+                    clearTimeout(roomControl.showAnswerTime);
+                    reloadUser(this.socketPlayer);
+                    
                 });
             })
 

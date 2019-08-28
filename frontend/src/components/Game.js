@@ -72,35 +72,34 @@ class Answer extends Component {
                         progress: this.state.progress - (100 / this.time)
                     });
                 }, 1000);
-
             };
-
         });
-
+        io.on('gameStop', () => {
+            window.location.reload();
+        })
         io.on('staticstics', (statistics) => {
-            let state = this.state;
             if (isNaN(statistics)) {
                 statistics.forEach((statisticsInfo) => {
                     if (statisticsInfo) {
                         switch (statisticsInfo.answer) {
                             case 0:
                                 this.setState({
-                                    a: state.a + 1
+                                    a: this.state.a + 1
                                 })
                                 break;
                             case 1:
                                 this.setState({
-                                    b: state.b + 1
+                                    b: this.state.b + 1
                                 })
                                 break;
                             case 2:
                                 this.setState({
-                                    c: state.c + 1
+                                    c: this.state.c + 1
                                 })
                                 break;
                             case 3:
                                 this.setState({
-                                    d: state.d + 1
+                                    d: this.state.d + 1
                                 })
                                 break;
 
