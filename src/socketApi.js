@@ -110,7 +110,6 @@ class RoomControl {
 
     nextQuestion(roomName) {
         const room = this.getRoom(roomName);
-        console.log(room);
         if (room) {
             room.currentQuestionIndex += 1;
             if (room.currentQuestionIndex > room.quiz.question.length) {
@@ -227,7 +226,6 @@ const login = (user, socket) => {
 const deleteFolder = (img, quiz) => {
     if (quiz) {
         quiz.question.forEach((question) => {
-            console.log(question);
             const img = question.img.split('/');
             if (typeof (img[1]) !== 'undefined') {
                 rimraf.sync('media' + path.join(`/${img[1]}`));
@@ -428,7 +426,6 @@ Io.of('/profile').use((socket, next) => {
                         if (err) {
                             error(err, socket);
                         } else {
-                            console.log(quiz);
                             socket.emit('quizId', quiz._id);
                         }
                     });
@@ -699,7 +696,6 @@ Io.of('/profile').use((socket, next) => {
     })
 
     socket.on('questionUpdate', (question) => {
-        console.log(question);
         let validationMessage = (message) => { socket.emit('errors', { message }) };
         let checkAnswers = true;
         objectTrim(question);
@@ -824,7 +820,6 @@ Io.of('/profile').use((socket, next) => {
             if (err) {
                 console.log(err);
             } else {
-                console.log(res.img);
                 if ((res.img !== '' || typeof (res.img) !== 'undefined') || res.img !== null) {
                     const img = res.img.split('/');
                     if (img) {
