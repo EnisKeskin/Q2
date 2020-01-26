@@ -377,7 +377,6 @@ Io.of('/game').on('connection', (socket) => {
                     clearTimeout(roomControl.nextQuestionTime);
                     clearTimeout(roomControl.showAnswerTime);
                     reloadUser(this.socketPlayer);
-                    
                 });
             })
 
@@ -454,8 +453,10 @@ Io.of('/profile').use((socket, next) => {
             if (err)
                 throw err
             if (quiz !== null) {
-                const img = quiz.img.split('/');
-                deleteFolder(img[1], quiz);
+                if (quiz.img) {
+                    const img = quiz.img.split('/');
+                    deleteFolder(img[1], quiz);
+                }
                 Quiz.findByIdAndDelete(quizId, (err, result) => {
                     if (err)
                         throw err
@@ -935,4 +936,3 @@ Io.of('/user').on('connection', (socket) => {
 })
 
 module.exports = socketApi;
-

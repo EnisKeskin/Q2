@@ -1,6 +1,6 @@
 const { Builder, By, Key, until } = require('selenium-webdriver');
 
-for (let index = 0; index < 5; index++) {
+for (let index = 0; index < 30; index++) {
     let driver = new Builder('./chromedriver').forBrowser('chrome').build();
     driver.get('http://67.205.175.221/').then(async () => {
 
